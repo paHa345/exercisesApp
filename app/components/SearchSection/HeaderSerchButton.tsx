@@ -9,38 +9,38 @@ import { useSession } from "next-auth/react";
 const HeaderSerchButton = () => {
   const session = useSession();
   console.log(session.data?.user?.name);
-  // const searchParams = useSearchParams();
-  // const { replace } = useRouter();
-  // const [searchQuery, setSearchQuery] = useState<string | null>("");
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  const [searchQuery, setSearchQuery] = useState<string | null>("");
 
-  // const changeSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchQuery(e.target.value);
-  //   console.log(searchQuery);
-  // };
+  const changeSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    console.log(searchQuery);
+  };
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const searchFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // if (searchQuery !== null) {
-    //   const params = new URLSearchParams(searchParams);
-    //   console.log(params);
-    //   if (searchQuery) {
-    //     params.set("query", searchQuery);
-    //   } else {
-    //     params.delete("query");
-    //   }
-    //   if ((searchQuery || "").trim().length < 3) {
-    //     return;
-    //   }
-    //   if ((searchQuery || "").trim().length !== 0) {
-    //     console.log("replace");
-    //     if (searchQuery !== null) {
-    //       replace(`/search?query=${searchQuery.trim()}`);
-    //       dispatch(findExerciseAndSetInState(searchParams.get("query")));
-    //     }
-    //   }
-    // }
+    if (searchQuery !== null) {
+      const params = new URLSearchParams(searchParams);
+      console.log(params);
+      if (searchQuery) {
+        params.set("query", searchQuery);
+      } else {
+        params.delete("query");
+      }
+      if ((searchQuery || "").trim().length < 3) {
+        return;
+      }
+      if ((searchQuery || "").trim().length !== 0) {
+        console.log("replace");
+        if (searchQuery !== null) {
+          replace(`/search?query=${searchQuery.trim()}`);
+          dispatch(findExerciseAndSetInState(searchParams.get("query")));
+        }
+      }
+    }
   };
 
   return (
