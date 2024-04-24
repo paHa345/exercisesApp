@@ -4,8 +4,11 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import { findExerciseAndSetInState } from "@/app/store/searchExerciseSlice";
+import { useSession } from "next-auth/react";
 
 const HeaderSerchButton = () => {
+  const session = useSession();
+  console.log(session.data?.user?.name);
   // const searchParams = useSearchParams();
   // const { replace } = useRouter();
   // const [searchQuery, setSearchQuery] = useState<string | null>("");
@@ -15,7 +18,7 @@ const HeaderSerchButton = () => {
   //   console.log(searchQuery);
   // };
 
-  // const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const searchFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
