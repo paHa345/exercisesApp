@@ -8,6 +8,7 @@ export const findExerciseAndSetInState = createAsyncThunk(
       const findExerciseReq = await fetch(`/api/exercises/findExercises/${searchQuery}`);
       const data = await findExerciseReq.json();
       console.log(data);
+      dispatch(searchExerciseActions.setFoundedExercise(data.result));
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
     }
@@ -25,31 +26,31 @@ export interface ISearchExerciseSlice {
   searchExerciseState: {
     searchExerciseStatus: searchExerciseFetchStatus;
     searchExercises: IExercise[] | null;
-    test: string;
+    searchQuery: string;
   };
 }
 
 interface ISearchExerciseState {
   searchExercises: IExercise[] | null;
   searchExerciseStatus: searchExerciseFetchStatus;
-  test: string;
+  searchQuery: string;
 }
 
 const initSearchExerciseState: ISearchExerciseState = {
   searchExercises: null,
   searchExerciseStatus: searchExerciseFetchStatus.Ready,
-  test: "paHa",
+  searchQuery: "",
 };
 
 export const searchExerciseSlice = createSlice({
   name: "searchExrciseSlice",
   initialState: initSearchExerciseState,
   reducers: {
-    setSearchExrcise: (state, action: PayloadAction<IExercise[] | null>) => {
+    setFoundedExercise: (state, action: PayloadAction<IExercise[] | null>) => {
       state.searchExercises = action.payload;
     },
-    setTest: (state, action) => {
-      console.log("first");
+    setSerchQuery: (state, action) => {
+      state.searchQuery = action.payload;
     },
   },
   extraReducers: (builder) => {
