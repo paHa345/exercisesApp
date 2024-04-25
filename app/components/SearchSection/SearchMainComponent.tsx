@@ -36,6 +36,14 @@ const SearchMainComponent = () => {
   const [deletedExerciseId, setDeletedExerciseId] = useState("");
   console.log(searchQuery);
 
+  const deleteExerciseHandler = async (e: any) => {
+    e.preventDefault();
+    console.log(e.currentTarget.dataset.workoutid);
+    // setDeletedExerciseId(String(e.currentTarget.dataset.workoutid));
+
+    // dispatch(appStateActions.startDeleteExercise());
+  };
+
   const setCurrentUserId = async () => {
     const currentUser = await fetch("./api/users/getUserByEmail");
     const data = await currentUser.json();
@@ -85,8 +93,8 @@ const SearchMainComponent = () => {
           muscleGroups={findedExercise.muscleGroups}
           mainGroupRu={findedExercise.mainGroupRu}
           mainGroup={findedExercise.mainGroup}
-          // deleteExerciseHandler={deleteExerciseHandler}
-          // setDeletedExerciseId={setDeletedExerciseId}
+          deleteExerciseHandler={deleteExerciseHandler}
+          setDeletedExerciseId={setDeletedExerciseId}
         />
       </div>
     );
