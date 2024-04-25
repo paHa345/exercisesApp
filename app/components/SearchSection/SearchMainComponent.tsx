@@ -1,6 +1,10 @@
 "use client";
 import { IAppSlice } from "@/app/store/appStateSlice";
-import { ISearchExerciseSlice, findExerciseAndSetInState } from "@/app/store/searchExerciseSlice";
+import {
+  ISearchExerciseSlice,
+  findExerciseAndSetInState,
+  searchExerciseActions,
+} from "@/app/store/searchExerciseSlice";
 import { useSearchParams } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
@@ -10,7 +14,7 @@ import SmallExerciseCard, {
 } from "../SmallExerciseCardSection/SmallExerciseCard";
 import { AppDispatch } from "@/app/store";
 import { useSession } from "next-auth/react";
-import { IUserSlice } from "@/app/store/userSlice";
+import { IUserSlice, userActions } from "@/app/store/userSlice";
 import DeleteExerciseModal from "../DeleteExerciseSection2/DeleteExerciseModal";
 
 const SearchMainComponent = () => {
@@ -30,14 +34,39 @@ const SearchMainComponent = () => {
   );
 
   const [deletedExerciseId, setDeletedExerciseId] = useState("");
-
-  // console.log(findedExercises);
   console.log(searchQuery);
+
+  const setCurrentUserId = async () => {
+    const currentUser = await fetch("./api/users/getUserByEmail");
+    const data = await currentUser.json();
+    dispatch(userActions.setCurrentUserId(data?.result?._id));
+  };
+
   useEffect(() => {
+    setCurrentUserId();
+    // dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все" }));
+    // getAllExercises();
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery.length === 0) {
+      console.log(searchParams.get("query"));
+      dispatch(findExerciseAndSetInState(searchParams.get("query")));
+      return;
+    }
     if (searchParams.get("query") !== null) {
       dispatch(findExerciseAndSetInState(searchQuery));
+      return;
     }
-  }, [searchQuery]);
+  }, [searchParams.get("query"), searchQuery]);
+  // dispatch(searchExerciseActions.setSerchQuery(searchParams.get("query")));
+
+  // console.log(searchParams.get("query"));
+  // useEffect(() => {
+  //   if (searchParams.get("query") !== null) {
+  //     dispatch(findExerciseAndSetInState(searchParams.get("query")));
+  //   }
+  // }, [searchQuery]);
 
   const findedExercisesCards = findedExercises?.map((findedExercise) => {
     return (

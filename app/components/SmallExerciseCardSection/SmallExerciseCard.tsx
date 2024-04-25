@@ -64,6 +64,7 @@ const SmallExerciseCard = ({
 
   const startEditExercisesHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    console.log("startedit");
     const editedExercise = currentExercises.find(
       (exercise) => exercise._id === e.currentTarget.dataset.exerciseid
     );

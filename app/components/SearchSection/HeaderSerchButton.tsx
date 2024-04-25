@@ -10,16 +10,17 @@ const HeaderSerchButton = () => {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const [searchQuery, setSearchQuery] = useState<string | null>("");
+  const dispatch = useDispatch<AppDispatch>();
 
   const changeSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    // dispatch(searchExerciseActions.setSerchQuery(e.target.value));
   };
-
-  const dispatch = useDispatch<AppDispatch>();
 
   const searchFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(searchExerciseActions.setSerchQuery(searchQuery));
+
     if (searchQuery !== null) {
       replace(`/search?query=${searchQuery.trim()}`);
     }

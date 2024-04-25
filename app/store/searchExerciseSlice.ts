@@ -1,14 +1,17 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IExercise } from "../types";
+import { appStateActions } from "./appStateSlice";
 
 export const findExerciseAndSetInState = createAsyncThunk(
   "searchExerciseState/findExerciseAndSetInState",
   async function (searchQuery: string | null, { rejectWithValue, dispatch }) {
     try {
+      console.log(searchQuery);
       const findExerciseReq = await fetch(`/api/exercises/findExercises/${searchQuery}`);
       const data = await findExerciseReq.json();
       console.log(data);
       dispatch(searchExerciseActions.setFoundedExercise(data.result));
+      dispatch(appStateActions.setExercisesByGroup(data.result));
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
     }
