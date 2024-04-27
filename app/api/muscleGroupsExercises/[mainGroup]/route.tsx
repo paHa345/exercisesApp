@@ -6,6 +6,8 @@ import { authOptions } from "@/app/utils/authOptions";
 import User from "@/app/models/UserModel";
 
 export async function GET(req: NextRequest, { params }: { params: { mainGroup: string } }) {
+  const yourParamName = req.nextUrl.searchParams.get("filter");
+  console.log(yourParamName);
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(

@@ -7,6 +7,7 @@ import { IAppSlice, appStateActions, setCurrentMuscleGroupAndSet } from "../../s
 import { AppDispatch } from "../../store";
 import LoadingCards from "../LoadingCardSection/LoadingCards";
 import { IUserSlice, userActions } from "@/app/store/userSlice";
+import CatalogFilter from "./CatalogFilter";
 
 const CatalogMain = () => {
   const muscleGroups = [
@@ -51,7 +52,7 @@ const CatalogMain = () => {
   });
 
   const getAllExercises = async () => {
-    const response = await fetch("./api/exercises//currentUserExercises", { cache: "no-store" });
+    const response = await fetch("./api/exercises/currentUserExercises", { cache: "no-store" });
     const data = await response.json();
     console.log(data.result);
   };
@@ -75,6 +76,9 @@ const CatalogMain = () => {
       </div>
 
       <div>{buttonsEl}</div>
+      <div>
+        <CatalogFilter></CatalogFilter>
+      </div>
 
       <div>
         {fetchStatus === "loading" && (
