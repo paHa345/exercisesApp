@@ -6,8 +6,6 @@ import { authOptions } from "@/app/utils/authOptions";
 import User from "@/app/models/UserModel";
 
 export async function GET(req: NextRequest, { params }: { params: { mainGroup: string } }) {
-  const yourParamName = req.nextUrl.searchParams.get("filter");
-  console.log(yourParamName);
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(
@@ -17,13 +15,34 @@ export async function GET(req: NextRequest, { params }: { params: { mainGroup: s
   }
   try {
     await connectMongoDB();
+    const sortParameter = req.nextUrl.searchParams.get("filter");
+    const sortOrder = req.nextUrl.searchParams.get("increment") === "true" ? 1 : (-1 as 1 | -1);
+    const sortQuery = { [sortParameter as string]: sortOrder };
+
     const currentUser: any = await User.findOne({ email: session?.user?.email });
-    const exercises = await Exercise.find({
-      $and: [
-        { $or: [{ createdUserId: { $eq: currentUser._id } }, { isBest: true }] },
-        { mainGroup: { $eq: params.mainGroup } },
-      ],
-    }).populate("commentsArr");
+    // const exercises = await Exercise.find({
+    //   $and: [
+    //     { $or: [{ createdUserId: { $eq: currentUser._id } }, { isBest: true }] },
+    //     { mainGroup: { $eq: params.mainGroup } },
+    //   ],
+    // }).populate("commentsArr");
+
+    const exercises = await Exercise.aggregate([
+      {
+        $match: {
+          $and: [
+            { $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }] },
+            { mainGroup: { $eq: params.mainGroup } },
+          ],
+        },
+      },
+      { $sort: sortQuery },
+    ]);
+
+    // const allExercises = await Exercise.aggregate([
+    //   { $match: { $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }] } },
+    //   { $sort: sortQuery },
+    // ]);
     return NextResponse.json({ message: "Success", result: exercises });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 400 });

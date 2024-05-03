@@ -8,6 +8,7 @@ import { AppDispatch } from "../../store";
 import LoadingCards from "../LoadingCardSection/LoadingCards";
 import { IUserSlice, userActions } from "@/app/store/userSlice";
 import CatalogFilter from "./CatalogFilter";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CatalogMain = () => {
   const muscleGroups = [
@@ -27,9 +28,21 @@ const CatalogMain = () => {
   );
   const fetchStatus = useSelector((state: IAppSlice) => state.appState.fetchBestExercisesStatus);
 
+  const searchParams = useSearchParams();
   const selectMuscleGroupHandler = (e: any) => {
+    console.log(searchParams.get("filter"));
+    console.log(searchParams.get("increment"));
+
+    const filterQueryString = `${searchParams.get("filter") !== null ? `?filter=${searchParams.get("filter")}` : ``}${searchParams.get("increment") !== null ? `&increment=${searchParams.get("increment")}` : ``} `;
+
+    console.log(filterQueryString);
+
     dispatch(
-      setCurrentMuscleGroupAndSet({ en: e.target.dataset.nameen, ru: e.target.dataset.nameru })
+      setCurrentMuscleGroupAndSet({
+        en: e.target.dataset.nameen,
+        ru: e.target.dataset.nameru,
+        filterQuery: filterQueryString,
+      })
     );
   };
 
@@ -65,7 +78,7 @@ const CatalogMain = () => {
 
   useEffect(() => {
     setCurrentUserId();
-    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все" }));
+    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все", filterQuery: "" }));
     getAllExercises();
   }, []);
 

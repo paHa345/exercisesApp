@@ -9,8 +9,6 @@ import { NextRequest, NextResponse } from "next/server";
 export const revalidate = 0;
 
 export async function GET(req: NextRequest) {
-  const filterParameter = req.nextUrl.searchParams.get("filter");
-
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(
@@ -20,18 +18,15 @@ export async function GET(req: NextRequest) {
   }
   try {
     await connectMongoDB();
+    const sortParameter = req.nextUrl.searchParams.get("filter");
+    const sortOrder = req.nextUrl.searchParams.get("increment") === "true" ? 1 : (-1 as 1 | -1);
+    const sortQuery = { [sortParameter as string]: sortOrder };
+    console.log(sortQuery);
     const currentUser: any = await User.findOne({ email: session?.user?.email });
-    console.log(currentUser._id);
 
-    // const allExercises = await Exercise.aggregate([
-    //   {
-    //     $match: { createdUserId: { $eq: currentUser._id } },
-    //   },
-    //   // { $sort: { raiting: 1 } },
-    // ]);
     const allExercises = await Exercise.aggregate([
       { $match: { $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }] } },
-      { $sort: { name: -1 } },
+      { $sort: sortQuery },
     ]);
     const response = NextResponse.json({ message: "Success", result: allExercises });
     response.headers.set("Cache-Control", "no-store");

@@ -24,16 +24,21 @@ export const fetchBestExercisesAndSet = createAsyncThunk(
 export const setCurrentMuscleGroupAndSet = createAsyncThunk(
   "appState/setCurrentMuscleGroupAndSet",
   async function (currentMuscleGroup: ICurrentMuscleGroup, { rejectWithValue, dispatch }) {
+    console.log(currentMuscleGroup);
     try {
       let data;
       if (currentMuscleGroup.en === "all") {
-        const req = await fetch(`../api/exercises/currentUserExercises`);
+        const req = await fetch(
+          `../api/exercises/currentUserExercises${currentMuscleGroup?.filterQuery}`
+        );
         data = await req.json();
         if (!req.ok) {
           throw new Error("Ошибка сервера");
         }
       } else {
-        const req = await fetch(`../api/muscleGroupsExercises/${currentMuscleGroup.en}`);
+        const req = await fetch(
+          `../api/muscleGroupsExercises/${currentMuscleGroup.en}${currentMuscleGroup?.filterQuery}`
+        );
         data = await req.json();
         if (!req.ok) {
           throw new Error("Ошибка сервера");
@@ -70,6 +75,7 @@ export const setCurrentUserWorkouts = createAsyncThunk(
 interface ICurrentMuscleGroup {
   en: string;
   ru: string;
+  filterQuery?: string;
 }
 
 export interface IAppSlice {
@@ -123,7 +129,7 @@ export const initAppState: IAppState = {
   fetchUserWorkoutsStatus: fetchStatus.Loading,
 
   error: "",
-  currentMuscleGroup: { en: "all", ru: "Все" },
+  currentMuscleGroup: { en: "all", ru: "Все", filterQuery: "" },
   currentExercisesByGroup: [],
   showAddExerciseModal: false,
   editWorkoutsStatus: false,

@@ -1,20 +1,34 @@
 "use client";
+import { AppDispatch } from "@/app/store";
+import { IAppSlice, setCurrentMuscleGroupAndSet } from "@/app/store/appStateSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const CatalogFilter = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
+  const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
   const changeCatalogFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.currentTarget.value);
-    router.push(`/catalog?filter=${e.currentTarget.value}`);
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const dataType = selectedOption.getAttribute("data-increment");
+
+    router.replace(`/catalog?filter=${e.currentTarget.value}&increment=${dataType}`);
+    dispatch(
+      setCurrentMuscleGroupAndSet({
+        en: muscleGroup.en,
+        ru: muscleGroup.ru,
+        filterQuery: `?filter=${e.currentTarget.value}&increment=${dataType}`,
+      })
+    );
 
     // router.replace(`./catalog?sort=${e.currentTarget.value}`);
   };
 
-  useEffect(() => {
-    console.log(searchParams.get("filter"));
-  }, []);
+  // useEffect(() => {
+  //   console.log(searchParams.get("filter"));
+  // }, []);
 
   return (
     <div className=" flex justify-center py-5">
@@ -24,9 +38,18 @@ const CatalogFilter = () => {
         name="catalogSelect"
         id="catalogSelect"
       >
-        <option value="popular">По популярности</option>
-        <option value="raiting">По рейтингу</option>
-        <option value="name">По имени</option>
+        <option value="popular" data-increment="true">
+          По популярности
+        </option>
+        <option value="raiting" data-increment="true">
+          По увеличению рейтинга
+        </option>
+        <option value="raiting" data-increment="false">
+          По уменьшению рейтинга
+        </option>
+        <option value="name" data-increment="true">
+          По имени
+        </option>
       </select>
     </div>
   );
