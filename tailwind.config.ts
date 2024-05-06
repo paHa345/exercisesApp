@@ -31,7 +31,9 @@ const config: Config = {
       boxShadow: {
         exerciseCardShadow: "0 10px 15px rgb(0 0 0/5%)",
         exerciseCardHowerShadow: "15px 10px 15px rgb(0 0 0/5%)",
+
         cardElementShadow: "0.3em 0.3em 1em rgba(0, 0, 0, 0.3)",
+        cardElementStartShadow: "0.2em 0.2em 1em rgba(0, 0, 0, 0.2)",
       },
     },
   },

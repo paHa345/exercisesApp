@@ -55,6 +55,25 @@ export const setCurrentMuscleGroupAndSet = createAsyncThunk(
   }
 );
 
+export const setCurrentUserExercisesByTypeCount = createAsyncThunk(
+  "appState/setCurrentUserExercisesByTypeCount",
+  async function (exercisesType: string, { rejectWithValue, dispatch }) {
+    try {
+      const countReq = await fetch(`/api/exercises/getUserExercisesCount/${exercisesType}`);
+      if (!countReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const count = await countReq.json();
+      console.log(`count ${count.result}`);
+
+      dispatch(appStateActions.setExercisesCount(count.result));
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
 export const setCurrentUserWorkouts = createAsyncThunk(
   "appState/setCurrentUserWorkouts",
   async function (_, { rejectWithValue, dispatch }) {
@@ -64,7 +83,6 @@ export const setCurrentUserWorkouts = createAsyncThunk(
         throw new Error("Ошибка сервера");
       }
       const user: IResponseUser = await req.json();
-      console.log(user.result.workoutsArr);
       dispatch(userActions.setCurrentUserWorkout(user.result.workoutsArr));
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -93,6 +111,8 @@ export interface IAppSlice {
     editWorkoutsStatus: boolean;
     deleteWorkoutStatus: boolean;
     deleteExerciseStatus: boolean;
+    exercisesCount: number;
+    currentExercisesPage: number;
   };
 }
 
@@ -118,6 +138,8 @@ interface IAppState {
   editWorkoutsStatus: boolean;
   deleteWorkoutStatus: boolean;
   deleteExerciseStatus: boolean;
+  exercisesCount: number;
+  currentExercisesPage: number;
 }
 
 export const initAppState: IAppState = {
@@ -135,6 +157,8 @@ export const initAppState: IAppState = {
   editWorkoutsStatus: false,
   deleteWorkoutStatus: false,
   deleteExerciseStatus: false,
+  exercisesCount: 0,
+  currentExercisesPage: 1,
 };
 
 export const appStateSlice = createSlice({
@@ -204,6 +228,12 @@ export const appStateSlice = createSlice({
           return exercise;
         }
       });
+    },
+    setExercisesCount(state, action) {
+      state.exercisesCount = action.payload;
+    },
+    setCurrentExercisesPage(state, action) {
+      state.currentExercisesPage = action.payload;
     },
   },
   extraReducers: (builder) => {

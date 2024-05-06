@@ -3,12 +3,18 @@
 import React, { useEffect, useState } from "react";
 import ExercisesMainSection from "../ExerciseSection/ExercisesMainSection";
 import { useDispatch, useSelector } from "react-redux";
-import { IAppSlice, appStateActions, setCurrentMuscleGroupAndSet } from "../../store/appStateSlice";
+import {
+  IAppSlice,
+  appStateActions,
+  setCurrentMuscleGroupAndSet,
+  setCurrentUserExercisesByTypeCount,
+} from "../../store/appStateSlice";
 import { AppDispatch } from "../../store";
 import LoadingCards from "../LoadingCardSection/LoadingCards";
 import { IUserSlice, userActions } from "@/app/store/userSlice";
 import CatalogFilter from "./CatalogFilter";
 import { useRouter, useSearchParams } from "next/navigation";
+import PaginationMain from "../CatalogPaginationSection/PaginationMain";
 
 const CatalogMain = () => {
   const muscleGroups = [
@@ -21,26 +27,28 @@ const CatalogMain = () => {
     { en: "biceps", ru: "Бицепс" },
   ];
 
+  const router = useRouter();
+
   const currentMuscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
   const dispatch = useDispatch<AppDispatch>();
   const currentExercises = useSelector(
     (state: IAppSlice) => state.appState.currentExercisesByGroup
   );
+  const currentExercisesPage = useSelector(
+    (state: IAppSlice) => state.appState.currentExercisesPage
+  );
   const fetchStatus = useSelector((state: IAppSlice) => state.appState.fetchBestExercisesStatus);
 
   const searchParams = useSearchParams();
-  const selectMuscleGroupHandler = (e: any) => {
-    console.log(searchParams.get("filter"));
-    console.log(searchParams.get("increment"));
-
+  const selectMuscleGroupHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     const filterQueryString = `${searchParams.get("filter") !== null ? `?filter=${searchParams.get("filter")}` : ``}${searchParams.get("increment") !== null ? `&increment=${searchParams.get("increment")}` : ``} `;
 
-    console.log(filterQueryString);
+    dispatch(setCurrentUserExercisesByTypeCount(e.currentTarget.dataset.nameen as string));
 
     dispatch(
       setCurrentMuscleGroupAndSet({
-        en: e.target.dataset.nameen,
-        ru: e.target.dataset.nameru,
+        en: e.currentTarget.dataset.nameen as string,
+        ru: e.currentTarget.dataset.nameru as string,
         filterQuery: filterQueryString,
       })
     );
@@ -77,9 +85,17 @@ const CatalogMain = () => {
   };
 
   useEffect(() => {
+    router.replace(`/catalog?page=${currentExercisesPage}`);
     setCurrentUserId();
-    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все", filterQuery: "" }));
+    dispatch(
+      setCurrentMuscleGroupAndSet({
+        en: "all",
+        ru: "Все",
+        filterQuery: `?page=${currentExercisesPage}`,
+      })
+    );
     getAllExercises();
+    dispatch(setCurrentUserExercisesByTypeCount("all"));
   }, []);
 
   return (
@@ -125,6 +141,7 @@ const CatalogMain = () => {
             </h1>
           </>
         )}
+        <PaginationMain></PaginationMain>
         {fetchStatus === "error" && (
           <h1 className=" text-center text-xl font-bold my-32">
             Ошибка. Не удалось получить данные с сервера. Повторите попытку позже
