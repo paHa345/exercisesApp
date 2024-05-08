@@ -29,9 +29,9 @@ export async function GET(req: NextRequest) {
 
     const currentUser: any = await User.findOne({ email: session?.user?.email });
 
-    const count = await Exercise.countDocuments({
-      $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }],
-    });
+    // const count = await Exercise.countDocuments({
+    //   $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }],
+    // });
 
     const allExercises = await Exercise.aggregate([
       { $match: { $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }] } },
