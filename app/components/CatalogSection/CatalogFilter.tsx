@@ -1,6 +1,6 @@
 "use client";
 import { AppDispatch } from "@/app/store";
-import { IAppSlice, setCurrentMuscleGroupAndSet } from "@/app/store/appStateSlice";
+import { IAppSlice, appStateActions, setCurrentMuscleGroupAndSet } from "@/app/store/appStateSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,13 +13,22 @@ const CatalogFilter = () => {
   const changeCatalogFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const dataType = selectedOption.getAttribute("data-increment");
+    console.log(e.target.selectedIndex);
 
-    router.replace(`/catalog?filter=${e.currentTarget.value}&increment=${dataType}`);
+    dispatch(appStateActions.setCurrentExercisesPage(1));
+    const filter = e.currentTarget.value;
+    const increment = dataType;
+    router.replace(`/catalog?filter=${e.currentTarget.value}&increment=${dataType}&page=${1}`);
+
+    const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
+
+    console.log(paramsString);
+
     dispatch(
       setCurrentMuscleGroupAndSet({
         en: muscleGroup.en,
         ru: muscleGroup.ru,
-        filterQuery: `?filter=${e.currentTarget.value}&increment=${dataType}`,
+        filterQuery: paramsString,
       })
     );
 

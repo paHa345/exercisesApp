@@ -62,7 +62,9 @@ const CatalogMain = () => {
         data-number={index}
         onClick={selectMuscleGroupHandler}
         className={` ${
-          currentMuscleGroup.en === el.en ? "bg-cyan-800 text-slate-100" : "bg-baseColour"
+          currentMuscleGroup.en === el.en
+            ? "bg-cyan-800 text-slate-100 shadow-cardElementShadow"
+            : "bg-baseColour shadow-cardElementStartShadow "
         }   self-center mx-3 my-3 py-1 px-2 rounded-md hover:shadow-cardElementShadow `}
         key={el.en}
       >
