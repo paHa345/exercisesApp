@@ -34,7 +34,6 @@ const SearchMainComponent = () => {
   );
 
   const [deletedExerciseId, setDeletedExerciseId] = useState("");
-  console.log(searchQuery);
 
   const deleteExerciseHandler = async (e: any) => {
     e.preventDefault();
@@ -58,7 +57,7 @@ const SearchMainComponent = () => {
 
   useEffect(() => {
     if (searchQuery.length === 0) {
-      console.log(searchParams.get("query"));
+      // console.log(searchParams.get("query"));
       dispatch(findExerciseAndSetInState(searchParams.get("query")));
       return;
     }

@@ -19,10 +19,14 @@ const HeaderSerchButton = () => {
 
   const searchFormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!searchQuery?.trim().length) {
+      return;
+    }
+
     dispatch(searchExerciseActions.setSerchQuery(searchQuery));
 
     if (searchQuery !== null) {
-      replace(`/search?query=${searchQuery.trim()}`);
+      replace(`/search?query=${String(searchQuery).trim()}`);
     }
     // searchButtonRedirect(searchQuery);
 

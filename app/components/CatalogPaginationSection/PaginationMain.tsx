@@ -51,10 +51,6 @@ const PaginationMain = () => {
     }
   };
 
-  //   const addButton = ()=> {
-
-  //   }
-
   const pagesCount = Math.ceil(exercisesCount / 3);
   //   const pagesCount = Math.ceil(exercisesCount);
   const pagesButton = [];
