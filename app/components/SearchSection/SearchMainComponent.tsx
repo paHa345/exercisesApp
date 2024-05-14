@@ -33,6 +33,10 @@ const SearchMainComponent = () => {
     (state: ISearchExerciseSlice) => state.searchExerciseState.searchQuery
   );
 
+  const searchexerciseStatus = useSelector(
+    (state: ISearchExerciseSlice) => state.searchExerciseState.searchExerciseStatus
+  );
+
   const [deletedExerciseId, setDeletedExerciseId] = useState("");
 
   const deleteExerciseHandler = async (e: any) => {
@@ -53,6 +57,7 @@ const SearchMainComponent = () => {
     setCurrentUserId();
     // dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все" }));
     // getAllExercises();
+    dispatch(searchExerciseActions.setSerchQuery(searchQuery));
   }, []);
 
   useEffect(() => {
@@ -101,31 +106,41 @@ const SearchMainComponent = () => {
 
   return (
     <>
-      {searchParams.get("query") ? (
-        <div className="py-5 flex justify-center">
-          <h1 className=" mx-auto">
-            {" "}
-            По запросу {searchParams.get("query")}{" "}
-            {findedExercises?.length
-              ? `найдено ${findedExercises?.length} упражнений`
-              : `упражнений не найдено`}
-          </h1>
-        </div>
+      <h1>{searchexerciseStatus}</h1>
+      {searchexerciseStatus === "loading" ? (
+        <h1>Loading</h1>
       ) : (
-        <h1>Введите поисковый запрос</h1>
-      )}
-      {/* {findedExercises === null && <p>Введите поисковый запрос</p>} */}
-      {findedExercises?.length && findedExercises !== null ? (
-        <section className="pb-10">
-          {deleteExerciseModal && (
-            <DeleteExerciseModal deletedExerciseId={deletedExerciseId}></DeleteExerciseModal>
+        <div>
+          {" "}
+          {searchParams.get("query") ? (
+            <div className="py-5 flex justify-center">
+              <h1 className=" mx-auto">
+                {" "}
+                По запросу <span className=" text-2xl font-bold">{searchParams.get("query")} </span>
+                {findedExercises?.length
+                  ? `найдено упражнений: ${findedExercises?.length} `
+                  : `упражнений не найдено`}
+              </h1>
+            </div>
+          ) : (
+            <h1>Введите поисковый запрос</h1>
           )}
-          <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {findedExercisesCards}
-          </div>
-        </section>
-      ) : (
-        <p>NO</p>
+          {/* {findedExercises === null && <p>Введите поисковый запрос</p>} */}
+          {findedExercises?.length && findedExercises !== null ? (
+            <section className="pb-10">
+              {deleteExerciseModal && (
+                <DeleteExerciseModal deletedExerciseId={deletedExerciseId}></DeleteExerciseModal>
+              )}
+              <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {findedExercisesCards}
+              </div>
+            </section>
+          ) : (
+            <div className=" h-screen flex justify-center items-center">
+              <p className=" text-2xl">Введите поисковый запрос с другими параметрами</p>
+            </div>
+          )}
+        </div>
       )}
     </>
   );

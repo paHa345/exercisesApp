@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faXmark, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 const PaginationMain = () => {
   const searchParams = useSearchParams();
