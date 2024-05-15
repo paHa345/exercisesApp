@@ -16,6 +16,8 @@ import { AppDispatch } from "@/app/store";
 import { useSession } from "next-auth/react";
 import { IUserSlice, userActions } from "@/app/store/userSlice";
 import DeleteExerciseModal from "../DeleteExerciseSection2/DeleteExerciseModal";
+import SearchLoadingCards from "../LoadingCardSection/SearchLoadingCards";
+import PaginationMain from "../SearchPaginationSection/PaginationMain";
 
 const SearchMainComponent = () => {
   const searchParams = useSearchParams();
@@ -35,6 +37,10 @@ const SearchMainComponent = () => {
 
   const searchexerciseStatus = useSelector(
     (state: ISearchExerciseSlice) => state.searchExerciseState.searchExerciseStatus
+  );
+
+  const searchExercisesQuantity = useSelector(
+    (state: ISearchExerciseSlice) => state.searchExerciseState.searchExercisesQuantity
   );
 
   const [deletedExerciseId, setDeletedExerciseId] = useState("");
@@ -71,14 +77,6 @@ const SearchMainComponent = () => {
       return;
     }
   }, [searchParams.get("query"), searchQuery]);
-  // dispatch(searchExerciseActions.setSerchQuery(searchParams.get("query")));
-
-  // console.log(searchParams.get("query"));
-  // useEffect(() => {
-  //   if (searchParams.get("query") !== null) {
-  //     dispatch(findExerciseAndSetInState(searchParams.get("query")));
-  //   }
-  // }, [searchQuery]);
 
   const findedExercisesCards = findedExercises?.map((findedExercise) => {
     return (
@@ -106,9 +104,8 @@ const SearchMainComponent = () => {
 
   return (
     <>
-      <h1>{searchexerciseStatus}</h1>
       {searchexerciseStatus === "loading" ? (
-        <h1>Loading</h1>
+        <SearchLoadingCards></SearchLoadingCards>
       ) : (
         <div>
           {" "}
@@ -118,7 +115,7 @@ const SearchMainComponent = () => {
                 {" "}
                 По запросу <span className=" text-2xl font-bold">{searchParams.get("query")} </span>
                 {findedExercises?.length
-                  ? `найдено упражнений: ${findedExercises?.length} `
+                  ? `найдено упражнений: ${searchExercisesQuantity} `
                   : `упражнений не найдено`}
               </h1>
             </div>
@@ -142,6 +139,7 @@ const SearchMainComponent = () => {
           )}
         </div>
       )}
+      <PaginationMain></PaginationMain>
     </>
   );
 };

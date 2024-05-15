@@ -7,11 +7,12 @@ export const findExerciseAndSetInState = createAsyncThunk(
   async function (searchQuery: string | null, { rejectWithValue, dispatch }) {
     try {
       console.log(searchQuery);
-      const findExerciseReq = await fetch(`/api/exercises/findExercises/${searchQuery}`);
+      const findExerciseReq = await fetch(`/api/exercises/findExercises?query=${searchQuery}`);
       const data = await findExerciseReq.json();
       console.log(data);
       dispatch(searchExerciseActions.setFoundedExercise(data.result));
       dispatch(appStateActions.setExercisesByGroup(data.result));
+      dispatch(searchExerciseActions.setSearchExercisesQuantity(data.quantity));
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
     }
@@ -30,6 +31,8 @@ export interface ISearchExerciseSlice {
     searchExerciseStatus: searchExerciseFetchStatus;
     searchExercises: IExercise[] | null;
     searchQuery: string;
+    searchExercisesQuantity: number;
+    searchExercisesCurrentPage: number;
   };
 }
 
@@ -37,12 +40,16 @@ interface ISearchExerciseState {
   searchExercises: IExercise[] | null;
   searchExerciseStatus: searchExerciseFetchStatus;
   searchQuery: string;
+  searchExercisesQuantity: number;
+  searchExercisesCurrentPage: number;
 }
 
 const initSearchExerciseState: ISearchExerciseState = {
   searchExercises: null,
   searchExerciseStatus: searchExerciseFetchStatus.Ready,
   searchQuery: "",
+  searchExercisesQuantity: 0,
+  searchExercisesCurrentPage: 1,
 };
 
 export const searchExerciseSlice = createSlice({
@@ -54,6 +61,12 @@ export const searchExerciseSlice = createSlice({
     },
     setSerchQuery: (state, action) => {
       state.searchQuery = action.payload;
+    },
+    setSearchExercisesQuantity: (state, action) => {
+      state.searchExercisesQuantity = action.payload;
+    },
+    setSearchExercisesCurrentPage: (state, action) => {
+      state.searchExercisesCurrentPage = action.payload;
     },
   },
   extraReducers: (builder) => {

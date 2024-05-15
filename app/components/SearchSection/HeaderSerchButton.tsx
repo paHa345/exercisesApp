@@ -29,7 +29,7 @@ const HeaderSerchButton = () => {
     }
 
     if (searchQuery !== null) {
-      push(`/search?query=${String(searchQuery).trim()}`);
+      push(`/search?query=${String(searchQuery).trim()}&page=1`);
     }
 
     setSearchQuery("");
