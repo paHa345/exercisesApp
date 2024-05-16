@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
     );
   }
   const searchQuery = req.nextUrl.searchParams.get("query");
-  console.log(searchQuery);
   if (searchQuery!.length < 3) {
     return NextResponse.json(
       { message: "Слишком короткий поисковый запрос. Запрос должен быть более 2 символов" },
@@ -27,7 +26,7 @@ export async function GET(req: NextRequest) {
   try {
     await connectMongoDB();
 
-    const page = parseInt(req.nextUrl.searchParams.get("page") || "2", 10);
+    const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
     const limit = parseInt(req.nextUrl.searchParams.get("limit") || "3", 10);
     const skip = (page - 1) * limit;
 

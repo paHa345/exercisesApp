@@ -2,12 +2,19 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IExercise } from "../types";
 import { appStateActions } from "./appStateSlice";
 
+interface ISearchQuery {
+  query: string | null;
+  page: string | null;
+}
+
 export const findExerciseAndSetInState = createAsyncThunk(
   "searchExerciseState/findExerciseAndSetInState",
-  async function (searchQuery: string | null, { rejectWithValue, dispatch }) {
+  async function (searchQuery: ISearchQuery, { rejectWithValue, dispatch }) {
     try {
       console.log(searchQuery);
-      const findExerciseReq = await fetch(`/api/exercises/findExercises?query=${searchQuery}`);
+      const findExerciseReq = await fetch(
+        `/api/exercises/findExercises?query=${searchQuery.query}&page=${searchQuery.page}`
+      );
       const data = await findExerciseReq.json();
       console.log(data);
       dispatch(searchExerciseActions.setFoundedExercise(data.result));

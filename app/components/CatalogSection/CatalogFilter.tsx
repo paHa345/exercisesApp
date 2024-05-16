@@ -10,19 +10,16 @@ const CatalogFilter = () => {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
   const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
+
   const changeCatalogFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const dataType = selectedOption.getAttribute("data-increment");
-    console.log(e.target.selectedIndex);
-
     dispatch(appStateActions.setCurrentExercisesPage(1));
     const filter = e.currentTarget.value;
     const increment = dataType;
     router.replace(`/catalog?filter=${e.currentTarget.value}&increment=${dataType}&page=${1}`);
 
     const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
-
-    console.log(paramsString);
 
     dispatch(
       setCurrentMuscleGroupAndSet({

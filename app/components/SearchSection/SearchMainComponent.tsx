@@ -18,12 +18,12 @@ import { IUserSlice, userActions } from "@/app/store/userSlice";
 import DeleteExerciseModal from "../DeleteExerciseSection2/DeleteExerciseModal";
 import SearchLoadingCards from "../LoadingCardSection/SearchLoadingCards";
 import PaginationMain from "../SearchPaginationSection/PaginationMain";
+import { useRouter } from "next/navigation";
 
 const SearchMainComponent = () => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const session = useSession();
-  // console.log(searchParams.get("query"));
   const userId = useSelector((state: IUserSlice) => state.userState.currentUser.id);
   const deleteExerciseModal = useSelector(
     (state: IAppSlice) => state.appState.deleteExerciseStatus
@@ -45,14 +45,6 @@ const SearchMainComponent = () => {
 
   const [deletedExerciseId, setDeletedExerciseId] = useState("");
 
-  const deleteExerciseHandler = async (e: any) => {
-    e.preventDefault();
-    console.log(e.currentTarget.dataset.workoutid);
-    // setDeletedExerciseId(String(e.currentTarget.dataset.workoutid));
-
-    // dispatch(appStateActions.startDeleteExercise());
-  };
-
   const setCurrentUserId = async () => {
     const currentUser = await fetch("./api/users/getUserByEmail");
     const data = await currentUser.json();
@@ -61,22 +53,24 @@ const SearchMainComponent = () => {
 
   useEffect(() => {
     setCurrentUserId();
-    // dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все" }));
-    // getAllExercises();
     dispatch(searchExerciseActions.setSerchQuery(searchQuery));
+
+    // dispatch(findExerciseAndSetInState(searchParams.get("query")));
   }, []);
 
   useEffect(() => {
-    if (searchQuery.length === 0) {
-      // console.log(searchParams.get("query"));
-      dispatch(findExerciseAndSetInState(searchParams.get("query")));
-      return;
-    }
     if (searchParams.get("query") !== null) {
-      dispatch(findExerciseAndSetInState(searchQuery));
-      return;
+      dispatch(
+        searchExerciseActions.setSearchExercisesCurrentPage(Number(searchParams.get("page")))
+      );
+      dispatch(
+        findExerciseAndSetInState({
+          query: searchParams.get("query"),
+          page: searchParams.get("page"),
+        })
+      );
     }
-  }, [searchParams.get("query"), searchQuery]);
+  }, [searchParams.get("query"), searchParams.get("page"), searchQuery]);
 
   const findedExercisesCards = findedExercises?.map((findedExercise) => {
     return (
@@ -95,7 +89,7 @@ const SearchMainComponent = () => {
           muscleGroups={findedExercise.muscleGroups}
           mainGroupRu={findedExercise.mainGroupRu}
           mainGroup={findedExercise.mainGroup}
-          deleteExerciseHandler={deleteExerciseHandler}
+          // deleteExerciseHandler={deleteExerciseHandler}
           setDeletedExerciseId={setDeletedExerciseId}
         />
       </div>
