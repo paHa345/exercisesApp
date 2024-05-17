@@ -20,7 +20,7 @@ const AddExercisesSection = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все" }));
+    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все", filterQuery: "" }));
   }, []);
 
   const addExerciseHandler = function (this: IExercise) {
