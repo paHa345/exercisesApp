@@ -45,9 +45,9 @@ const PaginationMain = () => {
       const increment = searchParams.get("increment");
       const searchQuery = searchParams.get("query");
 
-      router.push(
-        `/search?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`
-      );
+      const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
+
+      router.push(`/search${paramsString}`);
 
       // загрузить новые упражнения
 

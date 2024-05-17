@@ -5,6 +5,8 @@ import { appStateActions } from "./appStateSlice";
 interface ISearchQuery {
   query: string | null;
   page: string | null;
+  filter?: string | null;
+  increment?: string | null;
 }
 
 export const findExerciseAndSetInState = createAsyncThunk(
@@ -13,7 +15,7 @@ export const findExerciseAndSetInState = createAsyncThunk(
     try {
       console.log(searchQuery);
       const findExerciseReq = await fetch(
-        `/api/exercises/findExercises?query=${searchQuery.query}&page=${searchQuery.page}`
+        `/api/exercises/findExercises?query=${searchQuery.query}&page=${searchQuery.page}${searchQuery.filter !== null ? `&filter=${searchQuery.filter}` : ""}${searchQuery.increment !== null ? `&increment=${searchQuery.increment}` : ""}`
       );
       const data = await findExerciseReq.json();
       console.log(data);

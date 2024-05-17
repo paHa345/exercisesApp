@@ -19,6 +19,7 @@ import DeleteExerciseModal from "../DeleteExerciseSection2/DeleteExerciseModal";
 import SearchLoadingCards from "../LoadingCardSection/SearchLoadingCards";
 import PaginationMain from "../SearchPaginationSection/PaginationMain";
 import { useRouter } from "next/navigation";
+import SearchFilterMain from "../SearchFilterSection/SearchFilterMain";
 
 const SearchMainComponent = () => {
   const searchParams = useSearchParams();
@@ -67,10 +68,18 @@ const SearchMainComponent = () => {
         findExerciseAndSetInState({
           query: searchParams.get("query"),
           page: searchParams.get("page"),
+          filter: searchParams.get("filter"),
+          increment: searchParams.get("increment"),
         })
       );
     }
-  }, [searchParams.get("query"), searchParams.get("page"), searchQuery]);
+  }, [
+    searchParams.get("query"),
+    searchParams.get("page"),
+    searchParams.get("filter"),
+    searchParams.get("increment"),
+    searchQuery,
+  ]);
 
   const findedExercisesCards = findedExercises?.map((findedExercise) => {
     return (
@@ -118,14 +127,17 @@ const SearchMainComponent = () => {
           )}
           {/* {findedExercises === null && <p>Введите поисковый запрос</p>} */}
           {findedExercises?.length && findedExercises !== null ? (
-            <section className="pb-10">
-              {deleteExerciseModal && (
-                <DeleteExerciseModal deletedExerciseId={deletedExerciseId}></DeleteExerciseModal>
-              )}
-              <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {findedExercisesCards}
-              </div>
-            </section>
+            <div>
+              <SearchFilterMain></SearchFilterMain>
+              <section className="pb-10">
+                {deleteExerciseModal && (
+                  <DeleteExerciseModal deletedExerciseId={deletedExerciseId}></DeleteExerciseModal>
+                )}
+                <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {findedExercisesCards}
+                </div>
+              </section>
+            </div>
           ) : (
             <div className=" h-screen flex justify-center items-center">
               <p className=" text-2xl">Введите поисковый запрос с другими параметрами</p>
