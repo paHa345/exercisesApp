@@ -132,7 +132,7 @@ const ExerciseCardMain = ({
         <div>
           <div>
             <h2 className=" text-center font-bold text-xl my-6">Описание</h2>
-            <p>{description}</p>
+            <p className=" whitespace-pre-line">{description}</p>
           </div>
         </div>
         <div>

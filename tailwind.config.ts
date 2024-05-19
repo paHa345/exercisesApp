@@ -8,6 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        bounce: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "25%": { transform: "translateY(-4px)" },
+          "75%": { transform: "translateY(4px)" },
+        },
+      },
+      animation: {
+        "bounce-slow": "bounce 10s linear infinite",
+      },
       gridTemplateColumns: {
         mainGrid: "2fr 10fr",
       },

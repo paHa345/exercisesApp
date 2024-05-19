@@ -124,7 +124,7 @@ const CatalogMain = () => {
             </section>
           </>
         )}
-        {currentExercises.length > 0 && fetchStatus === "resolve" && (
+        {currentExercises?.length > 0 && fetchStatus === "resolve" && (
           <>
             <div className=" mx-auto text-center text-2xl font-bold pb-5">
               <h1>{currentMuscleGroup.ru}</h1>
@@ -132,7 +132,7 @@ const CatalogMain = () => {
             <ExercisesMainSection></ExercisesMainSection>
           </>
         )}
-        {currentExercises.length === 0 && (
+        {currentExercises?.length === 0 && (
           <>
             <div className=" mx-auto text-center text-2xl font-bold pb-5">
               <h1>{currentMuscleGroup.ru}</h1>

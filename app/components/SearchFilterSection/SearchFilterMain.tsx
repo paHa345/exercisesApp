@@ -5,11 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const CatalogFilter = () => {
+const SearchFilterMain = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
-  const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
+  //   const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
 
   const changeCatalogFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
@@ -17,17 +17,20 @@ const CatalogFilter = () => {
     dispatch(appStateActions.setCurrentExercisesPage(1));
     const filter = e.currentTarget.value;
     const increment = dataType;
-    router.replace(`/catalog?filter=${e.currentTarget.value}&increment=${dataType}&page=${1}`);
+    const searchQuery = searchParams.get("query");
 
-    const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
+    const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
 
-    dispatch(
-      setCurrentMuscleGroupAndSet({
-        en: muscleGroup.en,
-        ru: muscleGroup.ru,
-        filterQuery: paramsString,
-      })
-    );
+    console.log(paramsString);
+    router.replace(`/search${paramsString}`);
+
+    // dispatch(
+    //   setCurrentMuscleGroupAndSet({
+    //     en: muscleGroup.en,
+    //     ru: muscleGroup.ru,
+    //     filterQuery: paramsString,
+    //   })
+    // );
   };
 
   return (
@@ -55,4 +58,4 @@ const CatalogFilter = () => {
   );
 };
 
-export default CatalogFilter;
+export default SearchFilterMain;

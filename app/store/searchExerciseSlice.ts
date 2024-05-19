@@ -2,16 +2,26 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IExercise } from "../types";
 import { appStateActions } from "./appStateSlice";
 
+interface ISearchQuery {
+  query: string | null;
+  page: string | null;
+  filter?: string | null;
+  increment?: string | null;
+}
+
 export const findExerciseAndSetInState = createAsyncThunk(
   "searchExerciseState/findExerciseAndSetInState",
-  async function (searchQuery: string | null, { rejectWithValue, dispatch }) {
+  async function (searchQuery: ISearchQuery, { rejectWithValue, dispatch }) {
     try {
       console.log(searchQuery);
-      const findExerciseReq = await fetch(`/api/exercises/findExercises/${searchQuery}`);
+      const findExerciseReq = await fetch(
+        `/api/exercises/findExercises?query=${searchQuery.query}&page=${searchQuery.page}${searchQuery.filter !== null ? `&filter=${searchQuery.filter}` : ""}${searchQuery.increment !== null ? `&increment=${searchQuery.increment}` : ""}`
+      );
       const data = await findExerciseReq.json();
       console.log(data);
       dispatch(searchExerciseActions.setFoundedExercise(data.result));
       dispatch(appStateActions.setExercisesByGroup(data.result));
+      dispatch(searchExerciseActions.setSearchExercisesQuantity(data.quantity));
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred");
     }
@@ -30,6 +40,8 @@ export interface ISearchExerciseSlice {
     searchExerciseStatus: searchExerciseFetchStatus;
     searchExercises: IExercise[] | null;
     searchQuery: string;
+    searchExercisesQuantity: number;
+    searchExercisesCurrentPage: number;
   };
 }
 
@@ -37,12 +49,16 @@ interface ISearchExerciseState {
   searchExercises: IExercise[] | null;
   searchExerciseStatus: searchExerciseFetchStatus;
   searchQuery: string;
+  searchExercisesQuantity: number;
+  searchExercisesCurrentPage: number;
 }
 
 const initSearchExerciseState: ISearchExerciseState = {
   searchExercises: null,
   searchExerciseStatus: searchExerciseFetchStatus.Ready,
   searchQuery: "",
+  searchExercisesQuantity: 0,
+  searchExercisesCurrentPage: 1,
 };
 
 export const searchExerciseSlice = createSlice({
@@ -54,6 +70,12 @@ export const searchExerciseSlice = createSlice({
     },
     setSerchQuery: (state, action) => {
       state.searchQuery = action.payload;
+    },
+    setSearchExercisesQuantity: (state, action) => {
+      state.searchExercisesQuantity = action.payload;
+    },
+    setSearchExercisesCurrentPage: (state, action) => {
+      state.searchExercisesCurrentPage = action.payload;
     },
   },
   extraReducers: (builder) => {

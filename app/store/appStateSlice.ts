@@ -24,7 +24,7 @@ export const fetchBestExercisesAndSet = createAsyncThunk(
 export const setCurrentMuscleGroupAndSet = createAsyncThunk(
   "appState/setCurrentMuscleGroupAndSet",
   async function (currentMuscleGroup: ICurrentMuscleGroup, { rejectWithValue, dispatch }) {
-    console.log(currentMuscleGroup);
+    console.log(currentMuscleGroup.filterQuery);
     try {
       let data;
       if (currentMuscleGroup.en === "all") {

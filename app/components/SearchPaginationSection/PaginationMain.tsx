@@ -10,16 +10,27 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  ISearchExerciseSlice,
+  findExerciseAndSetInState,
+  searchExerciseActions,
+} from "@/app/store/searchExerciseSlice";
 
 const PaginationMain = () => {
   const searchParams = useSearchParams();
-  const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
+  // const searchQuery = useSelector(
+  //   (state: ISearchExerciseSlice) => state.searchExerciseState.searchQuery
+  // );
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const currentPage = useSelector((state: IAppSlice) => state.appState.currentExercisesPage);
-  const exercisesCount = useSelector((state: IAppSlice) => state.appState.exercisesCount);
+  const currentPage = useSelector(
+    (state: ISearchExerciseSlice) => state.searchExerciseState.searchExercisesCurrentPage
+  );
+  const searchExercisesQuantity = useSelector(
+    (state: ISearchExerciseSlice) => state.searchExerciseState.searchExercisesQuantity
+  );
 
   const changePageButtonHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -28,30 +39,31 @@ const PaginationMain = () => {
     if (numberPageButton !== currentPage) {
       //изменить url
       // изменить currentExercisesPage
-      dispatch(appStateActions.setCurrentExercisesPage(numberPageButton));
+      dispatch(searchExerciseActions.setSearchExercisesCurrentPage(numberPageButton));
 
       const filter = searchParams.get("filter");
       const increment = searchParams.get("increment");
+      const searchQuery = searchParams.get("query");
 
-      const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
+      const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
 
-      router.replace(
-        `/catalog?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`
-      );
+      router.push(`/search${paramsString}`);
 
       // загрузить новые упражнения
 
-      dispatch(
-        setCurrentMuscleGroupAndSet({
-          en: muscleGroup.en,
-          ru: muscleGroup.ru,
-          filterQuery: paramsString,
-        })
-      );
+      // dispatch(findExerciseAndSetInState(searchQuery));
+
+      // dispatch(
+      //   setCurrentMuscleGroupAndSet({
+      //     en: muscleGroup.en,
+      //     ru: muscleGroup.ru,
+      //     filterQuery: paramsString,
+      //   })
+      // );
     }
   };
 
-  const pagesCount = Math.ceil(exercisesCount / 3);
+  const pagesCount = Math.ceil(searchExercisesQuantity / 3);
   //   const pagesCount = Math.ceil(exercisesCount);
   const pagesButton = [];
   let buttonCounter = 7;
