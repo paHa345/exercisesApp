@@ -7,6 +7,13 @@ export const mainMuscleGrourArr = [
   { nameRu: "Спина", nameEn: "back" },
 ];
 
+export const filterElements = [
+  { nameEn: "popular", nameRu: "По популярности", increment: true },
+  { nameEn: "raiting", nameRu: "По увеличению рейтинга", increment: true },
+  { nameEn: "raiting", nameRu: "По уменьшению рейтинга", increment: false },
+  { nameEn: "name", nameRu: "По имени", increment: true },
+];
+
 export const raitingExerciseArr = [
   { nameRu: "1", nameEn: "1" },
   { nameRu: "2", nameEn: "2" },

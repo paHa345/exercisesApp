@@ -41,6 +41,25 @@ export const addWorkout = createAsyncThunk(
   }
 );
 
+export const setCountAllExercisesByType = createAsyncThunk(
+  "addWorkoutState/setCountAllExercisesByType",
+  async function (exercisesType: string, { rejectWithValue, dispatch }) {
+    try {
+      const countReq = await fetch(`/api/exercises/getUserExercisesCount/${exercisesType}`);
+      if (!countReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const count = await countReq.json();
+      console.log(`count ${count.result}`);
+
+      dispatch(addWorkoutActions.setExercisesCount(count.result));
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
 export enum addWorkoutFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -78,6 +97,17 @@ export interface IAddWorkoutSlice {
       addedWorkoutId: string;
     };
     fetchAddWorkoutStatus: addWorkoutFetchStatus;
+    currentExerciseMuscleGroup: {
+      en: string;
+      ru: string;
+    };
+    exercisesFilter: {
+      filter: string;
+      increment: boolean;
+      ruName: string;
+    };
+    exercisesCount: number;
+    currentPageNumber: number;
   };
 }
 
@@ -91,6 +121,17 @@ interface IAddWorkoutState {
     addedWorkoutId: string;
   };
   fetchAddWorkoutStatus: addWorkoutFetchStatus;
+  currentExerciseMuscleGroup: {
+    en: string;
+    ru: string;
+  };
+  exercisesFilter: {
+    filter: string;
+    increment: boolean;
+    ruName: string;
+  };
+  exercisesCount: number;
+  currentPageNumber: number;
 }
 
 export const initAddExerciseState: IAddWorkoutState = {
@@ -103,6 +144,17 @@ export const initAddExerciseState: IAddWorkoutState = {
     addedWorkoutId: "987987987987",
   },
   fetchAddWorkoutStatus: addWorkoutFetchStatus.Ready,
+  currentExerciseMuscleGroup: {
+    en: "all",
+    ru: "Все",
+  },
+  exercisesFilter: {
+    filter: "popular",
+    increment: true,
+    ruName: "По популярности",
+  },
+  exercisesCount: 0,
+  currentPageNumber: 1,
 };
 
 export const addWorkoutSlice = createSlice({
@@ -162,6 +214,21 @@ export const addWorkoutSlice = createSlice({
       state.currentAddedWorkout.exercises = [];
       state.currentAddedWorkout.workoutDate = "";
       state.currentAddedWorkout.userId = "";
+    },
+    setCurrentExerciseMuscleGroup(state, action) {
+      state.currentExerciseMuscleGroup.en = action.payload.en;
+      state.currentExerciseMuscleGroup.ru = action.payload.ru;
+    },
+    setExercisesFilter(state, action) {
+      state.exercisesFilter.filter = action.payload.filter;
+      state.exercisesFilter.increment = action.payload.increment;
+      state.exercisesFilter.ruName = action.payload.ruName;
+    },
+    setExercisesCount(state, action) {
+      state.exercisesCount = action.payload;
+    },
+    setCurrentPageNumber(state, action) {
+      state.currentPageNumber = action.payload;
     },
   },
   extraReducers: (builder) => {

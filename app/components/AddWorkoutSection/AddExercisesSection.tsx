@@ -7,77 +7,47 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SmallLoadingCards from "../LoadingCardSection/SmallLoadingCards";
-import { addWorkoutActions } from "@/app/store/addWorkoutSlice";
+import { addWorkoutActions, setCountAllExercisesByType } from "@/app/store/addWorkoutSlice";
+import AllCurrentUserExercises from "./AllCurrentUserExercises";
+import ExercisesTypeButtons from "./ExercisesTypeButtons";
+import ExercisesFilter from "./ExercisesFilter";
+import ExercisesPaginationSection from "./ExercisesPaginationSection";
 
 const AddExercisesSection = () => {
-  const currentMuscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
-  const currentExercises = useSelector(
-    (state: IAppSlice) => state.appState.currentExercisesByGroup
-  );
   const fetchExercisesStatus = useSelector(
     (state: IAppSlice) => state.appState.fetchBestExercisesStatus
   );
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
+    console.log("ppp");
     dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все", filterQuery: "" }));
+    dispatch(setCountAllExercisesByType("all"));
+    dispatch(addWorkoutActions.setCurrentExerciseMuscleGroup({ en: "all", ru: "Все" }));
+    dispatch(
+      addWorkoutActions.setExercisesFilter({
+        filter: "popular",
+        increment: true,
+        ruName: "По популярности",
+      })
+    );
+    dispatch(addWorkoutActions.setCurrentPageNumber(1));
   }, []);
 
-  const addExerciseHandler = function (this: IExercise) {
-    dispatch(addWorkoutActions.addExerciseToWorkout({ id: this._id, name: this.name }));
-  };
-
-  const exercises = currentExercises?.map((exercise: IExercise, index) => {
-    return (
-      <div key={`${exercise._id}_${index}`}>
-        <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
-          <div className=" flex flex-col">
-            <Link target="_blank" href={`../catalog/${exercise._id}`}>
-              <div className=" flex flex-col gap-2">
-                <h1 className=" grow text-base text font-bold pl-1 pt-1">{exercise.name}</h1>
-                <div className=" flex flex-row justify-around">
-                  {exercise.type === "base" ? (
-                    <p className="  bg-baseColour self-center py-1 px-2 rounded-md">Базовое</p>
-                  ) : (
-                    <p className="  bg-isolatedColour self-center py-1 px-2 rounded-md text-cyan-50">
-                      Изолированное
-                    </p>
-                  )}
-                  <p className="  bg-mainGroupColour self-center py-1 px-2 rounded-md">
-                    {exercise.mainGroupRu}
-                  </p>
-                </div>
-              </div>
-              <div className=" flex flex-row justify-center"></div>
-            </Link>
-
-            <div className=" flex flex-col">
-              <div className=" self-end pt-1">
-                Рейтинг: <span className=" text-sm font-bold">{exercise.raiting}</span>
-              </div>
-            </div>
-            <button
-              onClick={addExerciseHandler.bind(exercise)}
-              className=" py-2 bg-mainColor hover:bg-mainGroupColour rounded-md"
-            >
-              Добавить упражнение
-            </button>
-          </div>
-        </article>
-      </div>
-    );
-  });
   return (
     <>
-      <div className=" text-2xl">Выберете упражнение</div>
-      {fetchExercisesStatus === "loading" && (
-        <div className=" grid grid-rows-3 gap-2">
-          <SmallLoadingCards></SmallLoadingCards>
-        </div>
-      )}
-      {fetchExercisesStatus === "resolve" && (
-        <div className=" overflow-auto h-3/6 grid gap-2">{exercises}</div>
-      )}
+      <div className="  overflow-auto h-3/6 ">
+        <div className=" text-2xl">Выберете упражнение</div>
+        <ExercisesTypeButtons></ExercisesTypeButtons>
+        <ExercisesFilter></ExercisesFilter>
+        {fetchExercisesStatus === "loading" && (
+          <div className=" grid grid-rows-3 gap-2">
+            <SmallLoadingCards></SmallLoadingCards>
+          </div>
+        )}
+        {fetchExercisesStatus === "resolve" && <AllCurrentUserExercises></AllCurrentUserExercises>}
+        <ExercisesPaginationSection></ExercisesPaginationSection>
+      </div>
     </>
   );
 };
