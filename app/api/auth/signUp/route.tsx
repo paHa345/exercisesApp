@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import { decode } from "jsonwebtoken";
+import { UserType } from "@/app/types";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
       name: body.name,
       email: body.email,
       password: body.password,
+      UserType: UserType.User,
     });
 
     return NextResponse.json({ message: "Success", result: addedUser });

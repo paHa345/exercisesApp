@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Workout from "./WorkoutModel";
-import { IUserSchema } from "../types";
+import { IUserSchema, UserType } from "../types";
 import Exercise from "./ExerciseModel";
 import Comment from "./CommentModel";
 
@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema<IUserSchema>({
     minlength: 4,
     maxlength: 200,
   },
+  userType: { type: String, required: true },
   workoutsArr: [{ type: mongoose.Types.ObjectId, ref: Workout, required: false }],
   exercisesArr: [{ type: mongoose.Types.ObjectId, ref: Exercise, required: false }],
   reviewsArr: [{ type: mongoose.Types.ObjectId, ref: Comment, required: false }],

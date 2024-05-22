@@ -6,6 +6,7 @@ import { connectMongoDB } from "@/app/libs/MongoConnect";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log(body);
 
     await connectMongoDB();
 
@@ -18,6 +19,7 @@ export async function POST(req: NextRequest) {
     // });
 
     const addedUser = await User.find({ email: body.email });
+    console.log(addedUser);
     if (addedUser.length !== 0) {
       return NextResponse.json({ message: "Такой пользователь уже существует" }, { status: 400 });
     }

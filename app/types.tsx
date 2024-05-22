@@ -97,10 +97,17 @@ export interface IResponseOneExercise {
   result?: IExercise;
 }
 
+export enum UserType {
+  Admin = "admin",
+  Coach = "coach",
+  User = "user",
+}
+
 export interface IUserSchema {
   email: String;
   name: String;
   password: String;
+  userType: UserType;
   workoutsArr?: String[];
   exercisesArr?: String[];
   reviewsArr?: String[];
