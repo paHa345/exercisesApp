@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       name: body.name,
       email: body.email,
       password: body.password,
-      UserType: UserType.User,
+      userType: UserType.User,
     });
 
     return NextResponse.json({ message: "Success", result: addedUser });
