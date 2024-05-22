@@ -111,6 +111,8 @@ export interface IUserSchema {
   workoutsArr?: String[];
   exercisesArr?: String[];
   reviewsArr?: String[];
+  coachesArr?: String[];
+  studentsArr?: String[];
 }
 
 export interface IWorkoutSchema {
