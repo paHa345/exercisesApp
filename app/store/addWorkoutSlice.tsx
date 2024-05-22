@@ -7,7 +7,6 @@ import { useState } from "react";
 export const addWorkout = createAsyncThunk(
   "addWorkoutState/addWorkout",
   async function (currentWorkout: any, { rejectWithValue, dispatch }) {
-    // console.log(currentWorkout);
     try {
       const req = await fetch("./../api/workout/addNewWorkout", {
         method: "POST",
@@ -17,7 +16,6 @@ export const addWorkout = createAsyncThunk(
         body: JSON.stringify(currentWorkout),
       });
       const addedWorkout = await req.json();
-      console.log("Workout", addedWorkout);
 
       const updatedUser = await fetch("./../api/users/addWorkoutToUser", {
         method: "PATCH",
@@ -51,7 +49,6 @@ export const setCountAllExercisesByType = createAsyncThunk(
       }
 
       const count = await countReq.json();
-      console.log(`count ${count.result}`);
 
       dispatch(addWorkoutActions.setExercisesCount(count.result));
     } catch (error) {
@@ -97,6 +94,8 @@ export interface IAddWorkoutSlice {
       addedWorkoutId: string;
     };
     fetchAddWorkoutStatus: addWorkoutFetchStatus;
+    fetchExercisesNumberCount: addWorkoutFetchStatus;
+
     currentExerciseMuscleGroup: {
       en: string;
       ru: string;
@@ -121,6 +120,8 @@ interface IAddWorkoutState {
     addedWorkoutId: string;
   };
   fetchAddWorkoutStatus: addWorkoutFetchStatus;
+  fetchExercisesNumberCount: addWorkoutFetchStatus;
+
   currentExerciseMuscleGroup: {
     en: string;
     ru: string;
@@ -144,6 +145,8 @@ export const initAddExerciseState: IAddWorkoutState = {
     addedWorkoutId: "987987987987",
   },
   fetchAddWorkoutStatus: addWorkoutFetchStatus.Ready,
+  fetchExercisesNumberCount: addWorkoutFetchStatus.Ready,
+
   currentExerciseMuscleGroup: {
     en: "all",
     ru: "Все",
@@ -193,7 +196,6 @@ export const addWorkoutSlice = createSlice({
       state.currentAddedWorkout.exercises[action.payload.index].reps = action.payload.value;
     },
     setWorkoutDate(state, action) {
-      console.log(action.payload);
       state.currentAddedWorkout.workoutDate = action.payload;
     },
     setAddedWorkoutId(state, action) {
@@ -235,13 +237,21 @@ export const addWorkoutSlice = createSlice({
     builder.addCase(addWorkout.pending, (state, action) => {
       state.fetchAddWorkoutStatus = addWorkoutFetchStatus.Loading;
     });
+    builder.addCase(setCountAllExercisesByType.pending, (state, action) => {
+      state.fetchExercisesNumberCount = addWorkoutFetchStatus.Loading;
+    });
     builder.addCase(addWorkout.fulfilled, (state, action) => {
       state.fetchAddWorkoutStatus = addWorkoutFetchStatus.Resolve;
+    });
+    builder.addCase(setCountAllExercisesByType.fulfilled, (state, action) => {
+      state.fetchExercisesNumberCount = addWorkoutFetchStatus.Resolve;
     });
     builder.addCase(addWorkout.rejected, (state, action) => {
       state.fetchAddWorkoutStatus = addWorkoutFetchStatus.Error;
     });
+    builder.addCase(setCountAllExercisesByType.rejected, (state, action) => {
+      state.fetchExercisesNumberCount = addWorkoutFetchStatus.Error;
+    });
   },
 });
-
 export const addWorkoutActions = addWorkoutSlice.actions;

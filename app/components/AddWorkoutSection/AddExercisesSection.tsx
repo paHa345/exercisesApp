@@ -7,15 +7,23 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SmallLoadingCards from "../LoadingCardSection/SmallLoadingCards";
-import { addWorkoutActions, setCountAllExercisesByType } from "@/app/store/addWorkoutSlice";
+import {
+  IAddWorkoutSlice,
+  addWorkoutActions,
+  setCountAllExercisesByType,
+} from "@/app/store/addWorkoutSlice";
 import AllCurrentUserExercises from "./AllCurrentUserExercises";
 import ExercisesTypeButtons from "./ExercisesTypeButtons";
 import ExercisesFilter from "./ExercisesFilter";
 import ExercisesPaginationSection from "./ExercisesPaginationSection";
+import PaginationSectionLoadingCard from "../LoadingCardSection/PaginationSectionLoadingCard";
 
 const AddExercisesSection = () => {
   const fetchExercisesStatus = useSelector(
     (state: IAppSlice) => state.appState.fetchBestExercisesStatus
+  );
+  const fetchExercisesCount = useSelector(
+    (state: IAddWorkoutSlice) => state.addWorkoutState.fetchExercisesNumberCount
   );
 
   const dispatch = useDispatch<AppDispatch>();
@@ -41,12 +49,27 @@ const AddExercisesSection = () => {
         <ExercisesTypeButtons></ExercisesTypeButtons>
         <ExercisesFilter></ExercisesFilter>
         {fetchExercisesStatus === "loading" && (
-          <div className=" grid grid-rows-3 gap-2">
+          <div className=" grid gap-2">
             <SmallLoadingCards></SmallLoadingCards>
           </div>
         )}
         {fetchExercisesStatus === "resolve" && <AllCurrentUserExercises></AllCurrentUserExercises>}
-        <ExercisesPaginationSection></ExercisesPaginationSection>
+        {fetchExercisesStatus === "error" && (
+          <div>
+            <p>Ошибка. Повторите попытку позже</p>
+          </div>
+        )}
+        {fetchExercisesCount === "loading" && (
+          <PaginationSectionLoadingCard></PaginationSectionLoadingCard>
+        )}
+        {fetchExercisesCount === "resolve" && (
+          <ExercisesPaginationSection></ExercisesPaginationSection>
+        )}
+        {fetchExercisesCount === "error" && (
+          <div>
+            <p>Ошибка. Повторите попытку позже</p>
+          </div>
+        )}
       </div>
     </>
   );

@@ -108,7 +108,16 @@ const ExercisesPaginationSection = () => {
       );
     }
   }
-  return <div>{pagesButton}</div>;
+  return (
+    <div>
+      {pagesCount > 1 && (
+        <div>
+          <h1>Страницы</h1>
+          <div>{pagesButton}</div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ExercisesPaginationSection;

@@ -9,15 +9,12 @@ import jwt, { JsonWebTokenError, decode } from "jsonwebtoken";
 export const loginUser = createAsyncThunk(
   "authState/loginUser",
   async function (loginUser: any, { rejectWithValue, dispatch }) {
-    console.log(loginUser);
     try {
       const result = await signIn("credentials", {
         redirect: false,
         email: loginUser.login,
         password: loginUser.password,
       });
-
-      console.log(result);
 
       //   if (!result?.error) {
       //     //   router.replace("/my");
@@ -81,9 +78,7 @@ export const sendConfirmationEmail = createAsyncThunk(
         body: JSON.stringify(registerUserData),
       });
 
-      console.log(confirmationUserReq);
       if (confirmationUserReq.status !== 200) {
-        console.log(validationUserReq);
         throw new Error(
           "Не удалось отправить письмо с подтверждением на электронную почту. Повторите попытку позднее"
         );
@@ -102,7 +97,6 @@ export const registerNewUser = createAsyncThunk(
   "authState/registerNewUser",
   async function (registerUser: any, { rejectWithValue, dispatch }) {
     const registerUserData: any = decode(registerUser);
-    console.log(registerUserData.password);
 
     try {
       if (registerUserData.exp * 1000 < Date.now()) {
@@ -120,13 +114,10 @@ export const registerNewUser = createAsyncThunk(
         }),
       });
       const data = await req.json();
-      console.log(data);
       if (req.status === 400) {
-        console.log(req);
         throw new Error("Такой пользователь уже существует");
       }
       if (req.status === 422) {
-        console.log(req);
         throw new Error("Длинна логина/пароля должна быть более 6 символов");
       }
       // dispatch(authActions.resetRegisteredUser());
