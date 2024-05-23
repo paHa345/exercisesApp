@@ -7,27 +7,31 @@ import { authOptions } from "@/app/utils/authOptions";
 import { ObjectId } from "mongodb";
 
 export async function PATCH(req: NextRequest, res: NextResponse) {
-  const session = await getServerSession(authOptions);
-  console.log(session?.user?.email);
-  if (!session) {
-    return NextResponse.json(
-      { message: "Только для зарегистрированных пользователей" },
-      { status: 401 }
-    );
+  try {
+    const session = await getServerSession(authOptions);
+    console.log(session?.user?.email);
+    if (!session) {
+      return NextResponse.json(
+        { message: "Только для зарегистрированных пользователей" },
+        { status: 401 }
+      );
+    }
+
+    await connectMongoDB();
+    const body = await req.json();
+    const currentUser = await User.findOne({ email: session?.user?.email });
+
+    console.log(currentUser._id);
+    console.log(body.workoutsArr);
+
+    const updatedUser = await User.findByIdAndUpdate(currentUser._id, {
+      $push: { workoutsArr: body.workoutsArr },
+    });
+
+    return NextResponse.json({ message: "Success", result: updatedUser });
+  } catch (error: any) {
+    return NextResponse.json({ message: error?.message }, { status: 400 });
   }
-
-  await connectMongoDB();
-  const body = await req.json();
-  const currentUser = await User.findOne({ email: session?.user?.email });
-
-  console.log(currentUser._id);
-  console.log(body.workoutsArr);
-
-  const updatedUser = await User.findByIdAndUpdate(currentUser._id, {
-    $push: { workoutsArr: body.workoutsArr },
-  });
-
-  return NextResponse.json({ message: "Success", result: updatedUser });
 
   //   try {
   //     await connectMongoDB();

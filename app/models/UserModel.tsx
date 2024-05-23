@@ -19,6 +19,12 @@ const userSchema = new mongoose.Schema<IUserSchema>({
   reviewsArr: [{ type: mongoose.Types.ObjectId, ref: Comment, required: false }],
   coachesArr: [{ type: mongoose.Types.ObjectId, ref: "User", required: false }],
   studentsArr: [{ type: mongoose.Types.ObjectId, ref: "User", required: false }],
+  addToStudentsRequests: [
+    {
+      userId: { type: mongoose.Types.ObjectId, ref: "User", required: false },
+      active: { type: Boolean, required: false },
+    },
+  ],
 });
 
 const User =

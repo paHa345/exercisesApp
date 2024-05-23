@@ -103,6 +103,11 @@ export enum UserType {
   User = "user",
 }
 
+interface IAddToStudentsReq {
+  userId: string;
+  active: boolean;
+}
+
 export interface IUserSchema {
   email: String;
   name: String;
@@ -113,6 +118,7 @@ export interface IUserSchema {
   reviewsArr?: String[];
   coachesArr?: String[];
   studentsArr?: String[];
+  addToStudentsRequests?: IAddToStudentsReq[];
 }
 
 export interface IWorkoutSchema {
