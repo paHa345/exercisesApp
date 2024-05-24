@@ -14,6 +14,13 @@ export const filterElements = [
   { nameEn: "name", nameRu: "По имени", increment: true },
 ];
 
+export const coachesFilterElements = [
+  { nameEn: "popular", nameRu: "По популярности", increment: true },
+  { nameEn: "workoutsArr", nameRu: "Количество тренировок (сначала больше)", increment: false },
+  { nameEn: "workoutsArr", nameRu: "Количество тренировок (сначала меньше)", increment: true },
+  { nameEn: "name", nameRu: "По имени", increment: true },
+];
+
 export const raitingExerciseArr = [
   { nameRu: "1", nameEn: "1" },
   { nameRu: "2", nameEn: "2" },
@@ -80,6 +87,18 @@ export interface IUser {
   workoutsArr?: IWorkout[];
   exercisesArr?: IExercise[];
   reviewsArr?: String[];
+  coachesArr?: String[];
+  studentsArr?: String[];
+  addToStudentsRequests?: IAddToStudentsReq[];
+}
+
+export interface ICoachToList {
+  _id: string;
+  email: string;
+  name: string;
+  workoutsCount?: number;
+  exercisesArr?: String[];
+  studentsArr?: String[];
 }
 
 export interface IResponseUser {
