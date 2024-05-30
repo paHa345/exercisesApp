@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const HeaderSerchButton = () => {
-  const searchParams = useSearchParams();
   const { replace } = useRouter();
   const { push } = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
