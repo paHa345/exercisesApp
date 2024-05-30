@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import SearchFilterMain from "../SearchFilterSection/SearchFilterMain";
 
 const SearchMainComponent = () => {
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const session = useSession();
   const userId = useSelector((state: IUserSlice) => state.userState.currentUser.id);
@@ -59,27 +59,27 @@ const SearchMainComponent = () => {
     // dispatch(findExerciseAndSetInState(searchParams.get("query")));
   }, []);
 
-  // useEffect(() => {
-  //   if (searchParams.get("query") !== null) {
-  //     dispatch(
-  //       searchExerciseActions.setSearchExercisesCurrentPage(Number(searchParams.get("page")))
-  //     );
-  //     dispatch(
-  //       findExerciseAndSetInState({
-  //         query: searchParams.get("query"),
-  //         page: searchParams.get("page"),
-  //         filter: searchParams.get("filter"),
-  //         increment: searchParams.get("increment"),
-  //       })
-  //     );
-  //   }
-  // }, [
-  //   searchParams.get("query"),
-  //   searchParams.get("page"),
-  //   searchParams.get("filter"),
-  //   searchParams.get("increment"),
-  //   searchQuery,
-  // ]);
+  useEffect(() => {
+    if (searchParams.get("query") !== null) {
+      dispatch(
+        searchExerciseActions.setSearchExercisesCurrentPage(Number(searchParams.get("page")))
+      );
+      dispatch(
+        findExerciseAndSetInState({
+          query: searchParams.get("query"),
+          page: searchParams.get("page"),
+          filter: searchParams.get("filter"),
+          increment: searchParams.get("increment"),
+        })
+      );
+    }
+  }, [
+    searchParams.get("query"),
+    searchParams.get("page"),
+    searchParams.get("filter"),
+    searchParams.get("increment"),
+    searchQuery,
+  ]);
 
   const findedExercisesCards = findedExercises?.map((findedExercise) => {
     return (
@@ -112,7 +112,7 @@ const SearchMainComponent = () => {
       ) : (
         <div>
           {" "}
-          {/* {searchParams.get("query") ? (
+          {searchParams.get("query") ? (
             <div className="py-5 flex justify-center">
               <h1 className=" mx-auto">
                 {" "}
@@ -124,7 +124,7 @@ const SearchMainComponent = () => {
             </div>
           ) : (
             <h1>Введите поисковый запрос</h1>
-          )} */}
+          )}
           {/* {findedExercises === null && <p>Введите поисковый запрос</p>} */}
           {findedExercises?.length && findedExercises !== null ? (
             <div>

@@ -17,7 +17,7 @@ import {
 } from "@/app/store/searchExerciseSlice";
 
 const PaginationMain = () => {
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   // const searchQuery = useSelector(
   //   (state: ISearchExerciseSlice) => state.searchExerciseState.searchQuery
   // );
@@ -41,13 +41,13 @@ const PaginationMain = () => {
       // изменить currentExercisesPage
       dispatch(searchExerciseActions.setSearchExercisesCurrentPage(numberPageButton));
 
-      // const filter = searchParams.get("filter");
-      // const increment = searchParams.get("increment");
-      // const searchQuery = searchParams.get("query");
+      const filter = searchParams.get("filter");
+      const increment = searchParams.get("increment");
+      const searchQuery = searchParams.get("query");
 
-      // const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
+      const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
 
-      // router.push(`/search${paramsString}`);
+      router.push(`/search${paramsString}`);
 
       // загрузить новые упражнения
 
