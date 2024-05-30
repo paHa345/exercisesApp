@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 const PaginationMain = () => {
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
 
   const router = useRouter();
@@ -30,14 +30,14 @@ const PaginationMain = () => {
       // изменить currentExercisesPage
       dispatch(appStateActions.setCurrentExercisesPage(numberPageButton));
 
-      // const filter = searchParams.get("filter");
-      // const increment = searchParams.get("increment");
+      const filter = searchParams.get("filter");
+      const increment = searchParams.get("increment");
 
-      // const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
+      const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
 
-      // router.replace(
-      //   `/catalog?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`
-      // );
+      router.replace(
+        `/catalog?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`
+      );
 
       // загрузить новые упражнения
 
@@ -45,7 +45,7 @@ const PaginationMain = () => {
         setCurrentMuscleGroupAndSet({
           en: muscleGroup.en,
           ru: muscleGroup.ru,
-          filterQuery: "",
+          filterQuery: paramsString,
         })
       );
     }
