@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
   //       { message: "Только для зарегистрированных пользователей" },
   //       { status: 401 }
   //     );
+
   //   }
 
   try {
