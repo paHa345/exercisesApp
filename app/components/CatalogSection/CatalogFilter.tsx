@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 const CatalogFilter = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
 
   const changeCatalogFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -33,7 +33,7 @@ const CatalogFilter = () => {
   return (
     <div className=" flex justify-center py-5">
       <select
-        defaultValue={String(searchParams.get("filter"))}
+        // defaultValue={String(searchParams.get("filter"))}
         onChange={changeCatalogFilterHandler}
         name="catalogSelect"
         id="catalogSelect"

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 const SearchFilterMain = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   //   const muscleGroup = useSelector((state: IAppSlice) => state.appState.currentMuscleGroup);
 
   const changeCatalogFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -17,12 +17,12 @@ const SearchFilterMain = () => {
     dispatch(appStateActions.setCurrentExercisesPage(1));
     const filter = e.currentTarget.value;
     const increment = dataType;
-    const searchQuery = searchParams.get("query");
+    // const searchQuery = searchParams.get("query");
 
-    const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
+    // const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
 
-    console.log(paramsString);
-    router.replace(`/search${paramsString}`);
+    // console.log(paramsString);
+    // router.replace(`/search${paramsString}`);
 
     // dispatch(
     //   setCurrentMuscleGroupAndSet({
@@ -36,7 +36,7 @@ const SearchFilterMain = () => {
   return (
     <div className=" flex justify-center py-5">
       <select
-        defaultValue={String(searchParams.get("filter"))}
+        // defaultValue={String(searchParams.get("filter"))}
         onChange={changeCatalogFilterHandler}
         name="catalogSelect"
         id="catalogSelect"
