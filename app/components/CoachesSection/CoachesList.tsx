@@ -3,7 +3,7 @@ import store from "@/app/store";
 import { ICoachSlice } from "@/app/store/coachSlice";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { Provider, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,9 +12,15 @@ import {
   faMailBulk,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
+import { useSearchParams } from "next/navigation";
 
 const CoachesList = () => {
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    console.log("Search params change");
+  }, [searchParams.get("filter"), searchParams.get("increment"), searchParams.get("page")]);
 
   const coachesList = coachesArr.map((coach) => {
     return (
@@ -84,7 +90,7 @@ const CoachesList = () => {
             <div className=" flex sm:flex sm:flex-col sm:justify-center ">
               <button
                 //   onClick={addExerciseHandler.bind(exercise)}
-                className=" pl-1 pr-1 w-full sm:h-12 py-2 bg-mainColor hover:bg-mainGroupColour rounded-md"
+                className=" pl-1 pr-1 w-full sm:h-12 py-2 bg-mainColor hover:bg-mainGroupColour rounded-md shadow-cardButtonShadow"
               >
                 Записаться
               </button>

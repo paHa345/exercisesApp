@@ -2,10 +2,12 @@ import { AppDispatch } from "@/app/store";
 import { IAddWorkoutSlice, addWorkoutActions } from "@/app/store/addWorkoutSlice";
 import { setCurrentMuscleGroupAndSet } from "@/app/store/appStateSlice";
 import { coachesFilterElements, filterElements } from "@/app/types";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const CoachesFilter = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   //   const exercisesFilter = useSelector(
   //     (state: IAddWorkoutSlice) => state.addWorkoutState.exercisesFilter
@@ -33,13 +35,16 @@ const CoachesFilter = () => {
     dispatch(addWorkoutActions.setCurrentPageNumber(1));
 
     const paramsString = `?filter=${filterEn}&increment=${dataIncrement}&page=1`;
-    dispatch(
-      addWorkoutActions.setExercisesFilter({
-        filter: filterEn,
-        increment: dataIncrement,
-        ruName: selectedOption.textContent,
-      })
-    );
+    console.log(paramsString);
+    router.push(`./coaches/${paramsString}`);
+
+    // dispatch(
+    //   addWorkoutActions.setExercisesFilter({
+    //     filter: filterEn,
+    //     increment: dataIncrement,
+    //     ruName: selectedOption.textContent,
+    //   })
+    // );
 
     // dispatch(
     //   setCurrentMuscleGroupAndSet({

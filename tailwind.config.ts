@@ -44,6 +44,7 @@ const config: Config = {
 
         cardElementShadow: "0.3em 0.3em 1em rgba(0, 0, 0, 0.3)",
         cardElementStartShadow: "0.2em 0.2em 1em rgba(0, 0, 0, 0.2)",
+        cardButtonShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
       },
     },
   },

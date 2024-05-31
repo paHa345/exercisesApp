@@ -14,7 +14,6 @@ import CoachesListLoadingCard from "../LoadingCardSection/CoachesListLoadingCard
 import CoachesFilter from "./CoachesFilter";
 
 const CoachesSectionMain = () => {
-  const test = useSelector((state: ICoachSlice) => state.coachState.test);
   const dispatch = useDispatch<AppDispatch>();
   const fetchCoachesStatus = useSelector(
     (state: ICoachSlice) => state.coachState.getAllCoachesStatus
