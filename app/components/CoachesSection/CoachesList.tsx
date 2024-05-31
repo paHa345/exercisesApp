@@ -12,15 +12,9 @@ import {
   faMailBulk,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { useSearchParams } from "next/navigation";
 
 const CoachesList = () => {
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    console.log("Search params change");
-  }, [searchParams.get("filter"), searchParams.get("increment"), searchParams.get("page")]);
 
   const coachesList = coachesArr.map((coach) => {
     return (

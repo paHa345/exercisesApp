@@ -3,9 +3,9 @@ import { ICoachToList } from "../types";
 
 export const fetchAllCoachesAndAddToState = createAsyncThunk(
   "coachState/fetchAllCoachesAndAddToState",
-  async function (_, { rejectWithValue, dispatch }) {
+  async function (paramsQuery: string = "", { rejectWithValue, dispatch }) {
     try {
-      const req = await fetch("../api/users/getAllCoaches");
+      const req = await fetch(`../api/users/getAllCoaches${paramsQuery}`);
       const data: { message: string; result: ICoachToList[]; allCoachesCount: number } =
         await req.json();
       console.log(data);

@@ -12,16 +12,28 @@ import CoachesList from "./CoachesList";
 import { AppDispatch } from "@/app/store";
 import CoachesListLoadingCard from "../LoadingCardSection/CoachesListLoadingCard";
 import CoachesFilter from "./CoachesFilter";
+import { useSearchParams } from "next/navigation";
 
 const CoachesSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const searchParams = useSearchParams();
   const fetchCoachesStatus = useSelector(
     (state: ICoachSlice) => state.coachState.getAllCoachesStatus
   );
 
   useEffect(() => {
-    dispatch(fetchAllCoachesAndAddToState());
+    dispatch(fetchAllCoachesAndAddToState(""));
   }, []);
+
+  useEffect(() => {
+    console.log("Search params change");
+    const filterEn = searchParams.get("filter");
+    const increment = searchParams.get("increment");
+    const page = searchParams.get("page");
+    const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}`;
+    dispatch(fetchAllCoachesAndAddToState(paramsString));
+  }, [searchParams.get("filter"), searchParams.get("increment"), searchParams.get("page")]);
+
   return (
     <>
       <div className="mx-auto">
