@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faIdCard, faDumbbell, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 import HeaderSerchButton from "./SearchSection/HeaderSerchButton";
 import { useDispatch } from "react-redux";
 import ReduxProvider from "../ReduxProvider";
+
+function HeaderSearchButtonFallback() {
+  return (
+    <div>
+      <p>Loading...</p>
+    </div>
+  );
+}
 
 const Header = () => {
   const session = useSession();
@@ -26,7 +34,9 @@ const Header = () => {
               ></Image>
             </div>
           </Link>
-          <HeaderSerchButton></HeaderSerchButton>
+          <Suspense fallback={<HeaderSearchButtonFallback></HeaderSearchButtonFallback>}>
+            <HeaderSerchButton></HeaderSerchButton>
+          </Suspense>
           <div></div>
           <div className="pr-0 flex justify-end md:pr-10 md:justify-end gap-10 basis-1/2">
             <div className="">
