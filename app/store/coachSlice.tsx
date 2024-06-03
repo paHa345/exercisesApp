@@ -33,6 +33,7 @@ export interface ICoachSlice {
     getAllCoachesStatus: coachFetchStatus;
     allCoachesCount: number;
     currentCoachesPage: number;
+    searchCoachesQuery: string;
   };
 }
 
@@ -43,6 +44,7 @@ interface ICoachState {
   getAllCoachesStatus: coachFetchStatus;
   allCoachesCount: number;
   currentCoachesPage: number;
+  searchCoachesQuery: string;
 }
 
 export const initCoachState: ICoachState = {
@@ -56,6 +58,7 @@ export const initCoachState: ICoachState = {
   getAllCoachesStatus: coachFetchStatus.Ready,
   allCoachesCount: 0,
   currentCoachesPage: 1,
+  searchCoachesQuery: "",
 
   test: "Super Coach",
 };
@@ -75,6 +78,9 @@ export const coachSlice = createSlice({
     },
     setCurrentCoachesPage(state, action) {
       state.currentCoachesPage = action.payload;
+    },
+    setSearchCoachesQuery(state, action) {
+      state.searchCoachesQuery = action.payload;
     },
   },
   extraReducers: (builder) => {

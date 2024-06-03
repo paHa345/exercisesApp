@@ -14,12 +14,26 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(req.nextUrl.searchParams.get("limit") || "3", 10);
     const skip = (page - 1) * limit;
 
-    const allCoaches = await User.countDocuments({ userType: "coach" });
+    const searchQuery =
+      req.nextUrl.searchParams.get("query") !== null ? req.nextUrl.searchParams.get("query") : "";
+
+    const allCoaches = await User.countDocuments({
+      $and: [{ userType: "coach" }, { name: { $regex: `(${searchQuery})`, $options: "i" } }],
+    });
 
     const currentCoaches =
       sortParameter === "workoutsArr"
         ? await User.aggregate([
-            { $match: { userType: "coach" } },
+            // { $match: $and:[{ userType: "coach" },{} ] },
+            {
+              $match: {
+                $and: [
+                  { userType: "coach" },
+                  { name: { $regex: `(${searchQuery})`, $options: "i" } },
+                ],
+              },
+            },
+
             {
               $project: {
                 email: 1,
@@ -33,7 +47,14 @@ export async function GET(req: NextRequest) {
             { $limit: limit },
           ])
         : await User.aggregate([
-            { $match: { userType: "coach" } },
+            {
+              $match: {
+                $and: [
+                  { userType: "coach" },
+                  { name: { $regex: `(${searchQuery})`, $options: "i" } },
+                ],
+              },
+            },
             {
               $project: {
                 email: 1,
