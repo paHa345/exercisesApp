@@ -16,7 +16,7 @@ import {
 const CoachesList = () => {
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
 
-  const coachesList = coachesArr.map((coach) => {
+  const coachesList = coachesArr?.map((coach) => {
     return (
       <div key={coach._id}>
         <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
