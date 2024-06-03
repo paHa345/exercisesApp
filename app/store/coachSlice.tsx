@@ -5,6 +5,7 @@ export const fetchAllCoachesAndAddToState = createAsyncThunk(
   "coachState/fetchAllCoachesAndAddToState",
   async function (paramsQuery: string = "", { rejectWithValue, dispatch }) {
     try {
+      console.log(paramsQuery);
       const req = await fetch(`../api/users/getAllCoaches${paramsQuery}`);
       const data: { message: string; result: ICoachToList[]; allCoachesCount: number } =
         await req.json();
@@ -31,6 +32,7 @@ export interface ICoachSlice {
     test: string;
     getAllCoachesStatus: coachFetchStatus;
     allCoachesCount: number;
+    currentCoachesPage: number;
   };
 }
 
@@ -40,6 +42,7 @@ interface ICoachState {
   test: string;
   getAllCoachesStatus: coachFetchStatus;
   allCoachesCount: number;
+  currentCoachesPage: number;
 }
 
 export const initCoachState: ICoachState = {
@@ -52,6 +55,7 @@ export const initCoachState: ICoachState = {
   ],
   getAllCoachesStatus: coachFetchStatus.Ready,
   allCoachesCount: 0,
+  currentCoachesPage: 1,
 
   test: "Super Coach",
 };
@@ -68,6 +72,9 @@ export const coachSlice = createSlice({
     },
     setAllCoachesCount(state, action) {
       state.allCoachesCount = action.payload;
+    },
+    setCurrentCoachesPage(state, action) {
+      state.currentCoachesPage = action.payload;
     },
   },
   extraReducers: (builder) => {

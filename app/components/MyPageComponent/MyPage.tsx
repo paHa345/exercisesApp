@@ -162,15 +162,20 @@ const MyPage = () => {
             Выйти
           </button>
         </div>
-        <div>
+        <div className=" py-5">
           <Link className=" buttonStandart" rel="stylesheet" href="/my/addNewWorkout">
             Добавить тренировку
           </Link>
         </div>
 
-        <div className=" py-5">
+        <div>
           <Link className=" buttonStandart" rel="stylesheet" href="/catalog/addNewExercise">
             Добавить упражнение
+          </Link>
+        </div>
+        <div className=" py-5">
+          <Link className=" buttonStandart" rel="stylesheet" href="/coaches">
+            Список тренеров
           </Link>
         </div>
 

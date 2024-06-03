@@ -12,9 +12,12 @@ import CoachesList from "./CoachesList";
 import { AppDispatch } from "@/app/store";
 import CoachesListLoadingCard from "../LoadingCardSection/CoachesListLoadingCard";
 import CoachesFilter from "./CoachesFilter";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import CoachesPaginationMain from "./CoachesPaginationMain";
+import SearchCoaches from "./SearchCoaches";
 
 const CoachesSectionMain = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
   const fetchCoachesStatus = useSelector(
@@ -26,11 +29,19 @@ const CoachesSectionMain = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Search params change");
-    const filterEn = searchParams.get("filter");
-    const increment = searchParams.get("increment");
-    const page = searchParams.get("page");
+    const filterEn = searchParams.get("filter") !== null ? searchParams.get("filter") : "popular";
+    const increment =
+      searchParams.get("increment") !== null ? searchParams.get("increment") : "increment";
+    const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
     const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}`;
+    if (
+      searchParams.get("filter") === null ||
+      searchParams.get("increment") === null ||
+      searchParams.get("page") === null
+    ) {
+      router.push(`./coaches${paramsString}`);
+    }
+    dispatch(coachActions.setCurrentCoachesPage(Number(page)));
     dispatch(fetchAllCoachesAndAddToState(paramsString));
   }, [searchParams.get("filter"), searchParams.get("increment"), searchParams.get("page")]);
 
@@ -42,6 +53,7 @@ const CoachesSectionMain = () => {
             <h1 className=" text-center text-4xl font-bold">Список тренеров</h1>
           </div>
           <CoachesFilter></CoachesFilter>
+          <SearchCoaches></SearchCoaches>
 
           <div className=" pb-8">
             {fetchCoachesStatus === coachFetchStatus.Loading && (
@@ -50,6 +62,7 @@ const CoachesSectionMain = () => {
             {fetchCoachesStatus === coachFetchStatus.Resolve && <CoachesList></CoachesList>}
             {fetchCoachesStatus === coachFetchStatus.Error && <p>Error</p>}
           </div>
+          <CoachesPaginationMain></CoachesPaginationMain>
         </div>
       </div>
     </>

@@ -52,7 +52,6 @@ const PaginationMain = () => {
   };
 
   const pagesCount = Math.ceil(exercisesCount / 3);
-  //   const pagesCount = Math.ceil(exercisesCount);
   const pagesButton = [];
   let buttonCounter = 7;
   for (let i = currentPage - 3; i <= pagesCount; i++) {

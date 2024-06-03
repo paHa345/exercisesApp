@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const sortQuery = { [sortParameter as string]: sortOrder };
 
     const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
-    const limit = parseInt(req.nextUrl.searchParams.get("limit") || "1", 10);
+    const limit = parseInt(req.nextUrl.searchParams.get("limit") || "3", 10);
     const skip = (page - 1) * limit;
 
     const allCoaches = await User.countDocuments({ userType: "coach" });
