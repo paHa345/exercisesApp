@@ -16,29 +16,15 @@ import {
 const CoachesList = () => {
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
 
+  const addToCoachSubmitHandler = function (this: any) {
+    console.log(this);
+  };
+
   const coachesList = coachesArr?.map((coach) => {
     return (
       <div key={coach._id}>
         <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
           <div className=" flex sm:flex-row flex-col justify-around">
-            {/* <Link target="_blank" href={`../catalog/${exercise._id}`}>
-              <div className=" flex flex-col gap-2">
-                <h1 className=" grow text-base text font-bold pl-1 pt-1">{exercise.name}</h1>
-                <div className=" flex flex-row justify-around">
-                  {exercise.type === "base" ? (
-                    <p className="  bg-baseColour self-center py-1 px-2 rounded-md">Базовое</p>
-                  ) : (
-                    <p className="  bg-isolatedColour self-center py-1 px-2 rounded-md text-cyan-50">
-                      Изолированное
-                    </p>
-                  )}
-                  <p className="  bg-mainGroupColour self-center py-1 px-2 rounded-md">
-                    {exercise.mainGroupRu}
-                  </p>
-                </div>
-              </div>
-              <div className=" flex flex-row justify-center"></div>
-            </Link> */}
             <div className=" flex justify-center">
               <Image
                 className="h-full"
@@ -83,7 +69,7 @@ const CoachesList = () => {
             </div>
             <div className=" flex sm:flex sm:flex-col sm:justify-center ">
               <button
-                //   onClick={addExerciseHandler.bind(exercise)}
+                onClick={addToCoachSubmitHandler.bind(coach._id)}
                 className=" pl-1 pr-1 w-full sm:h-12 py-2 bg-mainColor hover:bg-mainGroupColour rounded-md shadow-cardButtonShadow"
               >
                 Записаться

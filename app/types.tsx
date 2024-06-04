@@ -90,6 +90,7 @@ export interface IUser {
   coachesArr?: String[];
   studentsArr?: String[];
   addToStudentsRequests?: IAddToStudentsReq[];
+  userType?: String;
 }
 
 export interface ICoachToList {

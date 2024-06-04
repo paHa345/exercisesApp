@@ -31,7 +31,7 @@ const CoachesSectionMain = () => {
   useEffect(() => {
     const filterEn = searchParams.get("filter") !== null ? searchParams.get("filter") : "popular";
     const increment =
-      searchParams.get("increment") !== null ? searchParams.get("increment") : "increment";
+      searchParams.get("increment") !== null ? searchParams.get("increment") : "true";
     const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
     const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
 
