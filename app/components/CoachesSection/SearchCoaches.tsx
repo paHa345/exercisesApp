@@ -1,10 +1,11 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 const SearchCoaches = () => {
   const [searchQuery, setsearchQuery] = useState("");
+  const router = useRouter();
 
   const searchParams = useSearchParams();
 
@@ -25,9 +26,10 @@ const SearchCoaches = () => {
       searchParams.get("increment") !== null ? searchParams.get("increment") : "increment";
     const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
     //добавить query
-    const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}`;
+    const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}&query=${searchQuery?.trim()}`;
 
-    console.log(searchQuery);
+    console.log(paramsString);
+    router.push(`./coaches${paramsString}`);
   };
 
   return (

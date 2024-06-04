@@ -19,12 +19,15 @@ const CoachesPaginationMain = () => {
     if (numberPageButton !== currentPage) {
       const filterEn = searchParams.get("filter");
       const increment = searchParams.get("increment");
-      const paramsString = `?filter=${filterEn}&increment=${increment}&page=${numberPageButton}`;
+      const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
+
+      const paramsString = `?filter=${filterEn}&increment=${increment}&page=${numberPageButton}&query=${query}`;
       router.push(`./coaches/${paramsString}`);
     }
   };
 
   const pagesCount = Math.ceil(coachesCount / 3);
+  console.log(pagesCount);
   const pagesButton = [];
   let buttonCounter = 7;
   for (let i = currentPage - 3; i <= pagesCount; i++) {
@@ -67,7 +70,16 @@ const CoachesPaginationMain = () => {
       );
     }
   }
-  return <div>{pagesButton}</div>;
+  return (
+    <div>
+      {pagesCount > 1 && (
+        <div>
+          <h1>Страницы</h1>
+          <div>{pagesButton}</div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default CoachesPaginationMain;

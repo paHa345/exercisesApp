@@ -33,7 +33,9 @@ const CoachesSectionMain = () => {
     const increment =
       searchParams.get("increment") !== null ? searchParams.get("increment") : "increment";
     const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
-    const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}`;
+    const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
+
+    const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}&query=${query}`;
     if (
       searchParams.get("filter") === null ||
       searchParams.get("increment") === null ||
@@ -43,7 +45,12 @@ const CoachesSectionMain = () => {
     }
     dispatch(coachActions.setCurrentCoachesPage(Number(page)));
     dispatch(fetchAllCoachesAndAddToState(paramsString));
-  }, [searchParams.get("filter"), searchParams.get("increment"), searchParams.get("page")]);
+  }, [
+    searchParams.get("filter"),
+    searchParams.get("increment"),
+    searchParams.get("page"),
+    searchParams.get("query"),
+  ]);
 
   return (
     <>
