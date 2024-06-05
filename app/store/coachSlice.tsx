@@ -19,6 +19,31 @@ export const fetchAllCoachesAndAddToState = createAsyncThunk(
   }
 );
 
+export const postSubmitApplicationToCoach = createAsyncThunk(
+  "coachState/postSubmitApplicationToCoach",
+  async function (coachId: string = "", { rejectWithValue, dispatch }) {
+    try {
+      const postSubmitAppReq = await fetch(`./api/coaches/addToCoach`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          coachId: coachId,
+        }),
+      });
+      const data = await postSubmitAppReq.json();
+      if (!postSubmitAppReq.ok) {
+        throw new Error(data.message);
+      }
+      return data;
+    } catch (error: any) {
+      dispatch(coachActions.setPostSubmitAppToUserError(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum coachFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -31,6 +56,8 @@ export interface ICoachSlice {
     allCoachesArr: ICoachToList[];
     test: string;
     getAllCoachesStatus: coachFetchStatus;
+    postSubmitApplicationStatus: coachFetchStatus;
+    postSubmitAppErrorMessage: string;
     allCoachesCount: number;
     currentCoachesPage: number;
     searchCoachesQuery: string;
@@ -42,6 +69,9 @@ interface ICoachState {
 
   test: string;
   getAllCoachesStatus: coachFetchStatus;
+  postSubmitApplicationStatus: coachFetchStatus;
+  postSubmitAppErrorMessage: string;
+
   allCoachesCount: number;
   currentCoachesPage: number;
   searchCoachesQuery: string;
@@ -56,6 +86,8 @@ export const initCoachState: ICoachState = {
     },
   ],
   getAllCoachesStatus: coachFetchStatus.Ready,
+  postSubmitApplicationStatus: coachFetchStatus.Ready,
+  postSubmitAppErrorMessage: "",
   allCoachesCount: 0,
   currentCoachesPage: 1,
   searchCoachesQuery: "",
@@ -82,16 +114,31 @@ export const coachSlice = createSlice({
     setSearchCoachesQuery(state, action) {
       state.searchCoachesQuery = action.payload;
     },
+    setPostSubmitAppToUserError(state, action) {
+      state.postSubmitAppErrorMessage = action.payload;
+    },
+    setPostSubmitApplicationStatusToReady(state) {
+      state.postSubmitApplicationStatus = coachFetchStatus.Ready;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllCoachesAndAddToState.pending, (state) => {
       state.getAllCoachesStatus = coachFetchStatus.Loading;
     });
+    builder.addCase(postSubmitApplicationToCoach.pending, (state) => {
+      state.postSubmitApplicationStatus = coachFetchStatus.Loading;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.fulfilled, (state) => {
       state.getAllCoachesStatus = coachFetchStatus.Resolve;
     });
+    builder.addCase(postSubmitApplicationToCoach.fulfilled, (state) => {
+      state.postSubmitApplicationStatus = coachFetchStatus.Resolve;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.rejected, (state, action) => {
       state.getAllCoachesStatus = coachFetchStatus.Error;
+    });
+    builder.addCase(postSubmitApplicationToCoach.rejected, (state, action) => {
+      state.postSubmitApplicationStatus = coachFetchStatus.Error;
     });
   },
 });

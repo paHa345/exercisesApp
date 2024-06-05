@@ -15,6 +15,7 @@ import CoachesFilter from "./CoachesFilter";
 import { useRouter, useSearchParams } from "next/navigation";
 import CoachesPaginationMain from "./CoachesPaginationMain";
 import SearchCoaches from "./SearchCoaches";
+import PostRequestToAddCoachNotification from "./PostRequestToAddCoachNotification";
 
 const CoachesSectionMain = () => {
   const router = useRouter();
@@ -70,6 +71,7 @@ const CoachesSectionMain = () => {
             {fetchCoachesStatus === coachFetchStatus.Error && <p>Error</p>}
           </div>
           <CoachesPaginationMain></CoachesPaginationMain>
+          <PostRequestToAddCoachNotification></PostRequestToAddCoachNotification>
         </div>
       </div>
     </>

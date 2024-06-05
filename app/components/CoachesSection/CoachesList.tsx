@@ -1,10 +1,10 @@
 "use client";
-import store from "@/app/store";
-import { ICoachSlice } from "@/app/store/coachSlice";
+import store, { AppDispatch } from "@/app/store";
+import { ICoachSlice, postSubmitApplicationToCoach } from "@/app/store/coachSlice";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPersonRunning,
@@ -14,10 +14,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const CoachesList = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
 
   const addToCoachSubmitHandler = function (this: any) {
     console.log(this);
+    dispatch(postSubmitApplicationToCoach(this));
   };
 
   const coachesList = coachesArr?.map((coach) => {
