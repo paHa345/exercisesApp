@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { Suspense, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faIdCard, faDumbbell, faMusic } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faIdCard, faDumbbell, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 import HeaderSerchButton from "./SearchSection/HeaderSerchButton";
 import { useDispatch } from "react-redux";
 import ReduxProvider from "../ReduxProvider";
+import RequestsAddToCoach from "./HeaderSection/RequestsAddToCoach";
 
 function HeaderSearchButtonFallback() {
   return (
@@ -38,7 +39,20 @@ const Header = () => {
             <HeaderSerchButton></HeaderSerchButton>
           </Suspense>
           <div></div>
-          <div className="pr-0 flex justify-end md:pr-10 md:justify-end gap-10 basis-1/2">
+          <div className="pr-0 flex justify-end md:pr-10 md:justify-end gap-3 sm:gap-10 basis-1/2">
+            {session.data?.user.userType === "coach" && (
+              <div>
+                <Link
+                  href="/catalog"
+                  className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
+                >
+                  {" "}
+                  <FontAwesomeIcon icon={faUserPlus} />
+                  <p className=" text-xs">Requests</p>
+                </Link>
+                <RequestsAddToCoach></RequestsAddToCoach>
+              </div>
+            )}
             <div className="">
               {" "}
               <Link

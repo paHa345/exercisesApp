@@ -25,9 +25,9 @@ const CoachesSectionMain = () => {
     (state: ICoachSlice) => state.coachState.getAllCoachesStatus
   );
 
-  useEffect(() => {
-    dispatch(fetchAllCoachesAndAddToState(""));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchAllCoachesAndAddToState(""));
+  // }, []);
 
   useEffect(() => {
     const filterEn = searchParams.get("filter") !== null ? searchParams.get("filter") : "popular";
@@ -35,6 +35,7 @@ const CoachesSectionMain = () => {
       searchParams.get("increment") !== null ? searchParams.get("increment") : "true";
     const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
     const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
+    dispatch(coachActions.setSearchCoachesQuery(query));
 
     const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}&query=${query}`;
     if (

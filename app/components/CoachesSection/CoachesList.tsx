@@ -83,7 +83,17 @@ const CoachesList = () => {
     );
   });
 
-  return <div className="grid gap-2">{coachesList}</div>;
+  return (
+    <div className="grid gap-2">
+      {coachesList?.length > 0 ? (
+        coachesList
+      ) : (
+        <div className="flex justify-center items-center h-80">
+          <h1 className=" text-2xl">Ничего не найдено</h1>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default CoachesList;

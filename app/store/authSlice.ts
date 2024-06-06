@@ -15,14 +15,8 @@ export const loginUser = createAsyncThunk(
         email: loginUser.login,
         password: loginUser.password,
       });
+      console.log(result);
 
-      //   if (!result?.error) {
-      //     //   router.replace("/my");
-      //     redirect("my");
-      //   }
-
-      // console.log(result);
-      // console.log(process.env.HOST);
       if (result?.error) {
         dispatch(authActions.setLoginUserErrorMessage(result));
         throw new Error(`${result.error}`);

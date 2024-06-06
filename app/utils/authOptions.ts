@@ -1,8 +1,12 @@
 import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, Awaitable, DefaultSession, Session } from "next-auth";
 import User from "../models/UserModel";
 import { connectMongoDB } from "../libs/MongoConnect";
+import { JWT } from "next-auth/jwt";
+import { AdapterUser } from "next-auth/adapters";
+import Credentials from "next-auth/providers/credentials";
+import Email from "next-auth/providers/email";
 
 export const authOptions: AuthOptions = {
   pages: {
@@ -11,6 +15,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+
   secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -49,4 +54,17 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+
+  callbacks: {
+    session: async ({ session, token }): Promise<Session | DefaultSession> => {
+      const currentUser = await fetch(
+        `${process.env.HOST}/api/users/getUserType/${session.user.email}`
+      );
+      const data = await currentUser.json();
+
+      session!.user.userType = data.result.userType;
+
+      return session;
+    },
+  },
 };
