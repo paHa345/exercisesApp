@@ -12,39 +12,38 @@ const Train = ({ name, description, date, exercises, workoutid }: any) => {
 
   const exercisesEl = exercises.map(
     (
-      exercise: { exercise: {id: string,name: string, _id: number}; name: string; reps: number; sets: number; _id: number },
+      exercise: {
+        exercise: { id: string; name: string; _id: number };
+        name: string;
+        reps: number;
+        sets: number;
+        _id: number;
+      },
       index: number
     ) => {
-      console.log(exercise.exercise)
       return (
         <div key={`${exercise._id}_${index}`}>
+          {exercise.exercise ? (
+            <div className=" flex flex-row gap-3" data-exerciseid={exercise.exercise?._id}>
+              <p>{index + 1}</p>
+              <Link className=" hover:underline" href={`./catalog/${exercise.exercise?._id}`}>
+                <p>{exercise.exercise?.name}</p>
+              </Link>
+              <p>
+                {exercise.sets} X {exercise.reps}
+              </p>
+            </div>
+          ) : (
+            <div className=" flex flex-row gap-3" data-exerciseid={exercise._id}>
+              <p>{index + 1}</p>
+              <p>{`${exercise.name} (архивное)`}</p>
 
-        {exercise.exercise ? <div
-          className=" flex flex-row gap-3"
-          data-exerciseid={exercise.exercise?._id}
-        >
-          <p>{index + 1}</p>
-          <Link className=" hover:underline" href={`./catalog/${exercise.exercise?._id}`}>
-            <p>{exercise.exercise?.name}</p>
-          </Link>
-          <p>
-            {exercise.sets} X {exercise.reps}
-          </p>
-        </div>: <div
-          className=" flex flex-row gap-3"
-          data-exerciseid={exercise._id}
-        >
-          <p>{index + 1}</p>
-            <p>{`${exercise.name} (архивное)`}</p>
-
-          <p>
-            {exercise.sets} X {exercise.reps}
-          </p>
-        </div> }
-
+              <p>
+                {exercise.sets} X {exercise.reps}
+              </p>
+            </div>
+          )}
         </div>
-
-        
       );
     }
   );

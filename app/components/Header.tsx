@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import HeaderSerchButton from "./SearchSection/HeaderSerchButton";
 import { useDispatch } from "react-redux";
 import ReduxProvider from "../ReduxProvider";
-import RequestsAddToCoach from "./HeaderSection/RequestsAddToCoach";
+import CountRequestsAddToCoach from "./HeaderSection/CountRequestsAddToCoach";
 
 function HeaderSearchButtonFallback() {
   return (
@@ -41,16 +41,19 @@ const Header = () => {
           <div></div>
           <div className="pr-0 flex justify-end md:pr-10 md:justify-end gap-3 sm:gap-10 basis-1/2">
             {session.data?.user.userType === "coach" && (
-              <div>
+              <div className=" relative">
+                <div className="absolute top-0 right-0">
+                  <CountRequestsAddToCoach></CountRequestsAddToCoach>
+                </div>
+
                 <Link
-                  href="/catalog"
+                  href="/requstsAddToCoach"
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
                   {" "}
                   <FontAwesomeIcon icon={faUserPlus} />
                   <p className=" text-xs">Requests</p>
                 </Link>
-                <RequestsAddToCoach></RequestsAddToCoach>
               </div>
             )}
             <div className="">

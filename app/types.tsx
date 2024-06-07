@@ -123,9 +123,14 @@ export enum UserType {
   User = "user",
 }
 
-interface IAddToStudentsReq {
-  userId: string;
+export interface IAddToStudentsReq {
+  userId: {
+    _id: string;
+    email: string;
+    name: string;
+  };
   active: boolean;
+  _id: string;
 }
 
 export interface IUserSchema {
