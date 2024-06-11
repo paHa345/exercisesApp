@@ -17,9 +17,10 @@ export async function GET(req: NextRequest) {
     await connectMongoDB();
     const currentCoach = await User.findOne(
       { email: session.user.email },
-      { userType: 1, addToStudentsRequests: 1 }
+      { userType: 1, requestToCoach: 1 }
     ).populate({
-      path: "addToStudentsRequests",
+      path: "requestToCoach",
+      model: "AddToCoachRequest",
       populate: {
         path: "userId",
         model: "User",
@@ -27,10 +28,12 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    console.log(currentCoach);
+
     if (currentCoach.userType !== "coach") {
       throw new Error("Только для тренеров");
     }
-    return NextResponse.json({ message: "Success", result: currentCoach.addToStudentsRequests });
+    return NextResponse.json({ message: "Success", result: currentCoach.requestToCoach });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }

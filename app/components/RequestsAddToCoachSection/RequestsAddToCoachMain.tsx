@@ -6,7 +6,7 @@ const RequestsAddToCoachMain = () => {
   useEffect(() => {}, []);
   return (
     <>
-      <h1> Список заявок</h1>
+      <h1 className=" text-center text-4xl font-bold mx-auto py-10"> Список заявок</h1>
       <RequestsList></RequestsList>
     </>
   );

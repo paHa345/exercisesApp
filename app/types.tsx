@@ -89,7 +89,8 @@ export interface IUser {
   reviewsArr?: String[];
   coachesArr?: String[];
   studentsArr?: String[];
-  addToStudentsRequests?: IAddToStudentsReq[];
+  addToStudentsRequests?: String[];
+  requestToCoach?: String[];
   userType?: String;
 }
 
@@ -143,7 +144,8 @@ export interface IUserSchema {
   reviewsArr?: String[];
   coachesArr?: String[];
   studentsArr?: String[];
-  addToStudentsRequests?: IAddToStudentsReq[];
+  addToStudentsRequests?: String[];
+  requestToCoach?: String[];
 }
 
 export interface IWorkoutSchema {
@@ -178,6 +180,12 @@ export interface ICommentSchema {
   text: String;
   exerciseId: String;
   userId: String;
+}
+
+export interface IAddToCoachRequstSchema {
+  userId: String;
+  coachId: String;
+  active: Boolean;
 }
 
 export interface IOneExerciseTypes {
