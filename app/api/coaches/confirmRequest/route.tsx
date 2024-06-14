@@ -19,23 +19,47 @@ export async function POST(req: NextRequest) {
     await connectMongoDB();
     const body: { addToCoachRequestId: string } = await req.json();
 
-    const currentUser = await User.findOne({ email: session.user.email });
+    const currentUser = await User.findOne(
+      { email: session.user.email },
+      { email: 1, name: 1, userType: 1 }
+    );
     console.log(currentUser);
 
-    const currentConfirmRequest = await AddToCoachRequest.findByIdAndUpdate(
-      {
-        _id: body.addToCoachRequestId,
-      },
-      {}
-    );
-
+    const currentConfirmRequest = await AddToCoachRequest.findOne({
+      _id: body.addToCoachRequestId,
+    }).populate({
+      path: "coachId",
+      model: "User",
+      select: "name, email",
+    });
     console.log(currentConfirmRequest);
 
     if (!currentConfirmRequest) {
-      throw new Error("Не найден запрос на добавление");
+      throw new Error("Запрос не найден");
     }
 
-    return NextResponse.json({ message: "Test message" });
+    if (currentUser.userType !== "coach") {
+      throw new Error("Недопустимо для данного пользователя");
+    }
+
+    if (String(currentUser._id) !== String(currentConfirmRequest.coachId._id)) {
+      throw new Error("Недопустимо для данного пользователя");
+    }
+
+    if (!currentConfirmRequest.active) {
+      throw new Error("Недопустимо для данного запроса");
+    }
+
+    const currentConfirmRequestUpdated = await AddToCoachRequest.findByIdAndUpdate(
+      {
+        _id: body.addToCoachRequestId,
+      },
+      { active: false }
+    );
+
+    // console.log(currentConfirmRequest);
+
+    return NextResponse.json({ message: "Success", result: currentConfirmRequestUpdated });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }

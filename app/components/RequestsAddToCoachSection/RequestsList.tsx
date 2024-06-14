@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmRequstButton from "./ConfirmRequstButton";
 import CoachesListLoadingCard from "../LoadingCardSection/CoachesListLoadingCard";
+import DeleteRequestButton from "./DeleteRequestButton";
 
 const RequestsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -51,6 +52,7 @@ const RequestsList = () => {
             </div>
 
             <ConfirmRequstButton confirmRequest={request}></ConfirmRequstButton>
+            <DeleteRequestButton></DeleteRequestButton>
           </div>
         </article>
       </div>

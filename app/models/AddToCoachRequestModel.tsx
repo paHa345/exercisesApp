@@ -1,5 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
-import { IAddToCoachRequstSchema } from "../types";
+import { IAddToCoachRequstSchema, IUser } from "../types";
 
 const addToCoachRequestSchema = new mongoose.Schema<IAddToCoachRequstSchema>({
   userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
@@ -26,6 +26,46 @@ addToCoachRequestSchema.pre("save", { document: true, query: false }, async func
       },
     }
   );
+});
+
+addToCoachRequestSchema.pre("findOneAndUpdate", async function (result) {
+  try {
+    const updatedDoc = await mongoose
+      .model("AddToCoachRequest")
+      .findOne({ _id: this.getQuery()._id._id });
+
+    const coach: IUser | null = await mongoose.model("User").findOne({
+      $and: [{ _id: updatedDoc.coachId }, { studentsArr: { $in: [String(updatedDoc.userId)] } }],
+    });
+
+    if (coach !== null) {
+      //   throw new Error("Не удалось обновить БД, повторите запрос позже");
+    } else {
+      const coachUpdated = await mongoose
+        .model("User")
+        .findByIdAndUpdate(
+          { _id: updatedDoc.coachId },
+          { $push: { studentsArr: updatedDoc.userId } }
+        );
+    }
+
+    const user: IUser | null = await mongoose.model("User").findOne({
+      $and: [{ _id: updatedDoc.userId }, { coachesArr: { $in: [String(updatedDoc.coachId)] } }],
+    });
+
+    if (user !== null) {
+      //   throw new Error("Не удалось обновить БД, повторите запрос позже");
+    } else {
+      const userUpdated = await mongoose
+        .model("User")
+        .findByIdAndUpdate(
+          { _id: updatedDoc.userId },
+          { $push: { coachesArr: updatedDoc.coachId } }
+        );
+    }
+  } catch (error: any) {
+    throw new Error("Не удалось обновить БД, повторите запрос позже");
+  }
 });
 
 const AddToCoachRequest =

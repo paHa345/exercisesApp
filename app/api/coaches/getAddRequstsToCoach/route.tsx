@@ -1,4 +1,5 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
+import AddToCoachRequest from "@/app/models/AddToCoachRequestModel";
 import User from "@/app/models/UserModel";
 import { authOptions } from "@/app/utils/authOptions";
 import { getServerSession } from "next-auth";
