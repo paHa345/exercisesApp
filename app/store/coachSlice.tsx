@@ -61,6 +61,18 @@ export const getCoachRequests = createAsyncThunk(
   }
 );
 
+export const confirmAddToCoachRequest = createAsyncThunk(
+  "coachState/confirmAddToCoachRequest",
+  async function (addToCoachRequestId: string, { rejectWithValue, dispatch }) {
+    try {
+      console.log(addToCoachRequestId);
+    } catch (error: any) {
+      dispatch(coachActions.setConfirmAddToCoachRequestErrorMessage(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum coachFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -75,8 +87,10 @@ export interface ICoachSlice {
     getAllCoachesStatus: coachFetchStatus;
     postSubmitApplicationStatus: coachFetchStatus;
     getCoachRequestsStatus: coachFetchStatus;
+    confirmAddToCoachRequestStatus: coachFetchStatus;
     getCoachRequestsErrorMessage: string;
     postSubmitAppErrorMessage: string;
+    confirmAddToCoachRequestErrorMessage: string;
     allCoachesCount: number;
     currentCoachesPage: number;
     searchCoachesQuery: string;
@@ -91,9 +105,12 @@ interface ICoachState {
   getAllCoachesStatus: coachFetchStatus;
   postSubmitApplicationStatus: coachFetchStatus;
   getCoachRequestsStatus: coachFetchStatus;
+  confirmAddToCoachRequestStatus: coachFetchStatus;
+
   getCoachRequestsErrorMessage: string;
 
   postSubmitAppErrorMessage: string;
+  confirmAddToCoachRequestErrorMessage: string;
 
   allCoachesCount: number;
   currentCoachesPage: number;
@@ -112,8 +129,11 @@ export const initCoachState: ICoachState = {
   getAllCoachesStatus: coachFetchStatus.Ready,
   postSubmitApplicationStatus: coachFetchStatus.Ready,
   getCoachRequestsStatus: coachFetchStatus.Ready,
+  confirmAddToCoachRequestStatus: coachFetchStatus.Ready,
+
   getCoachRequestsErrorMessage: "",
   postSubmitAppErrorMessage: "",
+  confirmAddToCoachRequestErrorMessage: "",
   allCoachesCount: 0,
   currentCoachesPage: 1,
   searchCoachesQuery: "",
@@ -155,6 +175,12 @@ export const coachSlice = createSlice({
     setGetCoachRequestsStatusErrorMessage(state, action) {
       state.getCoachRequestsErrorMessage = action.payload;
     },
+    setConfirmAddToCoachRequestStatusToReady(state) {
+      state.confirmAddToCoachRequestStatus = coachFetchStatus.Ready;
+    },
+    setConfirmAddToCoachRequestErrorMessage(state, action) {
+      state.confirmAddToCoachRequestErrorMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllCoachesAndAddToState.pending, (state) => {
@@ -166,6 +192,9 @@ export const coachSlice = createSlice({
     builder.addCase(getCoachRequests.pending, (state) => {
       state.getCoachRequestsStatus = coachFetchStatus.Loading;
     });
+    builder.addCase(confirmAddToCoachRequest.pending, (state) => {
+      state.confirmAddToCoachRequestStatus = coachFetchStatus.Loading;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.fulfilled, (state) => {
       state.getAllCoachesStatus = coachFetchStatus.Resolve;
     });
@@ -175,6 +204,9 @@ export const coachSlice = createSlice({
     builder.addCase(getCoachRequests.fulfilled, (state) => {
       state.getCoachRequestsStatus = coachFetchStatus.Resolve;
     });
+    builder.addCase(confirmAddToCoachRequest.fulfilled, (state) => {
+      state.confirmAddToCoachRequestStatus = coachFetchStatus.Resolve;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.rejected, (state, action) => {
       state.getAllCoachesStatus = coachFetchStatus.Error;
     });
@@ -183,6 +215,9 @@ export const coachSlice = createSlice({
     });
     builder.addCase(getCoachRequests.rejected, (state, action) => {
       state.getCoachRequestsStatus = coachFetchStatus.Error;
+    });
+    builder.addCase(confirmAddToCoachRequest.rejected, (state, action) => {
+      state.confirmAddToCoachRequestStatus = coachFetchStatus.Error;
     });
   },
 });

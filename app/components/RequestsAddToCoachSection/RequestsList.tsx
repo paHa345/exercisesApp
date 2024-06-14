@@ -21,6 +21,13 @@ const RequestsList = () => {
     (state: ICoachSlice) => state.coachState.getCoachRequestsErrorMessage
   );
 
+  const confirmRequestStatus = useSelector(
+    (state: ICoachSlice) => state.coachState.confirmAddToCoachRequestStatus
+  );
+  const confirmRequestErrorMessage = useSelector(
+    (state: ICoachSlice) => state.coachState.confirmAddToCoachRequestErrorMessage
+  );
+
   const requestsElements = reqToCoach?.map((request) => {
     return (
       <div key={request._id}>
@@ -51,8 +58,10 @@ const RequestsList = () => {
               </div>
             </div>
 
-            <ConfirmRequstButton confirmRequest={request}></ConfirmRequstButton>
-            <DeleteRequestButton></DeleteRequestButton>
+            <div className="flex my-2 gap-3 flex-col md:flex-row">
+              <ConfirmRequstButton confirmRequest={request}></ConfirmRequstButton>
+              <DeleteRequestButton></DeleteRequestButton>
+            </div>
           </div>
         </article>
       </div>
@@ -75,6 +84,29 @@ const RequestsList = () => {
           </div>
         )}
       </div>
+      <div className=" bottom-4 flex fixed left-1/4 ">
+        <div className=" my-6 flex mx-auto w-full justify-center ">
+          {confirmRequestStatus === "ready" && (
+            <div className=" flex flex-col items-center">
+              <h1 className=" text-center px-3 rounded-md py-3 bg-cyan-200">
+                Отправка уведомления
+              </h1>
+            </div>
+          )}
+          {confirmRequestStatus === "resolve" && (
+            <h1 className=" text-center rounded-md   px-3 py-3 bg-green-200">
+              Уведомление успешно отправлено
+            </h1>
+          )}
+          {confirmRequestStatus === "error" && (
+            <div className=" flex flex-col items-center">
+              <h1 className=" text-center rounded-md   px-3 py-3 bg-rose-500">
+                {`Ошибка ${confirmRequestErrorMessage}`}
+              </h1>
+            </div>
+          )}
+        </div>
+      </div>{" "}
     </>
   );
 };
