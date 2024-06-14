@@ -2,6 +2,7 @@ import { connectMongoDB } from "@/app/libs/MongoConnect";
 import AddToCoachRequest from "@/app/models/AddToCoachRequestModel";
 import User from "@/app/models/UserModel";
 import { authOptions } from "@/app/utils/authOptions";
+import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,18 +17,18 @@ export async function GET(req: NextRequest) {
 
   try {
     await connectMongoDB();
-    const currentCoach = await User.findOne(
-      { email: session.user.email },
-      { userType: 1, requestToCoach: 1 }
-    ).populate({
-      path: "requestToCoach",
-      model: "AddToCoachRequest",
-      populate: {
-        path: "userId",
-        model: "User",
-        select: "name email",
-      },
-    });
+    const currentCoach = await mongoose
+      .model("User")
+      .findOne({ email: session.user.email }, { userType: 1, requestToCoach: 1 })
+      .populate({
+        path: "requestToCoach",
+        model: "AddToCoachRequest",
+        populate: {
+          path: "userId",
+          model: "User",
+          select: "name email",
+        },
+      });
 
     console.log(currentCoach);
 

@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema<IUserSchema>({
   //   },
   // ],
   addToStudentsRequests: [
-    { type: mongoose.Types.ObjectId, ref: "AddToCoachRequest", required: false },
+    { type: mongoose.Types.ObjectId, ref: AddToCoachRequest, required: false },
   ],
-  requestToCoach: [{ type: mongoose.Types.ObjectId, ref: "AddToCoachRequest", required: false }],
+  requestToCoach: [{ type: mongoose.Types.ObjectId, ref: AddToCoachRequest, required: false }],
 });
 
 const User =

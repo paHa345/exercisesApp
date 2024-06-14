@@ -1,5 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 import { IAddToCoachRequstSchema, IUser } from "../types";
+import User from "./UserModel";
 
 const addToCoachRequestSchema = new mongoose.Schema<IAddToCoachRequstSchema>({
   userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
