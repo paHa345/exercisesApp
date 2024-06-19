@@ -1,6 +1,7 @@
 import mongoose, { Mongoose } from "mongoose";
 import { IAddToCoachRequstSchema, IUser } from "../types";
 import User from "./UserModel";
+import { ObjectId } from "mongodb";
 
 const addToCoachRequestSchema = new mongoose.Schema<IAddToCoachRequstSchema>({
   userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
@@ -31,41 +32,72 @@ addToCoachRequestSchema.pre("save", { document: true, query: false }, async func
 
 addToCoachRequestSchema.pre("findOneAndUpdate", async function (result) {
   try {
-    const updatedDoc = await mongoose
+    const updatedDoc: IAddToCoachRequstSchema | null = await mongoose
       .model("AddToCoachRequest")
       .findOne({ _id: this.getQuery()._id._id });
 
-    const coach: IUser | null = await mongoose.model("User").findOne({
-      $and: [{ _id: updatedDoc.coachId }, { studentsArr: { $in: [String(updatedDoc.userId)] } }],
-    });
-
-    if (coach !== null) {
-      //   throw new Error("Не удалось обновить БД, повторите запрос позже");
-    } else {
-      const coachUpdated = await mongoose
-        .model("User")
-        .findByIdAndUpdate(
-          { _id: updatedDoc.coachId },
-          { $push: { studentsArr: updatedDoc.userId } }
-        );
+    if (updatedDoc === null) {
+      throw new Error("Не найден запрос");
     }
 
-    const user: IUser | null = await mongoose.model("User").findOne({
-      $and: [{ _id: updatedDoc.userId }, { coachesArr: { $in: [String(updatedDoc.coachId)] } }],
-    });
+    const coach = await mongoose.model("User").aggregate([
+      {
+        $match: {
+          $and: [
+            { _id: updatedDoc?.coachId },
+            { "studentsArr.studentId": String(updatedDoc?.userId) },
+          ],
+        },
+      },
+    ]);
 
-    if (user !== null) {
+    if (coach.length !== 0) {
+      // можно прокинуть ошибку
       //   throw new Error("Не удалось обновить БД, повторите запрос позже");
     } else {
-      const userUpdated = await mongoose
-        .model("User")
-        .findByIdAndUpdate(
-          { _id: updatedDoc.userId },
-          { $push: { coachesArr: updatedDoc.coachId } }
-        );
+      const coachUpdated = await mongoose.model("User").findByIdAndUpdate(
+        { _id: updatedDoc?.coachId },
+        {
+          $push: {
+            studentsArr: {
+              studentId: String(updatedDoc?.userId),
+              addRequestId: String(updatedDoc?._id),
+            },
+          },
+        }
+      );
+    }
+
+    const user = await mongoose.model("User").aggregate([
+      {
+        $match: {
+          $and: [
+            { _id: updatedDoc?.userId },
+            { "coachesArr.coachId": { $in: [String(updatedDoc?.coachId)] } },
+          ],
+        },
+      },
+    ]);
+
+    if (user.length !== 0) {
+      // можно прокинуть ошибку
+      //   throw new Error("Не удалось обновить БД, повторите запрос позже");
+    } else {
+      const userUpdated = await mongoose.model("User").findByIdAndUpdate(
+        { _id: updatedDoc?.userId },
+        {
+          $push: {
+            coachesArr: {
+              coachId: String(updatedDoc?.coachId),
+              addRequestId: String(updatedDoc?._id),
+            },
+          },
+        }
+      );
     }
   } catch (error: any) {
-    throw new Error("Не удалось обновить БД, повторите запрос позже");
+    console.log(error);
+    throw new Error(`Не удалось обновить БД, повторите запрос позже. ${error.message}`);
   }
 });
 

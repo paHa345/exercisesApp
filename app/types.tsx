@@ -79,6 +79,16 @@ export interface IWorkout {
     | [];
 }
 
+export interface ICoachesArr {
+  coachId: string;
+  addRequestId: string;
+}
+
+export interface IStudentsArr {
+  studentId: string;
+  addRequestId: string;
+}
+
 export interface IUser {
   _id: string;
   email: string;
@@ -87,8 +97,8 @@ export interface IUser {
   workoutsArr?: IWorkout[];
   exercisesArr?: IExercise[];
   reviewsArr?: String[];
-  coachesArr?: String[];
-  studentsArr?: String[];
+  coachesArr?: ICoachesArr[] | [];
+  studentsArr?: IStudentsArr[] | [];
   addToStudentsRequests?: String[];
   requestToCoach?: String[];
   userType?: String;
@@ -183,6 +193,7 @@ export interface ICommentSchema {
 }
 
 export interface IAddToCoachRequstSchema {
+  _id: string;
   userId: String;
   coachId: String;
   active: Boolean;
@@ -198,6 +209,12 @@ export interface IExercisesTypes {
   nameEn: string;
 }
 [];
+
+export interface ICurrentCoachStudents {
+  _id: string;
+  email: string;
+  name: string;
+}
 
 export const exerciseTypes: IOneExerciseTypes[] = [
   { nameRu: "Бицепс", nameEn: "biceps" },

@@ -13,12 +13,15 @@ const RequestsAddToCoach = () => {
 
   const reqToCoach = useSelector((state: ICoachSlice) => state.coachState.requestsAppToCoach);
 
-  console.log(reqToCoach);
+  const req = reqToCoach.filter((el) => {
+    return el.active;
+  });
+
   useEffect(() => {
     dispatch(getCoachRequests());
   }, [pathName]);
 
-  return <div>{reqToCoach?.length > 0 && reqToCoach.length}</div>;
+  return <div>{req?.length > 0 && req.length}</div>;
 };
 
 export default RequestsAddToCoach;

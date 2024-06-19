@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import { ICoachSlice, getCoachRequests } from "@/app/store/coachSlice";
+import { ICoachSlice, coachActions, getCoachRequests } from "@/app/store/coachSlice";
 import { faMailBulk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -28,45 +28,61 @@ const RequestsList = () => {
     (state: ICoachSlice) => state.coachState.confirmAddToCoachRequestErrorMessage
   );
 
-  const requestsElements = reqToCoach?.map((request) => {
-    return (
-      <div key={request._id}>
-        <article className=" my-4 transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
-          <div className=" flex sm:flex-row flex-col justify-around">
-            <div className=" py-2 flex justify-center">
-              <Image
-                className="h-full"
-                src="/user-placeholder.jpg"
-                alt="mainLogo"
-                height={50}
-                width={100}
-                priority
-              ></Image>
-            </div>
-            <div className=" lg:flex lg:justify-around lg:flex-row gap-4">
-              <div className=" flex flex-col  pb-4">
-                <div className=" pb-2">
-                  <h1>Имя</h1>
-                  <p className=" font-bold">{request.userId.name}</p>
-                </div>
-                <div>
-                  <div className=" flex flex-row items-center">
-                    <FontAwesomeIcon icon={faMailBulk} />
-                    <p>{request.userId.email}</p>
+  useEffect(() => {
+    if (confirmRequestStatus === "resolve" || confirmRequestStatus === "error") {
+      const timeoutId = setTimeout(() => {
+        dispatch(coachActions.setConfirmAddToCoachRequestStatusToReady());
+      }, 5000);
+      return () => {
+        dispatch(coachActions.setConfirmAddToCoachRequestStatusToReady());
+      };
+    }
+  }, [confirmRequestStatus]);
+
+  const requestsElements = reqToCoach
+    ?.filter((req) => req.active)
+    .map((request) => {
+      return (
+        <div key={request._id}>
+          <article className=" my-4 transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
+            <div className=" flex sm:flex-row flex-col justify-around">
+              <div className=" py-2 flex justify-center">
+                <Image
+                  className="h-full"
+                  src="/user-placeholder.jpg"
+                  alt="mainLogo"
+                  height={50}
+                  width={100}
+                  priority
+                ></Image>
+              </div>
+              <div className=" lg:flex lg:justify-around lg:flex-row gap-4">
+                <div className=" flex flex-col  pb-4">
+                  <div className=" pb-2">
+                    <h1>Имя</h1>
+                    <p className=" font-bold">{request.userId.name}</p>
+                  </div>
+                  <div>
+                    <div className=" flex flex-row items-center">
+                      <FontAwesomeIcon icon={faMailBulk} />
+                      <p>{request.userId.email}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex my-2 gap-3 flex-col md:flex-row">
-              <ConfirmRequstButton confirmRequest={request}></ConfirmRequstButton>
-              <DeleteRequestButton></DeleteRequestButton>
+              <div className="flex my-2 gap-3 flex-col md:flex-row">
+                {request.active && (
+                  <ConfirmRequstButton confirmRequest={request}></ConfirmRequstButton>
+                )}
+
+                <DeleteRequestButton active={request.active}></DeleteRequestButton>
+              </div>
             </div>
-          </div>
-        </article>
-      </div>
-    );
-  });
+          </article>
+        </div>
+      );
+    });
 
   useEffect(() => {
     dispatch(getCoachRequests());
@@ -84,22 +100,24 @@ const RequestsList = () => {
           </div>
         )}
       </div>
-      <div className=" bottom-4 flex fixed left-1/4 ">
-        <div className=" my-6 flex mx-auto w-full justify-center ">
-          {confirmRequestStatus === "ready" && (
-            <div className=" flex flex-col items-center">
+      <div className=" bottom-4 flex fixed w-full">
+        <div className=" my-6 flex mx-auto w-full justify-center">
+          {confirmRequestStatus === "loading" && (
+            <div className=" flex flex-col items-center  shadow-notificationShadow">
               <h1 className=" text-center px-3 rounded-md py-3 bg-cyan-200">
-                Отправка уведомления
+                Подтверждение заявки
               </h1>
             </div>
           )}
           {confirmRequestStatus === "resolve" && (
-            <h1 className=" text-center rounded-md   px-3 py-3 bg-green-200">
-              Уведомление успешно отправлено
-            </h1>
+            <div className=" flex flex-col items-center  shadow-notificationShadow">
+              <h1 className=" text-center rounded-md   px-3 py-3 bg-green-200">
+                Заявка успешно отправлено
+              </h1>
+            </div>
           )}
           {confirmRequestStatus === "error" && (
-            <div className=" flex flex-col items-center">
+            <div className=" flex flex-col items-center shadow-notificationShadow">
               <h1 className=" text-center rounded-md   px-3 py-3 bg-rose-500">
                 {`Ошибка ${confirmRequestErrorMessage}`}
               </h1>

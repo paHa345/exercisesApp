@@ -1,16 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ICoachToList, IUser } from "../types";
+import { ICoachToList, ICurrentCoachStudents, IUser } from "../types";
 import { IAddToStudentsReq } from "../types";
 
 export const fetchAllCoachesAndAddToState = createAsyncThunk(
   "coachState/fetchAllCoachesAndAddToState",
   async function (paramsQuery: string = "", { rejectWithValue, dispatch }) {
     try {
-      console.log(paramsQuery);
       const req = await fetch(`../api/users/getAllCoaches${paramsQuery}`);
       const data: { message: string; result: ICoachToList[]; allCoachesCount: number } =
         await req.json();
-      console.log(data);
       dispatch(coachActions.setAllCoachesArr(data.result));
       dispatch(coachActions.setAllCoachesCount(data.allCoachesCount));
       return data;
@@ -51,7 +49,6 @@ export const getCoachRequests = createAsyncThunk(
     try {
       const req = await fetch(`./api/coaches/getAddRequstsToCoach`);
       const data: { message: string; result: IAddToStudentsReq[] | [] } = await req.json();
-      // console.log(data?.result?.addToStudentsRequests);
       dispatch(coachActions.setRequestsAppTpCoach(data?.result));
       return data;
     } catch (error: any) {
@@ -65,9 +62,46 @@ export const confirmAddToCoachRequest = createAsyncThunk(
   "coachState/confirmAddToCoachRequest",
   async function (addToCoachRequestId: string, { rejectWithValue, dispatch }) {
     try {
-      console.log(addToCoachRequestId);
+      const confirmAddToCoachReq = await fetch(`./api/coaches/confirmRequest`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          addToCoachRequestId: addToCoachRequestId,
+        }),
+      });
+
+      const data = await confirmAddToCoachReq.json();
+      if (!confirmAddToCoachReq.ok) {
+        throw new Error(data.message);
+      }
+      dispatch(coachActions.setCurrentReqToCoachInactive(addToCoachRequestId));
+      return data;
     } catch (error: any) {
       dispatch(coachActions.setConfirmAddToCoachRequestErrorMessage(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getCurrentCoachStudentsAndSetInState = createAsyncThunk(
+  "coachState/getCurrentCoachStudentsAndSetInState",
+  async function (_, { rejectWithValue, dispatch }) {
+    try {
+      const req = await fetch(`./api/coaches/getCurrentCoachStudents`);
+      if (!req.ok) {
+        throw new Error("Ошибка сервера");
+      }
+      const data: { message: string; result: ICurrentCoachStudents[] | [] } = await req.json();
+
+      // if (data.result.length > 0) {
+      //   console.log(data.result[0].name);
+      // }
+      dispatch(coachActions.setCurrentCoachStudents(data.result));
+
+      return data;
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
@@ -95,6 +129,7 @@ export interface ICoachSlice {
     currentCoachesPage: number;
     searchCoachesQuery: string;
     requestsAppToCoach: IAddToStudentsReq[] | [];
+    currentCoachStudents: ICurrentCoachStudents[] | [];
   };
 }
 
@@ -116,6 +151,7 @@ interface ICoachState {
   currentCoachesPage: number;
   searchCoachesQuery: string;
   requestsAppToCoach: IAddToStudentsReq[] | [];
+  currentCoachStudents: ICurrentCoachStudents[] | [];
 }
 
 export const initCoachState: ICoachState = {
@@ -139,6 +175,7 @@ export const initCoachState: ICoachState = {
   searchCoachesQuery: "",
   requestsAppToCoach: [],
   test: "Super Coach",
+  currentCoachStudents: [],
 };
 
 export const coachSlice = createSlice({
@@ -169,6 +206,14 @@ export const coachSlice = createSlice({
     setRequestsAppTpCoach(state, action) {
       state.requestsAppToCoach = action.payload;
     },
+    setCurrentReqToCoachInactive(state, action) {
+      state.requestsAppToCoach = state.requestsAppToCoach.map((req) => {
+        if (req._id === action.payload) {
+          req.active = false;
+        }
+        return req;
+      });
+    },
     setGetCoachRequestsStatusToReady(state) {
       state.getCoachRequestsStatus = coachFetchStatus.Ready;
     },
@@ -180,6 +225,9 @@ export const coachSlice = createSlice({
     },
     setConfirmAddToCoachRequestErrorMessage(state, action) {
       state.confirmAddToCoachRequestErrorMessage = action.payload;
+    },
+    setCurrentCoachStudents(state, action) {
+      state.currentCoachStudents = action.payload;
     },
   },
   extraReducers: (builder) => {

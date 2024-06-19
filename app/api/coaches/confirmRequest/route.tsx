@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
       { email: session.user.email },
       { email: 1, name: 1, userType: 1 }
     );
-    console.log(currentUser);
 
     const currentConfirmRequest = await AddToCoachRequest.findOne({
       _id: body.addToCoachRequestId,
@@ -32,7 +31,6 @@ export async function POST(req: NextRequest) {
       model: "User",
       select: "name, email",
     });
-    console.log(currentConfirmRequest);
 
     if (!currentConfirmRequest) {
       throw new Error("Запрос не найден");

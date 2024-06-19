@@ -30,12 +30,12 @@ export async function GET(req: NextRequest) {
         },
       });
 
-    console.log(currentCoach);
+    const filteredReq = currentCoach.requestToCoach.filter((req: any) => req.active);
 
     if (currentCoach.userType !== "coach") {
       throw new Error("Только для тренеров");
     }
-    return NextResponse.json({ message: "Success", result: currentCoach.requestToCoach });
+    return NextResponse.json({ message: "Success", result: filteredReq });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }
