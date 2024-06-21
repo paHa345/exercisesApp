@@ -216,6 +216,18 @@ export interface ICurrentCoachStudents {
   name: string;
 }
 
+export interface ICurrentCoachStudent {
+  _id: string;
+  studentsArr: {
+    studentId: {
+      _id: string;
+      email: string;
+      name: string;
+    };
+    addRequestId: string;
+  };
+}
+
 export const exerciseTypes: IOneExerciseTypes[] = [
   { nameRu: "Бицепс", nameEn: "biceps" },
   { nameRu: "Трицепс", nameEn: "triceps" },

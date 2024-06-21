@@ -101,6 +101,21 @@ addToCoachRequestSchema.pre("findOneAndUpdate", async function (result) {
   }
 });
 
+addToCoachRequestSchema.pre("deleteOne", async function (result) {
+  try {
+    const updatedDoc: IAddToCoachRequstSchema | null = await mongoose
+      .model("AddToCoachRequest")
+      .findOne({ _id: this.getQuery()._id });
+    const coach = await mongoose.model("User").findByIdAndUpdate(updatedDoc?.coachId);
+    console.log(coach);
+
+    throw new Error("Test error");
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(`Не удалось обновить БД, повторите запрос позже. ${error.message}`);
+  }
+});
+
 const AddToCoachRequest =
   mongoose.models.AddToCoachRequest ||
   mongoose.model<IAddToCoachRequstSchema>(

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ICoachToList, ICurrentCoachStudents, IUser } from "../types";
+import { ICoachToList, ICurrentCoachStudent, ICurrentCoachStudents, IUser } from "../types";
 import { IAddToStudentsReq } from "../types";
 
 export const fetchAllCoachesAndAddToState = createAsyncThunk(
@@ -95,13 +95,11 @@ export const getCurrentCoachStudentsAndSetInState = createAsyncThunk(
       }
       const data: { message: string; result: ICurrentCoachStudents[] | [] } = await req.json();
 
-      // if (data.result.length > 0) {
-      //   console.log(data.result[0].name);
-      // }
       dispatch(coachActions.setCurrentCoachStudents(data.result));
 
       return data;
     } catch (error: any) {
+      dispatch(coachActions.setFetchCurrentCoachStudentsErrorMessage(error.message));
       return rejectWithValue(error.message);
     }
   }
@@ -129,7 +127,10 @@ export interface ICoachSlice {
     currentCoachesPage: number;
     searchCoachesQuery: string;
     requestsAppToCoach: IAddToStudentsReq[] | [];
-    currentCoachStudents: ICurrentCoachStudents[] | [];
+    currentCoachStudents: ICurrentCoachStudent[] | [];
+    fetchCurrentCoachStudentsStatus: coachFetchStatus;
+
+    fetchCurrenrCoachStudentErrorMessage: string;
   };
 }
 
@@ -141,17 +142,18 @@ interface ICoachState {
   postSubmitApplicationStatus: coachFetchStatus;
   getCoachRequestsStatus: coachFetchStatus;
   confirmAddToCoachRequestStatus: coachFetchStatus;
+  fetchCurrentCoachStudentsStatus: coachFetchStatus;
 
   getCoachRequestsErrorMessage: string;
-
   postSubmitAppErrorMessage: string;
   confirmAddToCoachRequestErrorMessage: string;
+  fetchCurrenrCoachStudentErrorMessage: string;
 
   allCoachesCount: number;
   currentCoachesPage: number;
   searchCoachesQuery: string;
   requestsAppToCoach: IAddToStudentsReq[] | [];
-  currentCoachStudents: ICurrentCoachStudents[] | [];
+  currentCoachStudents: ICurrentCoachStudent[] | [];
 }
 
 export const initCoachState: ICoachState = {
@@ -166,6 +168,9 @@ export const initCoachState: ICoachState = {
   postSubmitApplicationStatus: coachFetchStatus.Ready,
   getCoachRequestsStatus: coachFetchStatus.Ready,
   confirmAddToCoachRequestStatus: coachFetchStatus.Ready,
+  fetchCurrentCoachStudentsStatus: coachFetchStatus.Ready,
+
+  fetchCurrenrCoachStudentErrorMessage: "",
 
   getCoachRequestsErrorMessage: "",
   postSubmitAppErrorMessage: "",
@@ -229,6 +234,9 @@ export const coachSlice = createSlice({
     setCurrentCoachStudents(state, action) {
       state.currentCoachStudents = action.payload;
     },
+    setFetchCurrentCoachStudentsErrorMessage(state, action) {
+      state.fetchCurrenrCoachStudentErrorMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllCoachesAndAddToState.pending, (state) => {
@@ -243,6 +251,9 @@ export const coachSlice = createSlice({
     builder.addCase(confirmAddToCoachRequest.pending, (state) => {
       state.confirmAddToCoachRequestStatus = coachFetchStatus.Loading;
     });
+    builder.addCase(getCurrentCoachStudentsAndSetInState.pending, (state) => {
+      state.fetchCurrentCoachStudentsStatus = coachFetchStatus.Loading;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.fulfilled, (state) => {
       state.getAllCoachesStatus = coachFetchStatus.Resolve;
     });
@@ -255,6 +266,9 @@ export const coachSlice = createSlice({
     builder.addCase(confirmAddToCoachRequest.fulfilled, (state) => {
       state.confirmAddToCoachRequestStatus = coachFetchStatus.Resolve;
     });
+    builder.addCase(getCurrentCoachStudentsAndSetInState.fulfilled, (state) => {
+      state.fetchCurrentCoachStudentsStatus = coachFetchStatus.Resolve;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.rejected, (state, action) => {
       state.getAllCoachesStatus = coachFetchStatus.Error;
     });
@@ -266,6 +280,9 @@ export const coachSlice = createSlice({
     });
     builder.addCase(confirmAddToCoachRequest.rejected, (state, action) => {
       state.confirmAddToCoachRequestStatus = coachFetchStatus.Error;
+    });
+    builder.addCase(getCurrentCoachStudentsAndSetInState.rejected, (state, action) => {
+      state.fetchCurrentCoachStudentsStatus = coachFetchStatus.Error;
     });
   },
 });
