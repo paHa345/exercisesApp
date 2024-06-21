@@ -55,7 +55,10 @@ export async function DELETE(req: NextRequest) {
       .model("AddToCoachRequest")
       .deleteOne({ _id: body.addToCoachRequestId });
 
-    return NextResponse.json({ message: "Пользователь успешно удалён" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Ученик успешно удалён из вашего списка" },
+      { status: 200 }
+    );
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }

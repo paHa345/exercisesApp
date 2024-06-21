@@ -106,10 +106,22 @@ addToCoachRequestSchema.pre("deleteOne", async function (result) {
     const updatedDoc: IAddToCoachRequstSchema | null = await mongoose
       .model("AddToCoachRequest")
       .findOne({ _id: this.getQuery()._id });
-    const coach = await mongoose.model("User").findByIdAndUpdate(updatedDoc?.coachId);
-    console.log(coach);
+    const coach = await mongoose.model("User").findByIdAndUpdate(updatedDoc?.coachId, {
+      $pull: {
+        studentsArr: { addRequestId: updatedDoc?._id },
+        requestToCoach: updatedDoc?._id,
+      },
+    });
 
-    throw new Error("Test error");
+    const student = await mongoose.model("User").findByIdAndUpdate(updatedDoc?.userId, {
+      $pull: {
+        coachesArr: { addRequestId: updatedDoc?._id },
+        addToStudentsRequests: updatedDoc?._id,
+      },
+    });
+    // console.log(student);
+
+    // throw new Error("Test error");
   } catch (error: any) {
     console.log(error);
     throw new Error(`Не удалось обновить БД, повторите запрос позже. ${error.message}`);
