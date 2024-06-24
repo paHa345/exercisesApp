@@ -77,7 +77,9 @@ export const confirmAddToCoachRequest = createAsyncThunk(
         throw new Error(data.message);
       }
       dispatch(coachActions.setCurrentReqToCoachInactive(addToCoachRequestId));
-      return data;
+
+      // return data;
+      dispatch(coachActions.addToStudentsList(addToCoachRequestId));
     } catch (error: any) {
       dispatch(coachActions.setConfirmAddToCoachRequestErrorMessage(error.message));
       return rejectWithValue(error.message);
@@ -131,6 +133,7 @@ export interface ICoachSlice {
     fetchCurrentCoachStudentsStatus: coachFetchStatus;
 
     fetchCurrenrCoachStudentErrorMessage: string;
+    deletingRequest: boolean;
   };
 }
 
@@ -154,6 +157,7 @@ interface ICoachState {
   searchCoachesQuery: string;
   requestsAppToCoach: IAddToStudentsReq[] | [];
   currentCoachStudents: ICurrentCoachStudent[] | [];
+  deletingRequest: boolean;
 }
 
 export const initCoachState: ICoachState = {
@@ -181,6 +185,7 @@ export const initCoachState: ICoachState = {
   requestsAppToCoach: [],
   test: "Super Coach",
   currentCoachStudents: [],
+  deletingRequest: false,
 };
 
 export const coachSlice = createSlice({
@@ -236,6 +241,41 @@ export const coachSlice = createSlice({
     },
     setFetchCurrentCoachStudentsErrorMessage(state, action) {
       state.fetchCurrenrCoachStudentErrorMessage = action.payload;
+    },
+    addToStudentsList(state, action) {
+      // console.log(action.payload);
+      const reqIndex = state.requestsAppToCoach.findIndex(
+        (element) => element._id === action.payload
+      );
+
+      //get current request
+      console.log(state.requestsAppToCoach[0]);
+      const student: ICurrentCoachStudent = {
+        _id: action.payload,
+        studentsArr: {
+          studentId: {
+            email: state.requestsAppToCoach[reqIndex].userId.email,
+            name: state.requestsAppToCoach[reqIndex].userId.name,
+            _id: state.requestsAppToCoach[reqIndex].userId._id,
+          },
+          addRequestId: action.payload,
+        },
+      };
+      // state.currentCoachStudents.push(student);
+      console.log(state.currentCoachStudents.length);
+      if (!state.currentCoachStudents.length) {
+        state.currentCoachStudents = [student];
+      } else {
+        const test: ICurrentCoachStudent[] = state.currentCoachStudents;
+        test.push(student);
+        state.currentCoachStudents = test;
+      }
+    },
+    setDeletingRequestToFalse(state) {
+      state.deletingRequest = false;
+    },
+    setDeletingRequestToTrue(state) {
+      state.deletingRequest = true;
     },
   },
   extraReducers: (builder) => {

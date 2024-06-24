@@ -16,6 +16,7 @@ interface ConfirmButtonProps {
 
 const ConfirmRequstButton = ({ confirmRequest }: ConfirmButtonProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const req = useSelector((state: ICoachSlice) => state.coachState.requestsAppToCoach);
   const confirmRequestHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     dispatch(confirmAddToCoachRequest(confirmRequest._id));
   };

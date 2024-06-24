@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
                 name: 1,
                 studentsArr: 1,
                 workoutsCount: { $size: `$${sortParameter}` },
+                requestToCoach: 1,
               },
             },
             { $sort: { workoutsCount: sortOrder } },
@@ -61,6 +62,15 @@ export async function GET(req: NextRequest) {
                 name: 1,
                 studentsArr: 1,
                 workoutsCount: { $size: `$workoutsArr` },
+                requestToCoach: 1,
+              },
+            },
+            {
+              $lookup: {
+                from: "execisesAppAddToCoachRequest",
+                localField: "requestToCoach",
+                foreignField: "_id",
+                as: "requestToCoach",
               },
             },
             { $sort: sortQuery },

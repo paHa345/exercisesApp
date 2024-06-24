@@ -1,4 +1,6 @@
+import { ICoachSlice } from "@/app/store/coachSlice";
 import React from "react";
+import { useSelector } from "react-redux";
 
 interface DeleteRequestButtonProps {
   active: boolean;
@@ -6,12 +8,14 @@ interface DeleteRequestButtonProps {
 }
 
 const DeleteRequestButton = ({ active, requestId }: DeleteRequestButtonProps) => {
+  const students = useSelector((state: ICoachSlice) => state.coachState.currentCoachStudents);
   const deleteRequestHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (active) {
       // отклонить запрос на добавление в ученики
     } else {
       // удалить из учеников добавленного ранее пользователя
       console.log(requestId);
+      console.log(students);
     }
   };
 

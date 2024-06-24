@@ -112,7 +112,7 @@ const RequestsList = () => {
           {confirmRequestStatus === "resolve" && (
             <div className=" flex flex-col items-center  shadow-notificationShadow">
               <h1 className=" text-center rounded-md   px-3 py-3 bg-green-200">
-                Заявка успешно отправлено
+                Заявка успешно отправлена
               </h1>
             </div>
           )}

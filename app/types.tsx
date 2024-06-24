@@ -104,13 +104,26 @@ export interface IUser {
   userType?: String;
 }
 
+export interface IReqToCoach {
+  active: boolean;
+  coachId: string;
+  userId: string;
+  _id: string;
+}
+
+export interface IStudents {
+  studentId: string;
+  addRequestId: string;
+}
+
 export interface ICoachToList {
   _id: string;
   email: string;
   name: string;
   workoutsCount?: number;
   exercisesArr?: String[];
-  studentsArr?: String[];
+  studentsArr?: IStudents[];
+  requestToCoach?: IReqToCoach[];
 }
 
 export interface IResponseUser {

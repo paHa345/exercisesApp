@@ -1,6 +1,6 @@
 "use client";
 import store, { AppDispatch } from "@/app/store";
-import { ICoachSlice, postSubmitApplicationToCoach } from "@/app/store/coachSlice";
+import { ICoachSlice, coachActions, postSubmitApplicationToCoach } from "@/app/store/coachSlice";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
@@ -12,17 +12,43 @@ import {
   faMailBulk,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
+import { IUserSlice, userActions } from "@/app/store/userSlice";
+import { ICoachToList } from "@/app/types";
+import DeleteRequestModal from "../DeleteRequestSection/DeleteRequestModal";
 
 const CoachesList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
 
   const addToCoachSubmitHandler = function (this: any) {
-    console.log(this);
     dispatch(postSubmitApplicationToCoach(this));
   };
 
-  const coachesList = coachesArr?.map((coach) => {
+  const deletingRequest = useSelector((state: ICoachSlice) => state.coachState.deletingRequest);
+
+  const startDeletingRequestHandler = function (this: any) {
+    // dispatch(coachActions.setDeletingRequestToTrue());
+    console.log(this);
+  };
+
+  const setCurrentUserId = async () => {
+    const currentUser = await fetch("./api/users/getUserByEmail");
+    const data = await currentUser.json();
+    dispatch(userActions.setCurrentUserId(data?.result?._id));
+  };
+  useEffect(() => {
+    setCurrentUserId();
+  }, []);
+
+  const currentUser = useSelector((state: IUserSlice) => state.userState.currentUser);
+
+  const coachesList = coachesArr?.map((coach: ICoachToList) => {
+    console.log(coach);
+    const hasRequest = coach.requestToCoach?.find((req) => req.userId === currentUser.id);
+    const inStudentsList = coach.studentsArr?.find(
+      (student) => student.studentId === currentUser.id
+    );
+    console.log(hasRequest);
     return (
       <div key={coach._id}>
         <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
@@ -70,12 +96,27 @@ const CoachesList = () => {
               </div>
             </div>
             <div className=" flex sm:flex sm:flex-col sm:justify-center ">
-              <button
-                onClick={addToCoachSubmitHandler.bind(coach._id)}
-                className=" pl-1 pr-1 w-full sm:h-12 py-2 bg-mainColor hover:bg-mainGroupColour rounded-md shadow-cardButtonShadow"
-              >
-                Записаться
-              </button>
+              {!hasRequest && (
+                <button
+                  onClick={addToCoachSubmitHandler.bind(coach._id)}
+                  className=" pl-1 pr-1 w-full sm:h-12 py-2 bg-mainColor hover:bg-mainGroupColour rounded-md shadow-cardButtonShadow"
+                >
+                  Записаться
+                </button>
+              )}
+              {hasRequest && !inStudentsList && (
+                <button
+                  onClick={startDeletingRequestHandler.bind(hasRequest)}
+                  className="delete-buttonStandart"
+                >
+                  Отменить запрос
+                </button>
+              )}
+              {hasRequest && inStudentsList && (
+                <button onClick={startDeletingRequestHandler} className="delete-buttonStandart">
+                  Удалиться
+                </button>
+              )}
             </div>
           </div>
         </article>
@@ -84,15 +125,18 @@ const CoachesList = () => {
   });
 
   return (
-    <div className="grid gap-2">
-      {coachesList?.length > 0 ? (
-        coachesList
-      ) : (
-        <div className="flex justify-center items-center h-80">
-          <h1 className=" text-2xl">Ничего не найдено</h1>
-        </div>
-      )}
-    </div>
+    <>
+      <div className="grid gap-2">
+        {coachesList?.length > 0 ? (
+          coachesList
+        ) : (
+          <div className="flex justify-center items-center h-80">
+            <h1 className=" text-2xl">Ничего не найдено</h1>
+          </div>
+        )}
+      </div>
+      {deletingRequest && <DeleteRequestModal></DeleteRequestModal>}
+    </>
   );
 };
 
