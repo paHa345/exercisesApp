@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ICoachToList, ICurrentCoachStudent, ICurrentCoachStudents, IUser } from "../types";
+import {
+  ICoachToList,
+  ICurrentCoachStudent,
+  ICurrentCoachStudents,
+  IReqToCoach,
+  IUser,
+} from "../types";
 import { IAddToStudentsReq } from "../types";
 
 export const fetchAllCoachesAndAddToState = createAsyncThunk(
@@ -31,11 +37,14 @@ export const postSubmitApplicationToCoach = createAsyncThunk(
           coachId: coachId,
         }),
       });
-      const data = await postSubmitAppReq.json();
+      const addedRequestToCoach = await postSubmitAppReq.json();
       if (!postSubmitAppReq.ok) {
-        throw new Error(data.message);
+        throw new Error(addedRequestToCoach.message);
       }
-      return data;
+
+      const addedReqToCoach: IReqToCoach = addedRequestToCoach.result;
+      dispatch(coachActions.addRequestToCoachInArray(addedReqToCoach));
+      return addedRequestToCoach;
     } catch (error: any) {
       dispatch(coachActions.setPostSubmitAppToUserError(error.message));
       return rejectWithValue(error.message);
@@ -107,6 +116,33 @@ export const getCurrentCoachStudentsAndSetInState = createAsyncThunk(
   }
 );
 
+export const deleteRequestByUser = createAsyncThunk(
+  "coachState/deleteRequestByUser",
+  async function (addToCoachRequestId: string, { rejectWithValue, dispatch }) {
+    try {
+      const deletedAddToCoachReq = await fetch(`./api/requestsToCoach/deleteUserRequestToCoach`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          addToCoachRequestId: addToCoachRequestId,
+        }),
+      });
+
+      const data = await deletedAddToCoachReq.json();
+      if (!deletedAddToCoachReq.ok) {
+        throw new Error(data.message);
+      }
+
+      return data;
+    } catch (error: any) {
+      dispatch(coachActions.setDeleteRequestByUserStatusErrorMessage(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum coachFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -122,9 +158,11 @@ export interface ICoachSlice {
     postSubmitApplicationStatus: coachFetchStatus;
     getCoachRequestsStatus: coachFetchStatus;
     confirmAddToCoachRequestStatus: coachFetchStatus;
+    deleteRequestByUserStatus: coachFetchStatus;
     getCoachRequestsErrorMessage: string;
     postSubmitAppErrorMessage: string;
     confirmAddToCoachRequestErrorMessage: string;
+    deleteRequestByUserErrorMessage: string;
     allCoachesCount: number;
     currentCoachesPage: number;
     searchCoachesQuery: string;
@@ -146,6 +184,9 @@ interface ICoachState {
   getCoachRequestsStatus: coachFetchStatus;
   confirmAddToCoachRequestStatus: coachFetchStatus;
   fetchCurrentCoachStudentsStatus: coachFetchStatus;
+  deleteRequestByUserStatus: coachFetchStatus;
+
+  deleteRequestByUserErrorMessage: string;
 
   getCoachRequestsErrorMessage: string;
   postSubmitAppErrorMessage: string;
@@ -173,9 +214,10 @@ export const initCoachState: ICoachState = {
   getCoachRequestsStatus: coachFetchStatus.Ready,
   confirmAddToCoachRequestStatus: coachFetchStatus.Ready,
   fetchCurrentCoachStudentsStatus: coachFetchStatus.Ready,
+  deleteRequestByUserStatus: coachFetchStatus.Ready,
 
+  deleteRequestByUserErrorMessage: "",
   fetchCurrenrCoachStudentErrorMessage: "",
-
   getCoachRequestsErrorMessage: "",
   postSubmitAppErrorMessage: "",
   confirmAddToCoachRequestErrorMessage: "",
@@ -277,6 +319,42 @@ export const coachSlice = createSlice({
     setDeletingRequestToTrue(state) {
       state.deletingRequest = true;
     },
+    setDeleteRequestByUserStatusToReady(state) {
+      state.deleteRequestByUserStatus = coachFetchStatus.Ready;
+    },
+    setDeleteRequestByUserStatusErrorMessage(state, action) {
+      state.deleteRequestByUserErrorMessage = action.payload;
+    },
+    addRequestToCoachInArray(
+      state,
+      action: {
+        payload: IReqToCoach;
+        type: string;
+      }
+    ) {
+      const currentCoach = state.allCoachesArr.find(
+        (coach) => String(coach._id) === String(action.payload.coachId)
+      );
+      const currentCoachIndex = state.allCoachesArr.findIndex(
+        (coach) => String(coach._id) === String(action.payload.coachId)
+      );
+      console.log(currentCoachIndex);
+      if (currentCoach?.requestToCoach) {
+        currentCoach?.requestToCoach.push(action.payload);
+      }
+      state.allCoachesArr.forEach((coach) => {
+        if (String(coach._id) === String(action.payload._id)) {
+          return currentCoach;
+        } else {
+          return coach;
+        }
+      });
+
+      // if(state.allCoachesArr){
+
+      //   state.allCoachesArr[currentCoachIndex] = currentCoach
+      // }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllCoachesAndAddToState.pending, (state) => {
@@ -294,6 +372,9 @@ export const coachSlice = createSlice({
     builder.addCase(getCurrentCoachStudentsAndSetInState.pending, (state) => {
       state.fetchCurrentCoachStudentsStatus = coachFetchStatus.Loading;
     });
+    builder.addCase(deleteRequestByUser.pending, (state) => {
+      state.deleteRequestByUserStatus = coachFetchStatus.Loading;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.fulfilled, (state) => {
       state.getAllCoachesStatus = coachFetchStatus.Resolve;
     });
@@ -309,6 +390,9 @@ export const coachSlice = createSlice({
     builder.addCase(getCurrentCoachStudentsAndSetInState.fulfilled, (state) => {
       state.fetchCurrentCoachStudentsStatus = coachFetchStatus.Resolve;
     });
+    builder.addCase(deleteRequestByUser.fulfilled, (state) => {
+      state.deleteRequestByUserStatus = coachFetchStatus.Resolve;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.rejected, (state, action) => {
       state.getAllCoachesStatus = coachFetchStatus.Error;
     });
@@ -323,6 +407,9 @@ export const coachSlice = createSlice({
     });
     builder.addCase(getCurrentCoachStudentsAndSetInState.rejected, (state, action) => {
       state.fetchCurrentCoachStudentsStatus = coachFetchStatus.Error;
+    });
+    builder.addCase(deleteRequestByUser.rejected, (state, action) => {
+      state.deleteRequestByUserStatus = coachFetchStatus.Error;
     });
   },
 });

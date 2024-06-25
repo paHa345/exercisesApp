@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IExercise, IResponseUser, IWorkout } from "../types";
+import { IExercise, IReqToCoach, IResponseUser, IWorkout } from "../types";
 import { appStateActions, appStateSlice } from "./appStateSlice";
 
 export const getUserWorkouts = createAsyncThunk(
@@ -133,6 +133,7 @@ export interface IUserSlice {
       editedWorkout: IWorkout;
       editedExercise: IExercise | null;
     };
+    deletingByUserRequest: IReqToCoach | null;
   };
 }
 
@@ -149,6 +150,7 @@ interface userState {
     editedWorkout: IWorkout;
     editedExercise: IExercise | null;
   };
+  deletingByUserRequest: IReqToCoach | null;
 }
 
 export const initUserState: userState = {
@@ -183,6 +185,7 @@ export const initUserState: userState = {
     },
     editedExercise: null,
   },
+  deletingByUserRequest: null,
 };
 
 export const userSlice = createSlice({
@@ -309,6 +312,9 @@ export const userSlice = createSlice({
     },
     setFetchAddWorkoutStatusToLoading(state) {
       state.editWorkoutStatus = fetchCurrentUserWorkoutsStatus.Loading;
+    },
+    setDeletingByUserRequest(state, action) {
+      state.deletingByUserRequest = action.payload;
     },
   },
   extraReducers(builder) {

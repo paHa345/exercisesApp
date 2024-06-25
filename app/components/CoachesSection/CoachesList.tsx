@@ -27,8 +27,10 @@ const CoachesList = () => {
   const deletingRequest = useSelector((state: ICoachSlice) => state.coachState.deletingRequest);
 
   const startDeletingRequestHandler = function (this: any) {
-    // dispatch(coachActions.setDeletingRequestToTrue());
-    console.log(this);
+    dispatch(userActions.setDeletingByUserRequest(this));
+    dispatch(coachActions.setDeletingRequestToTrue());
+    // console.log("first");
+    // console.log(this);
   };
 
   const setCurrentUserId = async () => {
@@ -48,7 +50,6 @@ const CoachesList = () => {
     const inStudentsList = coach.studentsArr?.find(
       (student) => student.studentId === currentUser.id
     );
-    console.log(hasRequest);
     return (
       <div key={coach._id}>
         <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
