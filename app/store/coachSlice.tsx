@@ -135,6 +135,8 @@ export const deleteRequestByUser = createAsyncThunk(
         throw new Error(data.message);
       }
 
+      dispatch(coachActions.setDeletingRequestToFalse());
+
       return data;
     } catch (error: any) {
       dispatch(coachActions.setDeleteRequestByUserStatusErrorMessage(error.message));
