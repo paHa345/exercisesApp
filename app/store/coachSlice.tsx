@@ -118,7 +118,7 @@ export const getCurrentCoachStudentsAndSetInState = createAsyncThunk(
 
 export const deleteRequestByUser = createAsyncThunk(
   "coachState/deleteRequestByUser",
-  async function (addToCoachRequestId: string, { rejectWithValue, dispatch }) {
+  async function (addToCoachRequest: IReqToCoach, { rejectWithValue, dispatch }) {
     try {
       const deletedAddToCoachReq = await fetch(`./api/requestsToCoach/deleteUserRequestToCoach`, {
         method: "DELETE",
@@ -126,7 +126,7 @@ export const deleteRequestByUser = createAsyncThunk(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          addToCoachRequestId: addToCoachRequestId,
+          addToCoachRequestId: addToCoachRequest._id,
         }),
       });
 
@@ -134,6 +134,8 @@ export const deleteRequestByUser = createAsyncThunk(
       if (!deletedAddToCoachReq.ok) {
         throw new Error(data.message);
       }
+      console.log(addToCoachRequest);
+      dispatch(coachActions.deleteRequestFromCoachInArray(addToCoachRequest));
 
       dispatch(coachActions.setDeletingRequestToFalse());
 
@@ -340,7 +342,6 @@ export const coachSlice = createSlice({
       const currentCoachIndex = state.allCoachesArr.findIndex(
         (coach) => String(coach._id) === String(action.payload.coachId)
       );
-      console.log(currentCoachIndex);
       if (currentCoach?.requestToCoach) {
         currentCoach?.requestToCoach.push(action.payload);
       }
@@ -351,11 +352,21 @@ export const coachSlice = createSlice({
           return coach;
         }
       });
+    },
+    deleteRequestFromCoachInArray(
+      state,
+      action: {
+        payload: IReqToCoach;
+        type: string;
+      }
+    ) {
+      const index = state.allCoachesArr.findIndex(
+        (coach) => String(coach._id) === action.payload.coachId
+      );
 
-      // if(state.allCoachesArr){
-
-      //   state.allCoachesArr[currentCoachIndex] = currentCoach
-      // }
+      state.allCoachesArr[index].requestToCoach = state.allCoachesArr[index].requestToCoach?.filter(
+        (request) => String(request._id) !== String(action.payload._id)
+      );
     },
   },
   extraReducers: (builder) => {

@@ -43,6 +43,14 @@ export async function GET(req: NextRequest) {
                 requestToCoach: 1,
               },
             },
+            {
+              $lookup: {
+                from: "execisesAppAddToCoachRequest",
+                localField: "requestToCoach",
+                foreignField: "_id",
+                as: "requestToCoach",
+              },
+            },
             { $sort: { workoutsCount: sortOrder } },
             { $skip: skip },
             { $limit: limit },

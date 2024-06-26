@@ -18,12 +18,13 @@ const DeleteRequestModal = () => {
   const deleteRequestHandler = () => {
     console.log(deletingByUserReq?._id);
     if (deletingByUserReq !== null) {
-      dispatch(deleteRequestByUser(deletingByUserReq?._id));
+      dispatch(deleteRequestByUser(deletingByUserReq));
     }
   };
   const stopDeletingRequestHandler = () => {
     dispatch(coachActions.setDeletingRequestToFalse());
   };
+  const disabled = true;
   return (
     <div className="modal-overlay">
       <div className=" delete-modal-wrapper">
@@ -32,9 +33,17 @@ const DeleteRequestModal = () => {
             <h1>{`Удалить запрос`}</h1>
           </div>
           <div className=" flex flex-col sm:flex-row justify-center gap-5 ">
-            <button onClick={deleteRequestHandler} className=" buttonStandart">
-              Удалить запрос{" "}
-            </button>
+            {deleteRequestByUserStatus === "loading" && (
+              <button disabled={true} className="buttonStandartDesabled">
+                Удалить запрос
+              </button>
+            )}
+            {deleteRequestByUserStatus !== "loading" && (
+              <button onClick={deleteRequestHandler} className=" buttonStandart">
+                Удалить запрос{" "}
+              </button>
+            )}
+
             <button className="delete-buttonStandart" onClick={stopDeletingRequestHandler}>
               Отмена
             </button>

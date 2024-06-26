@@ -15,23 +15,13 @@ import {
 import { IUserSlice, userActions } from "@/app/store/userSlice";
 import { ICoachToList } from "@/app/types";
 import DeleteRequestModal from "../DeleteRequestSection/DeleteRequestModal";
+import CoachElementButton from "./CoachElementButton";
 
 const CoachesList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
 
-  const addToCoachSubmitHandler = function (this: any) {
-    dispatch(postSubmitApplicationToCoach(this));
-  };
-
   const deletingRequest = useSelector((state: ICoachSlice) => state.coachState.deletingRequest);
-
-  const startDeletingRequestHandler = function (this: any) {
-    dispatch(userActions.setDeletingByUserRequest(this));
-    dispatch(coachActions.setDeletingRequestToTrue());
-    // console.log("first");
-    // console.log(this);
-  };
 
   const setCurrentUserId = async () => {
     const currentUser = await fetch("./api/users/getUserByEmail");
@@ -42,14 +32,7 @@ const CoachesList = () => {
     setCurrentUserId();
   }, []);
 
-  const currentUser = useSelector((state: IUserSlice) => state.userState.currentUser);
-
   const coachesList = coachesArr?.map((coach: ICoachToList) => {
-    console.log(coach);
-    const hasRequest = coach.requestToCoach?.find((req) => req.userId === currentUser.id);
-    const inStudentsList = coach.studentsArr?.find(
-      (student) => student.studentId === currentUser.id
-    );
     return (
       <div key={coach._id}>
         <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
@@ -96,29 +79,7 @@ const CoachesList = () => {
                 </div>
               </div>
             </div>
-            <div className=" flex sm:flex sm:flex-col sm:justify-center ">
-              {!hasRequest && (
-                <button
-                  onClick={addToCoachSubmitHandler.bind(coach._id)}
-                  className=" pl-1 pr-1 w-full sm:h-12 py-2 bg-mainColor hover:bg-mainGroupColour rounded-md shadow-cardButtonShadow"
-                >
-                  Записаться
-                </button>
-              )}
-              {hasRequest && !inStudentsList && (
-                <button
-                  onClick={startDeletingRequestHandler.bind(hasRequest)}
-                  className="delete-buttonStandart"
-                >
-                  Отменить запрос
-                </button>
-              )}
-              {hasRequest && inStudentsList && (
-                <button onClick={startDeletingRequestHandler} className="delete-buttonStandart">
-                  Удалиться
-                </button>
-              )}
-            </div>
+            <CoachElementButton coach={coach} />
           </div>
         </article>
       </div>

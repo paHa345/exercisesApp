@@ -15,7 +15,7 @@ const PostRequestToAddCoachNotification = () => {
     if (postReqToCoachStatus === "resolve" || postReqToCoachStatus === "error") {
       const timeoutId = setTimeout(() => {
         dispatch(coachActions.setPostSubmitApplicationStatusToReady());
-      }, 15000);
+      }, 5000);
       return () => {
         dispatch(coachActions.setPostSubmitApplicationStatusToReady());
       };
