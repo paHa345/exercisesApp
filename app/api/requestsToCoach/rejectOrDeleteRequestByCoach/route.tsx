@@ -44,9 +44,9 @@ export async function PATCH(req: NextRequest) {
       throw new Error("Недопустимо для данного пользователя");
     }
 
-    if (!currentConfirmRequest?.active) {
-      throw new Error("Недопустимо для данного запроса. Уже принят тренером");
-    }
+    // if (!currentConfirmRequest?.active) {
+    //   throw new Error("Недопустимо для данного запроса. Уже принят тренером");
+    // }
 
     console.log(currentConfirmRequest?.rejectedByCoach);
 

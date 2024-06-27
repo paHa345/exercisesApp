@@ -108,6 +108,7 @@ export interface IReqToCoach {
   active: boolean;
   coachId: string;
   userId: string;
+  rejectedByCoach?: Boolean;
   _id: string;
 }
 

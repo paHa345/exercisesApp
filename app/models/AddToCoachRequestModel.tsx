@@ -45,13 +45,12 @@ addToCoachRequestSchema.pre("findOneAndUpdate", async function (result) {
       const coach = await mongoose.model("User").aggregate([
         {
           $match: {
-            $and: [
-              { _id: updatedDoc?.coachId },
-              { "studentsArr.studentId": String(updatedDoc?.userId) },
-            ],
+            _id: updatedDoc?.coachId,
           },
         },
       ]);
+
+      console.log(coach);
 
       if (coach.length !== 0) {
         // можно прокинуть ошибку
@@ -61,11 +60,26 @@ addToCoachRequestSchema.pre("findOneAndUpdate", async function (result) {
           { _id: updatedDoc?.coachId },
           {
             $pull: {
-              requestToCoach: String(updatedDoc?._id),
+              requestToCoach: updatedDoc?._id,
+              studentsArr: { addRequestId: updatedDoc?._id },
             },
           }
         );
       }
+
+      const userUpdated = await mongoose.model("User").findByIdAndUpdate(
+        { _id: updatedDoc?.userId },
+        {
+          $pull: {
+            coachesArr: {
+              addRequestId: String(updatedDoc?._id),
+            },
+          },
+        }
+      );
+
+      // удалить из списка студентов объект и удалить из списка тренеров у пользователя
+      // тренера
     }
     if (JSON.stringify(this.getUpdate()).includes("active")) {
       const updatedDoc: IAddToCoachRequstSchema | null = await mongoose

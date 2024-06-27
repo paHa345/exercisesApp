@@ -42,6 +42,7 @@ const RequestsList = () => {
   const requestsElements = reqToCoach
     ?.filter((req) => req.active)
     .map((request) => {
+      console.log(request);
       return (
         <div key={request._id}>
           <article className=" my-4 transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">

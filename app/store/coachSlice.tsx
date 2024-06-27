@@ -147,6 +147,16 @@ export const deleteRequestByUser = createAsyncThunk(
   }
 );
 
+export const rejectOrDeleteRequestByCoach = createAsyncThunk(
+  "coachState/rejectRequestByCoach",
+  async function (addToCoachRequest: IReqToCoach, { rejectWithValue, dispatch }) {
+    try {
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum coachFetchStatus {
   Ready = "ready",
   Loading = "loading",
