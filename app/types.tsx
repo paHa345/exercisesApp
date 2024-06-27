@@ -154,6 +154,7 @@ export interface IAddToStudentsReq {
     name: string;
   };
   active: boolean;
+  rejectedByCoach?: boolean;
   _id: string;
 }
 
@@ -210,6 +211,7 @@ export interface IAddToCoachRequstSchema {
   userId: String;
   coachId: String;
   active: Boolean;
+  rejectedByCoach?: Boolean;
 }
 
 export interface IOneExerciseTypes {
