@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import { coachActions } from "@/app/store/coachSlice";
+import { coachActions, rejectOrDeleteRequestByCoach } from "@/app/store/coachSlice";
 import React from "react";
 import { useDispatch } from "react-redux";
 
@@ -9,6 +9,11 @@ const DeleteOrRejectRequestByCoachModal = () => {
   const stopDeletingRequestHandler = () => {
     dispatch(coachActions.setDeletingRequestToFalse());
   };
+
+  const deleteOrRejectRequestByCoachHandler = () => {
+    // dispatch(rejectOrDeleteRequestByCoach())
+  };
+
   return (
     <div className="modal-overlay">
       <div className=" delete-modal-wrapper">
