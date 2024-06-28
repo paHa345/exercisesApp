@@ -52,31 +52,32 @@ addToCoachRequestSchema.pre("findOneAndUpdate", async function (result) {
 
       console.log(coach);
 
+      const coachUpdated = await mongoose.model("User").findByIdAndUpdate(updatedDoc?.coachId, {
+        $pull: {
+          requestToCoach: String(updatedDoc?._id),
+          studentsArr: {
+            addRequestId: String(updatedDoc?._id),
+          },
+        },
+      });
+
+      console.log("coach updated");
+      console.log(String(updatedDoc?._id));
+      console.log(coachUpdated);
+
       if (coach.length !== 0) {
         // можно прокинуть ошибку
         //   throw new Error("Не удалось обновить БД, повторите запрос позже");
       } else {
-        const coachUpdated = await mongoose.model("User").findByIdAndUpdate(
-          { _id: updatedDoc?.coachId },
-          {
-            $pull: {
-              requestToCoach: updatedDoc?._id,
-              studentsArr: { addRequestId: updatedDoc?._id },
-            },
-          }
-        );
       }
 
-      const userUpdated = await mongoose.model("User").findByIdAndUpdate(
-        { _id: updatedDoc?.userId },
-        {
-          $pull: {
-            coachesArr: {
-              addRequestId: String(updatedDoc?._id),
-            },
+      const userUpdated = await mongoose.model("User").findByIdAndUpdate(updatedDoc?.userId, {
+        $pull: {
+          coachesArr: {
+            addRequestId: String(updatedDoc?._id),
           },
-        }
-      );
+        },
+      });
 
       // удалить из списка студентов объект и удалить из списка тренеров у пользователя
       // тренера
