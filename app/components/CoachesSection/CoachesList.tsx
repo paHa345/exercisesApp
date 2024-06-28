@@ -23,13 +23,13 @@ const CoachesList = () => {
 
   const deletingRequest = useSelector((state: ICoachSlice) => state.coachState.deletingRequest);
 
-  const setCurrentUserId = async () => {
+  const setCurrentUser = async () => {
     const currentUser = await fetch("./api/users/getUserByEmail");
     const data = await currentUser.json();
-    dispatch(userActions.setCurrentUserId(data?.result?._id));
+    dispatch(userActions.setcurrentUser(data?.result));
   };
   useEffect(() => {
-    setCurrentUserId();
+    setCurrentUser();
   }, []);
 
   const coachesList = coachesArr?.map((coach: ICoachToList) => {

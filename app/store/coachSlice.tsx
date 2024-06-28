@@ -7,6 +7,7 @@ import {
   IUser,
 } from "../types";
 import { IAddToStudentsReq } from "../types";
+import { userActions } from "./userSlice";
 
 export const fetchAllCoachesAndAddToState = createAsyncThunk(
   "coachState/fetchAllCoachesAndAddToState",
@@ -135,8 +136,16 @@ export const deleteRequestByUser = createAsyncThunk(
         throw new Error(data.message);
       }
       console.log(addToCoachRequest);
-      dispatch(coachActions.deleteRequestFromCoachInArray(addToCoachRequest));
 
+      if (addToCoachRequest.rejectedByCoach === true) {
+        //если запрос был отменён пользователем, то
+        // запискаем диспатч, который найдёт и удалит этот запрос
+        // у текущего пользователя из userSlice - currentUser
+        console.log("Delete Rejected Request");
+        dispatch(userActions.deleteRejectedRequestFromUser(addToCoachRequest._id));
+      } else {
+        dispatch(coachActions.deleteRequestFromCoachInArray(addToCoachRequest));
+      }
       dispatch(coachActions.setDeletingRequestToFalse());
 
       return data;

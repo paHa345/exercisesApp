@@ -120,6 +120,20 @@ export enum fetchCurrentUserWorkoutsStatus {
   Error = "error",
 }
 
+interface ICoachObject {
+  coachId: String;
+  addRequestId: String;
+  _id: String;
+}
+
+interface IAddToStudentsRequestObject {
+  _id: String;
+  userId: String;
+  coachId: String;
+  active: boolean;
+  rejectedByCoach?: boolean;
+}
+
 export interface IUserSlice {
   userState: {
     getWorkoutsStatus: fetchCurrentUserWorkoutsStatus;
@@ -127,11 +141,17 @@ export interface IUserSlice {
     deleteWorkoutStatus: fetchCurrentUserWorkoutsStatus;
     deleteExerciseStatus: fetchCurrentUserWorkoutsStatus;
     currentUser: {
+      _id: string;
       name: string;
       id: string;
       workoutsArr: IWorkout[];
       editedWorkout: IWorkout;
       editedExercise: IExercise | null;
+      email: string;
+      exercisesArr?: String[];
+      reviewsArr?: String[];
+      coachesArr?: ICoachObject[];
+      addToStudentsRequests?: IAddToStudentsRequestObject[];
     };
     deletingByUserRequest: IReqToCoach | null;
   };
@@ -144,11 +164,17 @@ interface userState {
   deleteExerciseStatus: fetchCurrentUserWorkoutsStatus;
 
   currentUser: {
+    _id: string;
     name: string;
     id: string;
     workoutsArr: IWorkout[];
     editedWorkout: IWorkout;
     editedExercise: IExercise | null;
+    email: string;
+    exercisesArr?: String[];
+    reviewsArr?: String[];
+    coachesArr?: ICoachObject[];
+    addToStudentsRequests?: IAddToStudentsRequestObject[];
   };
   deletingByUserRequest: IReqToCoach | null;
 }
@@ -160,7 +186,9 @@ export const initUserState: userState = {
   deleteExerciseStatus: fetchCurrentUserWorkoutsStatus.Ready,
 
   currentUser: {
+    _id: "",
     name: "paHa345",
+    email: "",
     id: "",
     workoutsArr: [],
     editedWorkout: {
@@ -194,6 +222,9 @@ export const userSlice = createSlice({
   reducers: {
     setCurrentUserId(state, action) {
       state.currentUser.id = action.payload;
+    },
+    setcurrentUser(state, action) {
+      state.currentUser = action.payload;
     },
     setEditedWorkoutName(state, action) {
       state.currentUser.editedWorkout.name = action.payload;
@@ -315,6 +346,13 @@ export const userSlice = createSlice({
     },
     setDeletingByUserRequest(state, action) {
       state.deletingByUserRequest = action.payload;
+    },
+    deleteRejectedRequestFromUser(state, action) {
+      const updatedRequests = state.currentUser?.addToStudentsRequests?.filter(
+        (request) => request._id !== action.payload
+      );
+      console.log(updatedRequests);
+      state.currentUser.addToStudentsRequests = updatedRequests;
     },
   },
   extraReducers(builder) {
