@@ -156,10 +156,31 @@ export const deleteRequestByUser = createAsyncThunk(
   }
 );
 
-export const rejectOrDeleteRequestByCoach = createAsyncThunk(
+export const rejectOrDeleteRequestByCoachAndUpdateState = createAsyncThunk(
   "coachState/rejectRequestByCoach",
   async function (addToCoachRequest: IReqToCoach, { rejectWithValue, dispatch }) {
     try {
+      console.log(addToCoachRequest);
+      const rejectOrDeleteRequestByCoachReq = await fetch(
+        `./api/requestsToCoach/rejectOrDeleteRequestByCoach`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            addToCoachRequestId: addToCoachRequest._id,
+          }),
+        }
+      );
+
+      const data = await rejectOrDeleteRequestByCoachReq.json();
+
+      if (!rejectOrDeleteRequestByCoachReq.ok) {
+        throw new Error(data.message);
+      }
+
+      dispatch(coachActions.deleteRejectiongOrDeletingRequestByCoach(addToCoachRequest));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -182,10 +203,12 @@ export interface ICoachSlice {
     getCoachRequestsStatus: coachFetchStatus;
     confirmAddToCoachRequestStatus: coachFetchStatus;
     deleteRequestByUserStatus: coachFetchStatus;
+    rejectOrDeleteRequestByCoachStatus: coachFetchStatus;
     getCoachRequestsErrorMessage: string;
     postSubmitAppErrorMessage: string;
     confirmAddToCoachRequestErrorMessage: string;
     deleteRequestByUserErrorMessage: string;
+    rejectOrDeleteRequestByCoachErrorMessage: string;
     allCoachesCount: number;
     currentCoachesPage: number;
     searchCoachesQuery: string;
@@ -208,13 +231,14 @@ interface ICoachState {
   confirmAddToCoachRequestStatus: coachFetchStatus;
   fetchCurrentCoachStudentsStatus: coachFetchStatus;
   deleteRequestByUserStatus: coachFetchStatus;
+  rejectOrDeleteRequestByCoachStatus: coachFetchStatus;
 
   deleteRequestByUserErrorMessage: string;
-
   getCoachRequestsErrorMessage: string;
   postSubmitAppErrorMessage: string;
   confirmAddToCoachRequestErrorMessage: string;
   fetchCurrenrCoachStudentErrorMessage: string;
+  rejectOrDeleteRequestByCoachErrorMessage: string;
 
   allCoachesCount: number;
   currentCoachesPage: number;
@@ -238,12 +262,15 @@ export const initCoachState: ICoachState = {
   confirmAddToCoachRequestStatus: coachFetchStatus.Ready,
   fetchCurrentCoachStudentsStatus: coachFetchStatus.Ready,
   deleteRequestByUserStatus: coachFetchStatus.Ready,
+  rejectOrDeleteRequestByCoachStatus: coachFetchStatus.Ready,
 
   deleteRequestByUserErrorMessage: "",
   fetchCurrenrCoachStudentErrorMessage: "",
   getCoachRequestsErrorMessage: "",
   postSubmitAppErrorMessage: "",
   confirmAddToCoachRequestErrorMessage: "",
+  rejectOrDeleteRequestByCoachErrorMessage: "",
+
   allCoachesCount: 0,
   currentCoachesPage: 1,
   searchCoachesQuery: "",
@@ -387,6 +414,13 @@ export const coachSlice = createSlice({
         (request) => String(request._id) !== String(action.payload._id)
       );
     },
+    deleteRejectiongOrDeletingRequestByCoach(state, action) {
+      console.log(action.payload);
+      const updatedReq = state.requestsAppToCoach.filter((request) => {
+        return String(request._id) !== action.payload._id;
+      });
+      state.requestsAppToCoach = updatedReq;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllCoachesAndAddToState.pending, (state) => {
@@ -407,6 +441,9 @@ export const coachSlice = createSlice({
     builder.addCase(deleteRequestByUser.pending, (state) => {
       state.deleteRequestByUserStatus = coachFetchStatus.Loading;
     });
+    builder.addCase(rejectOrDeleteRequestByCoachAndUpdateState.pending, (state) => {
+      state.rejectOrDeleteRequestByCoachStatus = coachFetchStatus.Loading;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.fulfilled, (state) => {
       state.getAllCoachesStatus = coachFetchStatus.Resolve;
     });
@@ -425,6 +462,9 @@ export const coachSlice = createSlice({
     builder.addCase(deleteRequestByUser.fulfilled, (state) => {
       state.deleteRequestByUserStatus = coachFetchStatus.Resolve;
     });
+    builder.addCase(rejectOrDeleteRequestByCoachAndUpdateState.fulfilled, (state) => {
+      state.rejectOrDeleteRequestByCoachStatus = coachFetchStatus.Resolve;
+    });
     builder.addCase(fetchAllCoachesAndAddToState.rejected, (state, action) => {
       state.getAllCoachesStatus = coachFetchStatus.Error;
     });
@@ -442,6 +482,9 @@ export const coachSlice = createSlice({
     });
     builder.addCase(deleteRequestByUser.rejected, (state, action) => {
       state.deleteRequestByUserStatus = coachFetchStatus.Error;
+    });
+    builder.addCase(rejectOrDeleteRequestByCoachAndUpdateState.rejected, (state, action) => {
+      state.rejectOrDeleteRequestByCoachStatus = coachFetchStatus.Error;
     });
   },
 });

@@ -4,6 +4,7 @@ import User from "@/app/models/UserModel";
 import { IUser, UserType } from "@/app/types";
 import { authOptions } from "@/app/utils/authOptions";
 import { truncate } from "fs";
+import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -46,6 +47,17 @@ export async function POST(req: NextRequest) {
         throw new Error("Запрос на добавление уже отправлен");
       }
     });
+
+    const haveReqCurrentUserToCoach = await mongoose.model("AddToCoachRequest").find({
+      userId: currentUser._id,
+      coachId: body.coachId,
+    });
+
+    console.log(haveReqCurrentUserToCoach);
+
+    if (haveReqCurrentUserToCoach.length > 0) {
+      throw new Error("У вас уже есть запрос на добавление данного тренера");
+    }
 
     // const updatedCoach = await User.findByIdAndUpdate(body.coachId, {
     //   $push: {

@@ -3,24 +3,32 @@ import { ICoachSlice, coachActions } from "@/app/store/coachSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteOrRejectRequestByCoachModal from "./DeleteOrRejectRequestByCoachModal";
+import { IAddToStudentsReq } from "@/app/types";
+import { userActions } from "@/app/store/userSlice";
 
 interface DeleteRequestButtonProps {
   active: boolean;
   requestId?: string;
+  rejectOrDeleteRequest?: IAddToStudentsReq;
 }
 
-const DeleteRequestButton = ({ active, requestId }: DeleteRequestButtonProps) => {
+const DeleteRequestButton = ({
+  active,
+  requestId,
+  rejectOrDeleteRequest,
+}: DeleteRequestButtonProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const deletingRequestByCoach = useSelector(
     (state: ICoachSlice) => state.coachState.deletingRequest
   );
   const students = useSelector((state: ICoachSlice) => state.coachState.currentCoachStudents);
 
-  const deleteRequestHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const deleteRequestHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (active) {
       // отклонить запрос на добавление в ученики
       console.log("Отклонить заявку");
-      console.log(requestId);
+      // console.log(rejectOrDeleteRequest);
+      await dispatch(userActions.setRejectingOrDeletingByCoachRequest(rejectOrDeleteRequest));
       dispatch(coachActions.setDeletingRequestToTrue());
     } else {
       // удалить из учеников добавленного ранее пользователя

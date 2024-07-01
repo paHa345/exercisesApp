@@ -21,6 +21,24 @@ import { currentExrciseActions } from "@/app/store/currentExerciseSlice";
 //     )
 //   }
 
+export async function generateMetadata({
+  params: { exerciseId },
+}: {
+  params: { exerciseId: string };
+}) {
+  const data = await fetchData(exerciseId);
+  return {
+    title: data.id,
+    description: data.description,
+  };
+}
+
+async function fetchData(exerciseId: string) {
+  const dataReq = await fetch(`${process.env.HOST}/api/exercises/${exerciseId}`);
+  const data = await dataReq.json();
+  return data.result;
+}
+
 export async function generateStaticParams() {
   const data = await fetch(`${process.env.HOST}/api/exercises/allExercises`);
   const exercises = await data.json();

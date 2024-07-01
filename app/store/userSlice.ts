@@ -154,6 +154,7 @@ export interface IUserSlice {
       addToStudentsRequests?: IAddToStudentsRequestObject[];
     };
     deletingByUserRequest: IReqToCoach | null;
+    rejectingOrDeletingByCoachRequest: IReqToCoach | null;
   };
 }
 
@@ -177,6 +178,7 @@ interface userState {
     addToStudentsRequests?: IAddToStudentsRequestObject[];
   };
   deletingByUserRequest: IReqToCoach | null;
+  rejectingOrDeletingByCoachRequest: IReqToCoach | null;
 }
 
 export const initUserState: userState = {
@@ -214,6 +216,7 @@ export const initUserState: userState = {
     editedExercise: null,
   },
   deletingByUserRequest: null,
+  rejectingOrDeletingByCoachRequest: null,
 };
 
 export const userSlice = createSlice({
@@ -347,11 +350,13 @@ export const userSlice = createSlice({
     setDeletingByUserRequest(state, action) {
       state.deletingByUserRequest = action.payload;
     },
+    setRejectingOrDeletingByCoachRequest(state, action) {
+      state.rejectingOrDeletingByCoachRequest = action.payload;
+    },
     deleteRejectedRequestFromUser(state, action) {
       const updatedRequests = state.currentUser?.addToStudentsRequests?.filter(
         (request) => request._id !== action.payload
       );
-      console.log(updatedRequests);
       state.currentUser.addToStudentsRequests = updatedRequests;
     },
   },
