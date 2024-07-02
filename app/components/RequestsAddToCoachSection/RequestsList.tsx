@@ -72,7 +72,7 @@ const RequestsList = () => {
                 </div>
               </div>
 
-              <div className="flex my-2 gap-3 flex-col md:flex-row md:items-center ">
+              <div className="flex my-2 gap-3 flex-col items-center md:flex-row">
                 {request.active && (
                   <ConfirmRequstButton confirmRequest={request}></ConfirmRequstButton>
                 )}

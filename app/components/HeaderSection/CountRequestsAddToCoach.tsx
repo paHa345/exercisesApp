@@ -13,7 +13,7 @@ const RequestsAddToCoach = () => {
 
   const reqToCoach = useSelector((state: ICoachSlice) => state.coachState.requestsAppToCoach);
 
-  const req = reqToCoach.filter((el) => {
+  const req = reqToCoach?.filter((el) => {
     return el.active;
   });
 

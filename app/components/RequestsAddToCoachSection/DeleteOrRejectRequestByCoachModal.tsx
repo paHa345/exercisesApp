@@ -8,8 +8,14 @@ import { IUserSlice } from "@/app/store/userSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const DeleteOrRejectRequestByCoachModal = () => {
+interface ModalProps {
+  status: string;
+}
+
+const DeleteOrRejectRequestByCoachModal = ({ status }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
+
+  console.log(status);
 
   const deleteOrRejectRequestByCoachStatus = useSelector(
     (state: ICoachSlice) => state.coachState.rejectOrDeleteRequestByCoachStatus
@@ -23,6 +29,10 @@ const DeleteOrRejectRequestByCoachModal = () => {
     (state: IUserSlice) => state.userState.rejectingOrDeletingByCoachRequest
   );
 
+  const deletingStudentId = useSelector(
+    (state: IUserSlice) => state.userState.rejectingOrDeletingByCoachStudentId
+  );
+
   const stopDeletingRequestHandler = () => {
     dispatch(coachActions.setDeletingRequestToFalse());
   };
@@ -30,7 +40,20 @@ const DeleteOrRejectRequestByCoachModal = () => {
   const deleteOrRejectRequestByCoachHandler = () => {
     console.log("Delete");
     if (rejectingOrdeletingRequest !== null) {
-      dispatch(rejectOrDeleteRequestByCoachAndUpdateState(rejectingOrdeletingRequest));
+      dispatch(
+        rejectOrDeleteRequestByCoachAndUpdateState({
+          addToCoachRequestId: rejectingOrdeletingRequest._id,
+          status: status,
+        })
+      );
+    }
+    if (status === "student") {
+      dispatch(
+        rejectOrDeleteRequestByCoachAndUpdateState({
+          addToCoachRequestId: deletingStudentId,
+          status: status,
+        })
+      );
     }
   };
 

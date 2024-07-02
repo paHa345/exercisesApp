@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import { ICoachSlice, coachActions } from "@/app/store/coachSlice";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteOrRejectRequestByCoachModal from "./DeleteOrRejectRequestByCoachModal";
 import { IAddToStudentsReq } from "@/app/types";
@@ -21,26 +21,27 @@ const DeleteRequestButton = ({
   const deletingRequestByCoach = useSelector(
     (state: ICoachSlice) => state.coachState.deletingRequest
   );
+
+  const [requestOrStudentStatus, setRequestOrStudentStatus] = useState("");
+
   const students = useSelector((state: ICoachSlice) => state.coachState.currentCoachStudents);
 
   const deleteRequestHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (active) {
-      // отклонить запрос на добавление в ученики
-      console.log("Отклонить заявку");
-      // console.log(rejectOrDeleteRequest);
+      setRequestOrStudentStatus("request");
       await dispatch(userActions.setRejectingOrDeletingByCoachRequest(rejectOrDeleteRequest));
       dispatch(coachActions.setDeletingRequestToTrue());
     } else {
-      // удалить из учеников добавленного ранее пользователя
-      console.log("Удалить из списка учеников");
       console.log(requestId);
-      console.log(students);
+      setRequestOrStudentStatus("student");
+      await dispatch(userActions.setRejectingOrDeletingByCoachStudentId(requestId));
+      dispatch(coachActions.setDeletingRequestToTrue());
     }
   };
 
   return (
     <>
-      <div className=" flex sm:flex sm:flex-col sm:justify-center ">
+      <div className=" flex sm:flex sm:flex-col justify-center ">
         <button
           onClick={deleteRequestHandler}
           className="delete-buttonStandart w-full sm:h-12"
@@ -50,7 +51,9 @@ const DeleteRequestButton = ({
         </button>
       </div>
       {deletingRequestByCoach && (
-        <DeleteOrRejectRequestByCoachModal></DeleteOrRejectRequestByCoachModal>
+        <DeleteOrRejectRequestByCoachModal
+          status={requestOrStudentStatus}
+        ></DeleteOrRejectRequestByCoachModal>
       )}{" "}
     </>
   );

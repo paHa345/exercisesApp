@@ -156,11 +156,17 @@ export const deleteRequestByUser = createAsyncThunk(
   }
 );
 
+interface IaddToCoachRequestObj {
+  addToCoachRequestId: string;
+  status: string;
+}
+
 export const rejectOrDeleteRequestByCoachAndUpdateState = createAsyncThunk(
   "coachState/rejectRequestByCoach",
-  async function (addToCoachRequest: IReqToCoach, { rejectWithValue, dispatch }) {
+  async function (addToCoachRequestObj: IaddToCoachRequestObj, { rejectWithValue, dispatch }) {
     try {
-      console.log(addToCoachRequest);
+      console.log(addToCoachRequestObj.addToCoachRequestId);
+
       const rejectOrDeleteRequestByCoachReq = await fetch(
         `./api/requestsToCoach/rejectOrDeleteRequestByCoach`,
         {
@@ -169,7 +175,7 @@ export const rejectOrDeleteRequestByCoachAndUpdateState = createAsyncThunk(
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            addToCoachRequestId: addToCoachRequest._id,
+            addToCoachRequestId: addToCoachRequestObj.addToCoachRequestId,
           }),
         }
       );
@@ -180,7 +186,19 @@ export const rejectOrDeleteRequestByCoachAndUpdateState = createAsyncThunk(
         throw new Error(data.message);
       }
 
-      dispatch(coachActions.deleteRejectiongOrDeletingRequestByCoach(addToCoachRequest));
+      if (addToCoachRequestObj.status === "request") {
+        dispatch(
+          coachActions.deleteRejectiongOrDeletingRequestByCoach(
+            addToCoachRequestObj.addToCoachRequestId
+          )
+        );
+      }
+      if (addToCoachRequestObj.status === "student") {
+        console.log("student");
+        dispatch(
+          coachActions.deleteStudentFromCoachesStudentsArr(addToCoachRequestObj.addToCoachRequestId)
+        );
+      }
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -417,9 +435,15 @@ export const coachSlice = createSlice({
     deleteRejectiongOrDeletingRequestByCoach(state, action) {
       console.log(action.payload);
       const updatedReq = state.requestsAppToCoach.filter((request) => {
-        return String(request._id) !== action.payload._id;
+        return String(request._id) !== action.payload;
       });
       state.requestsAppToCoach = updatedReq;
+    },
+    deleteStudentFromCoachesStudentsArr(state, action) {
+      const updatedReq = state.currentCoachStudents.filter((student) => {
+        return String(student.studentsArr.addRequestId) !== action.payload;
+      });
+      state.currentCoachStudents = updatedReq;
     },
   },
   extraReducers: (builder) => {

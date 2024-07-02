@@ -155,6 +155,7 @@ export interface IUserSlice {
     };
     deletingByUserRequest: IReqToCoach | null;
     rejectingOrDeletingByCoachRequest: IReqToCoach | null;
+    rejectingOrDeletingByCoachStudentId: string;
   };
 }
 
@@ -179,6 +180,7 @@ interface userState {
   };
   deletingByUserRequest: IReqToCoach | null;
   rejectingOrDeletingByCoachRequest: IReqToCoach | null;
+  rejectingOrDeletingByCoachStudentId: string;
 }
 
 export const initUserState: userState = {
@@ -217,6 +219,7 @@ export const initUserState: userState = {
   },
   deletingByUserRequest: null,
   rejectingOrDeletingByCoachRequest: null,
+  rejectingOrDeletingByCoachStudentId: "",
 };
 
 export const userSlice = createSlice({
@@ -358,6 +361,9 @@ export const userSlice = createSlice({
         (request) => request._id !== action.payload
       );
       state.currentUser.addToStudentsRequests = updatedRequests;
+    },
+    setRejectingOrDeletingByCoachStudentId(state, action) {
+      state.rejectingOrDeletingByCoachStudentId = action.payload;
     },
   },
   extraReducers(builder) {
