@@ -201,6 +201,8 @@ export const initUserState: userState = {
       date: new Date(),
       comments: "init",
       userId: "init",
+      studentId: "init",
+
       exercisesArr: [
         {
           name: "init",
@@ -297,6 +299,8 @@ export const userSlice = createSlice({
         date: new Date(),
         comments: "init",
         userId: "init",
+        studentId: "init",
+
         exercisesArr: [
           {
             name: "init",

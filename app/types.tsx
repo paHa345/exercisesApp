@@ -65,6 +65,7 @@ export interface IWorkout {
   comments: string;
   date: Date;
   userId: string;
+  studentId: string;
   name: string;
   exercisesArr:
     | [
@@ -177,6 +178,7 @@ export interface IWorkoutSchema {
   comments: String;
   date: Date;
   userId: String;
+  studentId: String;
   name?: String;
   exercisesArr: [{ name: String; id: String; sets: Number; reps: Number }];
 }
