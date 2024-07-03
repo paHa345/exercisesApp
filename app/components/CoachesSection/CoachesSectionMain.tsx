@@ -6,7 +6,7 @@ import {
   coachFetchStatus,
   fetchAllCoachesAndAddToState,
 } from "@/app/store/coachSlice";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CoachesList from "./CoachesList";
 import { AppDispatch } from "@/app/store";

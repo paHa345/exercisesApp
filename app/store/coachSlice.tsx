@@ -59,7 +59,6 @@ export const getCoachRequests = createAsyncThunk(
     try {
       const req = await fetch(`/api/coaches/getAddRequstsToCoach`);
       const data: { message: string; result: IAddToStudentsReq[] | [] } = await req.json();
-      console.log(data);
       dispatch(coachActions.setRequestsAppTpCoach(data?.result));
       return data;
     } catch (error: any) {
@@ -102,7 +101,7 @@ export const getCurrentCoachStudentsAndSetInState = createAsyncThunk(
   "coachState/getCurrentCoachStudentsAndSetInState",
   async function (_, { rejectWithValue, dispatch }) {
     try {
-      const req = await fetch(`./api/coaches/getCurrentCoachStudents`);
+      const req = await fetch(`/api/coaches/getCurrentCoachStudents`);
       if (!req.ok) {
         throw new Error("Ошибка сервера");
       }

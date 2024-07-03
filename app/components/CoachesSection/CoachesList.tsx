@@ -22,6 +22,7 @@ const CoachesList = () => {
   const coachesArr = useSelector((state: ICoachSlice) => state.coachState.allCoachesArr);
 
   const deletingRequest = useSelector((state: ICoachSlice) => state.coachState.deletingRequest);
+  const currentUser = useSelector((state: IUserSlice) => state.userState.currentUser);
 
   const setCurrentUser = async () => {
     const currentUser = await fetch("./api/users/getUserByEmail");
@@ -79,7 +80,11 @@ const CoachesList = () => {
                 </div>
               </div>
             </div>
-            <CoachElementButton coach={coach} />
+            {currentUser._id.length > 4 ? (
+              <CoachElementButton coach={coach} />
+            ) : (
+              <h1 className=" mx-2 my-4 h-10 w-2/12 bg-mainColor rounded grow text-base text font-bold pl-1 pt-1"></h1>
+            )}
           </div>
         </article>
       </div>

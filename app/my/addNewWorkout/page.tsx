@@ -17,12 +17,13 @@ import { IAppSlice, appStateActions } from "@/app/store/appStateSlice";
 import { useSession } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ICoachSlice } from "@/app/store/coachSlice";
+import StudentsList from "@/app/components/AddWorkoutSection/StudentsList";
 
 const addNewWorkout = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const session = useSession();
-  // console.log(session.data?.user?.email);
 
   const name = useSelector(
     (state: IAddWorkoutSlice) => state.addWorkoutState.currentAddedWorkout.name
@@ -204,6 +205,9 @@ const addNewWorkout = () => {
 
         <div className=" shadow-exerciseCardHowerShadow p-3 max-w-xl mx-auto rounded-md border-solid border-2 border-stone-500">
           <div className="  w-11/12 mx-auto">
+            <div>
+              <StudentsList></StudentsList>
+            </div>
             <div className=" relative py-4">
               <input
                 onChange={changeNameHandler}

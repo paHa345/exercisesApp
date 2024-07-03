@@ -94,14 +94,14 @@ const MyPage = () => {
               </a>
             </>
           )}
-          {editedWorkout._id === workout._id && editWorkoutStatus && (
+          {editedWorkout?._id === workout._id && editWorkoutStatus && (
             <a onClick={stopEditWorkoutHandler} href="" data-workoutid={workout._id}>
               <FontAwesomeIcon icon={faXmark} />
             </a>
           )}
         </div>
-        {editedWorkout._id === workout._id && editWorkoutStatus && <EditedWorkout></EditedWorkout>}
-        {editedWorkout._id !== workout._id && (
+        {editedWorkout?._id === workout._id && editWorkoutStatus && <EditedWorkout></EditedWorkout>}
+        {editedWorkout?._id !== workout._id && (
           <div>
             <Train
               name={workout.name}
