@@ -6,7 +6,7 @@ const workoutSchema = new mongoose.Schema<IWorkoutSchema>({
   comments: { type: String, required: false },
   date: { type: Date, required: true },
   userId: { type: String, required: true },
-  studentId: { type: String, required: true },
+  studentsIdArr: [{ type: String, required: true }],
   name: { type: String, required: false, default: String(Date.now()) },
   exercisesArr: [
     {

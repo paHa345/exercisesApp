@@ -65,22 +65,16 @@ export enum addWorkoutFetchStatus {
 }
 
 export interface IAddedExercises {
-  // id:
-  //   | string
-  //   | {
-  //       id: { id: string; name: string; _id: number };
-  //       exerciseId: string;
-  //       exercise: string;
-  //       name: string;
-  //       reps: number;
-  //       sets: number;
-  //       _id: number;
-  //     };
   exerciseId: string;
   exercise: string;
   name: string;
   sets: number;
   reps: number;
+}
+
+export interface IAddedUser {
+  id: string;
+  name: string;
 }
 
 export interface IAddWorkoutSlice {
@@ -92,6 +86,7 @@ export interface IAddWorkoutSlice {
       workoutDate: string;
       userId: string;
       addedWorkoutId: string;
+      studentsIdArr: string[];
     };
     fetchAddWorkoutStatus: addWorkoutFetchStatus;
     fetchExercisesNumberCount: addWorkoutFetchStatus;
@@ -107,6 +102,8 @@ export interface IAddWorkoutSlice {
     };
     exercisesCount: number;
     currentPageNumber: number;
+    addedUsers: IAddedUser[];
+    showAddStudentsToWorkoutModal: boolean;
   };
 }
 
@@ -118,6 +115,7 @@ interface IAddWorkoutState {
     workoutDate: string;
     userId: string;
     addedWorkoutId: string;
+    studentsIdArr: string[];
   };
   fetchAddWorkoutStatus: addWorkoutFetchStatus;
   fetchExercisesNumberCount: addWorkoutFetchStatus;
@@ -133,6 +131,8 @@ interface IAddWorkoutState {
   };
   exercisesCount: number;
   currentPageNumber: number;
+  addedUsers: IAddedUser[];
+  showAddStudentsToWorkoutModal: boolean;
 }
 
 export const initAddExerciseState: IAddWorkoutState = {
@@ -143,6 +143,7 @@ export const initAddExerciseState: IAddWorkoutState = {
     workoutDate: "",
     userId: "",
     addedWorkoutId: "987987987987",
+    studentsIdArr: [],
   },
   fetchAddWorkoutStatus: addWorkoutFetchStatus.Ready,
   fetchExercisesNumberCount: addWorkoutFetchStatus.Ready,
@@ -158,6 +159,8 @@ export const initAddExerciseState: IAddWorkoutState = {
   },
   exercisesCount: 0,
   currentPageNumber: 1,
+  addedUsers: [],
+  showAddStudentsToWorkoutModal: false,
 };
 
 export const addWorkoutSlice = createSlice({
@@ -231,6 +234,37 @@ export const addWorkoutSlice = createSlice({
     },
     setCurrentPageNumber(state, action) {
       state.currentPageNumber = action.payload;
+    },
+    addStudentInAddedStudents(
+      state,
+      action: {
+        payload: {
+          id: string;
+          name: string;
+        };
+        type: string;
+      }
+    ) {
+      const hasCurrentStudent = state.addedUsers.filter((student) => {
+        return student.id === action.payload.id;
+      });
+
+      if (hasCurrentStudent.length === 0) {
+        state.addedUsers.push(action.payload);
+      }
+    },
+    deleteStudentFromAddedStudentsArr(
+      state,
+      action: {
+        payload: string;
+        type: string;
+      }
+    ) {
+      const updatedArr = state.addedUsers.filter((student) => student.id !== action.payload);
+      state.addedUsers = updatedArr;
+    },
+    showHideAddStudentsToWorkoutModal(state, action) {
+      state.showAddStudentsToWorkoutModal = action.payload;
     },
   },
   extraReducers: (builder) => {

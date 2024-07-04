@@ -47,6 +47,8 @@ const addNewWorkout = () => {
     (state: IAddWorkoutSlice) => state.addWorkoutState.currentAddedWorkout.addedWorkoutId
   );
 
+  const addedUers = useSelector((state: IAddWorkoutSlice) => state.addWorkoutState.addedUsers);
+
   const showAddExerciseModal = useSelector(
     (state: IAppSlice) => state.appState.showAddExerciseModal
   );
@@ -99,12 +101,17 @@ const addNewWorkout = () => {
     // типизировать ответ от сервера
     const currentUser = await currentUserReq.json();
     console.log(currentUser.result._id);
+    const addedUsersIdArr = addedUers.map((user) => {
+      return user.id;
+    });
+
     const currentWorkout = {
       name: name,
       comments: description,
       exercisesArr: addedExercises,
       date: workoutDate,
       userId: currentUser.result._id,
+      studentsIdArr: addedUsersIdArr,
     };
     dispatch(addWorkout(currentWorkout));
   };
