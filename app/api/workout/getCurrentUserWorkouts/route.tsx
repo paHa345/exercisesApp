@@ -19,19 +19,30 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     await connectMongoDB();
 
-    const currentUser = await User.findOne({ email: session?.user?.email }).populate({
-      path: "workoutsArr",
-      populate: {
-        path: "exercisesArr",
-        // model: "Exercise",  
-        // select: "id name",
-        populate: [{
-          path: "exercise",
-         model: "Exercise",  
-        select: "id name",
-        }],
-      },
-    });
+    const currentUser = await User.findOne({ email: session?.user?.email }, { workoutsArr: 1 })
+      .populate({
+        path: "workoutsArr",
+        populate: {
+          path: "exercisesArr",
+          populate: [
+            {
+              path: "exercise",
+              model: "Exercise",
+              select: "id name",
+            },
+          ],
+        },
+      })
+      .populate({
+        path: "workoutsArr",
+        populate: [
+          {
+            path: "studentsIdArr",
+            model: "User",
+            select: "id name email",
+          },
+        ],
+      });
 
     return NextResponse.json({ message: "Success", result: currentUser });
   } catch (error: any) {

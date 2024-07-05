@@ -3,13 +3,9 @@ import Workout from "@/app/models/WorkoutModel";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  console.log(req.body);
-
   try {
     await connectMongoDB();
     const workout = await req.json();
-
-    console.log(workout);
 
     const addedWorkout = await Workout.create(workout);
 

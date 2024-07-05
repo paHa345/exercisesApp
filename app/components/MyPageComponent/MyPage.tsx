@@ -103,13 +103,7 @@ const MyPage = () => {
         {editedWorkout?._id === workout._id && editWorkoutStatus && <EditedWorkout></EditedWorkout>}
         {editedWorkout?._id !== workout._id && (
           <div>
-            <Train
-              name={workout.name}
-              description={workout.comments}
-              date={workout.date}
-              exercises={workout.exercisesArr}
-              workoutid={workout._id}
-            ></Train>
+            <Train workout={workout}></Train>
           </div>
         )}
         {/* {editedWorkout._id === workout._id ? (

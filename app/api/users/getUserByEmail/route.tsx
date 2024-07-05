@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         addToStudentsRequests: 1,
         exercisesArr: 1,
         reviewsArr: 1,
-        UserType: 1,
+        userType: 1,
         coachesArr: 1,
       }
     )

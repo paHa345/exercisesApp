@@ -1,6 +1,10 @@
 import { AppDispatch } from "@/app/store";
 import { IAddWorkoutSlice, addWorkoutActions } from "@/app/store/addWorkoutSlice";
-import { ICoachSlice, getCurrentCoachStudentsAndSetInState } from "@/app/store/coachSlice";
+import {
+  ICoachSlice,
+  coachFetchStatus,
+  getCurrentCoachStudentsAndSetInState,
+} from "@/app/store/coachSlice";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Suspense, useEffect, useState } from "react";
@@ -16,6 +20,10 @@ const StudentsList = () => {
 
   const showAddStudentsModal = useSelector(
     (state: IAddWorkoutSlice) => state.addWorkoutState.showAddStudentsToWorkoutModal
+  );
+
+  const getStudentsNotification = useSelector(
+    (state: ICoachSlice) => state.coachState.fetchCurrentCoachStudentsStatus
   );
 
   const showAddStudentsModalHandler = () => {
@@ -95,12 +103,18 @@ const StudentsList = () => {
       {!showAddStudentsModal && (
         <div className=" flex flex-col justify-center my-4">
           <h1 className=" mx-auto py-3"> Выберете подопечных </h1>
-          <button
-            className=" py-4 rounded-md px-2 bg-emerald-100 hover:bg-emerald-400 hover:text-white text-2xl "
-            onClick={showAddStudentsModalHandler}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
+          {getStudentsNotification === coachFetchStatus.Loading && (
+            <div className=" animate-pulse   py-4 rounded-md px-2 bg-emerald-100 hover:bg-emerald-400 hover:text-white text-2xl "></div>
+          )}
+          {getStudentsNotification !== coachFetchStatus.Loading && (
+            <button
+              className=" py-4 rounded-md px-2 bg-emerald-100 hover:bg-emerald-400 hover:text-white text-2xl "
+              onClick={showAddStudentsModalHandler}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          )}
+
           <div>{addedStudentsEl}</div>
         </div>
       )}

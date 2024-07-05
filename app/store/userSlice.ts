@@ -147,6 +147,7 @@ export interface IUserSlice {
       workoutsArr: IWorkout[];
       editedWorkout: IWorkout;
       editedExercise: IExercise | null;
+      userType: string;
       email: string;
       exercisesArr?: String[];
       reviewsArr?: String[];
@@ -172,6 +173,8 @@ interface userState {
     workoutsArr: IWorkout[];
     editedWorkout: IWorkout;
     editedExercise: IExercise | null;
+    userType: string;
+
     email: string;
     exercisesArr?: String[];
     reviewsArr?: String[];
@@ -194,6 +197,7 @@ export const initUserState: userState = {
     name: "paHa345",
     email: "",
     id: "",
+    userType: "",
     workoutsArr: [],
     editedWorkout: {
       name: "Init",
@@ -201,7 +205,13 @@ export const initUserState: userState = {
       date: new Date(),
       comments: "init",
       userId: "init",
-      studentsIdArr: [],
+      studentsIdArr: [
+        {
+          _id: "string",
+          email: "string",
+          name: "string",
+        },
+      ],
 
       exercisesArr: [
         {
@@ -299,7 +309,13 @@ export const userSlice = createSlice({
         date: new Date(),
         comments: "init",
         userId: "init",
-        studentsIdArr: [],
+        studentsIdArr: [
+          {
+            _id: "string",
+            email: "string",
+            name: "string",
+          },
+        ],
 
         exercisesArr: [
           {
