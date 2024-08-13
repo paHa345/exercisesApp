@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   const session = await getServerSession(authOptions);
-  console.log(session?.user?.email);
+  // console.log(`User from API: ${session?.user?.userType}`);
   if (!session) {
     return NextResponse.json(
       { message: "Только для зарегистрированных пользователей" },
@@ -44,7 +44,77 @@ export async function GET(req: NextRequest, res: NextResponse) {
         ],
       });
 
-    return NextResponse.json({ message: "Success", result: currentUser });
+    const userWorkouts = await User.findOne({ email: session?.user?.email }, { coachesArr: 1 })
+      .populate({
+        path: "coachesArr.coachId",
+        model: "User",
+        select: "coachId",
+        populate: {
+          path: "workoutsArr",
+          populate: {
+            path: "exercisesArr",
+            populate: [
+              {
+                path: "exercise",
+                model: "Exercise",
+                select: "id name",
+              },
+            ],
+          },
+        },
+      })
+      .populate({
+        path: "coachesArr.coachId",
+        model: "User",
+        select: "coachId",
+        populate: {
+          path: "workoutsArr",
+          populate: [
+            {
+              path: "studentsIdArr",
+              model: "User",
+              select: "id name email",
+            },
+          ],
+        },
+      })
+      .populate({
+        path: "coachesArr.coachId",
+        model: "User",
+        select: "coachId",
+        populate: {
+          path: "workoutsArr",
+          populate: [
+            {
+              path: "userId",
+              model: "User",
+              select: "id name email",
+            },
+          ],
+        },
+      });
+    console.log(
+      `User Workouts: ${userWorkouts.coachesArr.map((user: any) => {
+        return user.coachId.workoutsArr.map((workouts: any) => workouts);
+      })}`
+    );
+
+    const userWorkoutsFromCoach = userWorkouts.coachesArr
+      .flatMap((user: any) => {
+        return user.coachId.workoutsArr.map((workouts: any) => workouts);
+      })
+      .filter((workout: any) => {
+        return workout.studentsIdArr.some(
+          (student: any) => student.email.toString() === session?.user?.email
+        );
+      });
+
+    console.log(userWorkoutsFromCoach);
+
+    const currentWorkouts =
+      session?.user?.userType === "user" ? userWorkoutsFromCoach : currentUser.workoutsArr;
+
+    return NextResponse.json({ message: "Success", result: currentWorkouts });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 400 });
   }

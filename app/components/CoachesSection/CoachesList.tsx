@@ -80,7 +80,7 @@ const CoachesList = () => {
                 </div>
               </div>
             </div>
-            {currentUser._id.length > 4 ? (
+            {currentUser?._id.length > 4 ? (
               <CoachElementButton coach={coach} />
             ) : (
               <h1 className=" mx-2 my-4 h-10 w-2/12 bg-mainColor rounded grow text-base text font-bold pl-1 pt-1"></h1>

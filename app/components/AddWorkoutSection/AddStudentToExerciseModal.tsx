@@ -38,32 +38,36 @@ const AddStudentToWorkoutModal = () => {
   };
   const addedStudentsEl = addedStudentsarr.map((student) => {
     return (
-      <div
-        className=" rounded-md w-fit bg-neutral-400 flex gap-3 px-2 py-2 mx-2 my-2"
-        data-studwntid={student.id}
-        key={student.id}
-      >
-        <p>{student.name}</p>
-        <button
-          className="  hover:font-bold"
-          data-studentid={student.id}
-          onClick={deleteStudentHandler}
+      <div key={student.id}>
+        <div
+          className=" rounded-md w-fit bg-neutral-400 flex gap-3 px-2 py-2 mx-2 my-2"
+          data-studwntid={student.id}
+          key={student.id}
         >
-          X
-        </button>
+          <p>{student.name}</p>
+          <button
+            className="  hover:font-bold"
+            data-studentid={student.id}
+            onClick={deleteStudentHandler}
+          >
+            X
+          </button>
+        </div>
       </div>
     );
   });
 
   const studentsEl = currentCoachStudents?.map((student) => {
     return (
-      <div
-        className=" bg-amber-100 px-2 py-2 rounded-md cursor-pointer hover:bg-red-200"
-        onClick={addStudentHandler}
-        data-studentid={student.studentsArr.studentId._id}
-        key={student._id}
-      >
-        {student.studentsArr.studentId.name}
+      <div key={student.studentsArr.studentId._id}>
+        <div
+          className=" bg-amber-100 px-2 py-2 rounded-md cursor-pointer hover:bg-red-200"
+          onClick={addStudentHandler}
+          data-studentid={student.studentsArr.studentId._id}
+          key={student._id}
+        >
+          {student.studentsArr.studentId.name}
+        </div>
       </div>
     );
   });

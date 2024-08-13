@@ -36,6 +36,9 @@ const MyPage = () => {
 
   const workouts = useSelector((state: IUserSlice) => state.userState.currentUser.workoutsArr);
 
+  const currentUser = useSelector((state: IUserSlice) => state.userState.currentUser);
+
+  console.log(currentUser);
   const editWorkoutStatus = useSelector((state: IAppSlice) => state.appState.editWorkoutsStatus);
   // console.log(workouts);
 
@@ -74,6 +77,8 @@ const MyPage = () => {
     setDeletedWorkoutId(String(e.currentTarget.dataset.workoutid));
     dispatch(appStateActions.startDeleteWorkout());
   };
+
+  console.log(workouts);
 
   const workoutsEl = workouts.map((workout: IWorkout, index: number) => {
     return (
