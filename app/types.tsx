@@ -64,7 +64,13 @@ export interface IWorkout {
   _id: string;
   comments: string;
   date: Date;
-  userId: string;
+  userId:
+    | string
+    | {
+        _id: string;
+        email: string;
+        name: string;
+      };
   studentsIdArr: [
     {
       _id: string;

@@ -2,6 +2,23 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IExercise, IReqToCoach, IResponseUser, IWorkout } from "../types";
 import { appStateActions, appStateSlice } from "./appStateSlice";
 
+export const setCurrentUserInState = createAsyncThunk(
+  "userState/setCurrentUserInState",
+  async function (_, { rejectWithValue, dispatch }) {
+    try {
+      const req = await fetch("../api/users/getCurrentUser");
+      if (!req.ok) {
+        throw new Error("Ошибка сервера");
+      }
+      const user = await req.json();
+
+      dispatch(userActions.setcurrentUser(user.result));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const getUserWorkouts = createAsyncThunk(
   "appState/getUserWorkouts",
   async function (_, { rejectWithValue, dispatch }) {
@@ -242,7 +259,9 @@ export const userSlice = createSlice({
       state.currentUser.id = action.payload;
     },
     setcurrentUser(state, action) {
-      state.currentUser = action.payload;
+      state.currentUser.name = action.payload.name;
+      state.currentUser.email = action.payload.email;
+      state.currentUser.userType = action.payload.userType;
     },
     setEditedWorkoutName(state, action) {
       state.currentUser.editedWorkout.name = action.payload;

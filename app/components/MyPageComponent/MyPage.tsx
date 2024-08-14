@@ -7,7 +7,12 @@ import Train from "./../TrainSection/Train";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { IUserSlice, getUserWorkouts, userActions } from "@/app/store/userSlice";
+import {
+  IUserSlice,
+  getUserWorkouts,
+  setCurrentUserInState,
+  userActions,
+} from "@/app/store/userSlice";
 import { IWorkout } from "@/app/types";
 import { AppDispatch } from "@/app/store";
 import {
@@ -50,6 +55,7 @@ const MyPage = () => {
 
   useEffect(() => {
     dispatch(setCurrentUserWorkouts());
+    dispatch(setCurrentUserInState());
   }, []);
 
   // const getWorkoutsHandler = async () => {
@@ -78,8 +84,6 @@ const MyPage = () => {
     dispatch(appStateActions.startDeleteWorkout());
   };
 
-  console.log(workouts);
-
   const workoutsEl = workouts.map((workout: IWorkout, index: number) => {
     return (
       <div key={index}>
@@ -94,9 +98,16 @@ const MyPage = () => {
               >
                 <FontAwesomeIcon icon={faPencil} />
               </a>
-              <a className=" " onClick={deleteWorkoutHandler} href="" data-workoutid={workout._id}>
-                <FontAwesomeIcon icon={faTrash} />
-              </a>
+              {currentUser.userType !== "user" && (
+                <a
+                  className=" "
+                  onClick={deleteWorkoutHandler}
+                  href=""
+                  data-workoutid={workout._id}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </a>
+              )}
             </>
           )}
           {editedWorkout?._id === workout._id && editWorkoutStatus && (

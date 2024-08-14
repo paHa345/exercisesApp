@@ -93,11 +93,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
           ],
         },
       });
-    console.log(
-      `User Workouts: ${userWorkouts.coachesArr.map((user: any) => {
-        return user.coachId.workoutsArr.map((workouts: any) => workouts);
-      })}`
-    );
 
     const userWorkoutsFromCoach = userWorkouts.coachesArr
       .flatMap((user: any) => {
@@ -108,8 +103,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
           (student: any) => student.email.toString() === session?.user?.email
         );
       });
-
-    console.log(userWorkoutsFromCoach);
 
     const currentWorkouts =
       session?.user?.userType === "user" ? userWorkoutsFromCoach : currentUser.workoutsArr;

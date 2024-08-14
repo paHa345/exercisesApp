@@ -16,9 +16,8 @@ const Train = ({ workout }: TrainPropsInterface) => {
     day: "numeric",
   });
 
-  const currentUserType = useSelector((state: IUserSlice) => state.userState.currentUser);
+  const currentUserType = useSelector((state: IUserSlice) => state.userState.currentUser.userType);
 
-  console.log(currentUserType);
   const studentsEl = workout.studentsIdArr.map((student) => {
     return (
       <div key={student._id}>
@@ -26,6 +25,8 @@ const Train = ({ workout }: TrainPropsInterface) => {
       </div>
     );
   });
+
+  const coachEmail = typeof workout.userId === "object" ? workout.userId.email : "";
 
   const exercisesEl = workout.exercisesArr.map((exercise, index: number) => {
     return (
@@ -56,10 +57,22 @@ const Train = ({ workout }: TrainPropsInterface) => {
 
   return (
     <article className=" transition-shadow px-5 py-5 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-sm shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
-      <div>
-        <h1>Подопечные:</h1>
-        <div className=" flex gap-2 my-2">{studentsEl}</div>
-      </div>
+      {currentUserType === "coach" ? (
+        <div>
+          <h1>Подопечные:</h1>
+          <div className=" flex gap-2 my-2">{studentsEl}</div>
+        </div>
+      ) : (
+        <div>
+          {" "}
+          <h1>Тренер</h1>
+          <div>
+            {" "}
+            <h1>{coachEmail}</h1>{" "}
+          </div>
+        </div>
+      )}
+
       <div className=" flex flex-col gap-6">
         <div className=" flex flex-row justify-between ">
           <div>
