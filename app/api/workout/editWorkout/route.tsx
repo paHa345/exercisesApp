@@ -18,11 +18,14 @@ export async function PUT(req: NextRequest) {
   try {
     await connectMongoDB();
     const body = await req.json();
-    console.log(body);
 
     const currentUser = await User.findOne({ email: session?.user?.email });
 
-    if (String(currentUser._id) !== String(body.userId)) {
+    const inStudentsArr = body.studentsIdArr.some((studentObj: any) => {
+      return studentObj.email === currentUser.email;
+    });
+
+    if (String(currentUser._id) !== String(body.userId) && !inStudentsArr) {
       throw new Error("Нет прав для редактирования данного упражнения");
     }
 

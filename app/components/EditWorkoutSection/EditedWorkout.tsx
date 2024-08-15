@@ -20,8 +20,6 @@ import { IWorkout } from "@/app/types";
 const EditedWorkout = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const session = useSession();
-
   const name = useSelector((state: IUserSlice) => state.userState.currentUser.editedWorkout.name);
   const description = useSelector(
     (state: IUserSlice) => state.userState.currentUser.editedWorkout.comments
@@ -43,6 +41,12 @@ const EditedWorkout = () => {
   const editedWorkoutUserId = useSelector(
     (state: IUserSlice) => state.userState.currentUser.editedWorkout.userId
   );
+
+  const workoutStudents = useSelector(
+    (state: IUserSlice) => state.userState.currentUser.editedWorkout?.studentsIdArr
+  );
+  // console.log(workoutStudents);
+  const currentUser = useSelector((state: IUserSlice) => state.userState.currentUser);
 
   const id = useSelector((state: IUserSlice) => state.userState.currentUser.editedWorkout._id);
 
@@ -109,15 +113,19 @@ const EditedWorkout = () => {
       exercisesArr: addedExercises,
       date: new Date(workoutDate),
       userId: editedWorkoutUserId,
+      studentsIdArr: workoutStudents,
       _id: id,
     };
     const data = editedWorkout.exercisesArr.map((exercise: any) => {
-      return (
-{   ...exercise,     exercise: exercise.exerciseId }
-      )
-    })
+      return { ...exercise, exercise: exercise.exerciseId };
+    });
 
-  dispatch(editWorkoutAndUpdate({workout: {...editedWorkout, exercisesArr: data}, workoutWithExerciseData: editedWorkout}));
+    dispatch(
+      editWorkoutAndUpdate({
+        workout: { ...editedWorkout, exercisesArr: data },
+        workoutWithExerciseData: editedWorkout,
+      })
+    );
   };
 
   const changeSetsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,6 +147,14 @@ const EditedWorkout = () => {
     );
   };
 
+  const studentsEl = workoutStudents.map((student) => {
+    return (
+      <div key={student._id} className="m-2 text-sm">
+        {student.name}
+      </div>
+    );
+  });
+
   const deleteExerciseFromWorkoutHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     dispatch(userActions.deleteExerciseFromEditedWorkout(e.currentTarget.dataset.number));
   };
@@ -156,10 +172,16 @@ const EditedWorkout = () => {
             key={`${addedExercise.id?._id}_${index}`}
           >
             <div className=" w-3/5">
-              {addedExercise.exercise ?               <Link className=" hover:underline" href={`../catalog/${addedExercise.exercise?._id}`}>
-                {addedExercise.name}
-              </Link>:  <p>{`${addedExercise.name} (архивное)`}</p>}
-
+              {addedExercise.exercise ? (
+                <Link
+                  className=" hover:underline"
+                  href={`../catalog/${addedExercise.exercise?._id}`}
+                >
+                  {addedExercise.name}
+                </Link>
+              ) : (
+                <p>{`${addedExercise.name} (архивное)`}</p>
+              )}
             </div>
             <div className=" w-2/5 flex flex-col">
               <div className=" flex flex-col justify-center">
@@ -212,6 +234,7 @@ const EditedWorkout = () => {
 
         <div className=" shadow-exerciseCardHowerShadow p-3 max-w-xl mx-auto rounded-md border-solid border-2 border-stone-500">
           <div className="  w-11/12 mx-auto">
+            {currentUser.userType === "coach" && <div>{studentsEl}</div>}
             <div className=" relative py-4">
               <input
                 onChange={changeNameHandler}
