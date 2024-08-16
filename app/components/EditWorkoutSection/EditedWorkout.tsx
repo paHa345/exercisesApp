@@ -16,6 +16,7 @@ import { faPlus, faXmark, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IUserSlice, editWorkoutAndUpdate, userActions } from "@/app/store/userSlice";
 import EditWorkoutAddExerciseModal from "./EditWorkoutAddExerciseModal";
 import { IWorkout } from "@/app/types";
+import Students from "./Students";
 
 const EditedWorkout = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +34,15 @@ const EditedWorkout = () => {
     (state: IUserSlice) => state.userState.currentUser.editedWorkout.date
   );
 
+  const editedWorkout = useSelector(
+    (state: IUserSlice) => state.userState.currentUser.editedWorkout
+  );
+
+  console.log(editedWorkout);
+  const workoutStudents = useSelector(
+    (state: IUserSlice) => state.userState.currentUser.editedWorkout?.studentsIdArr
+  );
+
   var curr = new Date(workoutDate);
   var date = curr.toISOString().substring(0, 10);
 
@@ -42,9 +52,6 @@ const EditedWorkout = () => {
     (state: IUserSlice) => state.userState.currentUser.editedWorkout.userId
   );
 
-  const workoutStudents = useSelector(
-    (state: IUserSlice) => state.userState.currentUser.editedWorkout?.studentsIdArr
-  );
   // console.log(workoutStudents);
   const currentUser = useSelector((state: IUserSlice) => state.userState.currentUser);
 
@@ -147,14 +154,6 @@ const EditedWorkout = () => {
     );
   };
 
-  const studentsEl = workoutStudents.map((student) => {
-    return (
-      <div key={student._id} className="m-2 text-sm">
-        {student.name}
-      </div>
-    );
-  });
-
   const deleteExerciseFromWorkoutHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     dispatch(userActions.deleteExerciseFromEditedWorkout(e.currentTarget.dataset.number));
   };
@@ -234,7 +233,8 @@ const EditedWorkout = () => {
 
         <div className=" shadow-exerciseCardHowerShadow p-3 max-w-xl mx-auto rounded-md border-solid border-2 border-stone-500">
           <div className="  w-11/12 mx-auto">
-            {currentUser.userType === "coach" && <div>{studentsEl}</div>}
+            {currentUser.userType === "coach" && <Students></Students>}
+
             <div className=" relative py-4">
               <input
                 onChange={changeNameHandler}

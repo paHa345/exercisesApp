@@ -404,6 +404,13 @@ export const userSlice = createSlice({
     setRejectingOrDeletingByCoachStudentId(state, action) {
       state.rejectingOrDeletingByCoachStudentId = action.payload;
     },
+    deleteUserFromUpdatedWorkout(state, action) {
+      const updatedWorkoutUsers = state.currentUser.editedWorkout.studentsIdArr.filter(
+        (student) => student._id !== String(action.payload)
+      );
+      console.log(updatedWorkoutUsers);
+      state.currentUser.editedWorkout.studentsIdArr = updatedWorkoutUsers;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getUserWorkouts.pending, (state, action) => {

@@ -71,13 +71,13 @@ export interface IWorkout {
         email: string;
         name: string;
       };
-  studentsIdArr: [
-    {
-      _id: string;
-      email: string;
-      name: string;
-    },
-  ];
+  studentsIdArr:
+    | {
+        _id: string;
+        email: string;
+        name: string;
+      }[]
+    | [];
   name: string;
   exercisesArr:
     | [
