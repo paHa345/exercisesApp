@@ -3,6 +3,8 @@ import { IUserSlice, userActions } from "@/app/store/userSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import AddStudentsButton from "./AddStudentsButton";
+
 const Students = () => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -45,6 +47,8 @@ const Students = () => {
 
   return (
     <>
+      <AddStudentsButton></AddStudentsButton>
+
       <div>{studentsEl}</div>
     </>
   );

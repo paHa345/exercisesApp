@@ -408,8 +408,26 @@ export const userSlice = createSlice({
       const updatedWorkoutUsers = state.currentUser.editedWorkout.studentsIdArr.filter(
         (student) => student._id !== String(action.payload)
       );
-      console.log(updatedWorkoutUsers);
       state.currentUser.editedWorkout.studentsIdArr = updatedWorkoutUsers;
+    },
+    addUserToUpdetedWorkout(
+      state,
+      action: {
+        payload: {
+          _id: string;
+          email: string;
+          name: string;
+        };
+        type: string;
+      }
+    ) {
+      const currentUser: { _id: string; email: string; name: string } = action.payload;
+      const isInArr = state.currentUser.editedWorkout.studentsIdArr.find((student) => {
+        return student._id === action.payload._id;
+      });
+      if (!isInArr) {
+        state.currentUser.editedWorkout.studentsIdArr.push(currentUser);
+      }
     },
   },
   extraReducers(builder) {
