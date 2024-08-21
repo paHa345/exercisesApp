@@ -12,7 +12,7 @@ import {
   faMailBulk,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { IUserSlice, userActions } from "@/app/store/userSlice";
+import { IUserSlice, setCurrentUserInState, userActions } from "@/app/store/userSlice";
 import { ICoachToList } from "@/app/types";
 import DeleteRequestModal from "../DeleteRequestSection/DeleteRequestModal";
 import CoachElementButton from "./CoachElementButton";
@@ -30,7 +30,8 @@ const CoachesList = () => {
     dispatch(userActions.setcurrentUser(data?.result));
   };
   useEffect(() => {
-    setCurrentUser();
+    // setCurrentUser();
+    dispatch(setCurrentUserInState());
   }, []);
 
   const coachesList = coachesArr?.map((coach: ICoachToList) => {
@@ -80,7 +81,7 @@ const CoachesList = () => {
                 </div>
               </div>
             </div>
-            {currentUser?._id.length > 4 ? (
+            {currentUser?.id.length > 4 ? (
               <CoachElementButton coach={coach} />
             ) : (
               <h1 className=" mx-2 my-4 h-10 w-2/12 bg-mainColor rounded grow text-base text font-bold pl-1 pt-1"></h1>

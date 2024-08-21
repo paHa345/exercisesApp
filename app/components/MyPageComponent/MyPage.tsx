@@ -161,10 +161,14 @@ const MyPage = () => {
 
       <section className=" container mx-auto">
         <div>
-          <h1 className=" text-right text-4xl font-bold py-10">
-            {" "}
-            {`Привет, ${session?.user?.name}`}{" "}
-          </h1>
+          {session?.user?.name ? (
+            <h1 className=" text-right text-4xl font-bold py-10">
+              {" "}
+              {`Привет, ${session?.user?.name}`}{" "}
+            </h1>
+          ) : (
+            <h1 className=" animate-pulse h-20 bg-slate-200 rounded mt-4 text-center text-2xl font-bold pb-6"></h1>
+          )}
         </div>
         <div>
           {" "}

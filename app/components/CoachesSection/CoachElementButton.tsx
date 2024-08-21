@@ -46,9 +46,12 @@ const CoachElementButton = ({ coach }: IProps) => {
     return request.coachId === coach._id && request.rejectedByCoach === true;
   });
 
-  const hasRequest = coach.requestToCoach?.find((req) => req.userId === currentUser._id);
+  const hasRequest = coach.requestToCoach?.find((req) => req.userId === currentUser.id);
 
   const inStudentsList = coach.studentsArr?.find((student) => student.studentId === currentUser.id);
+
+  console.log(coach);
+
   return (
     <>
       <div className=" flex sm:flex sm:flex-col sm:justify-center ">

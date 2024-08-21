@@ -262,6 +262,7 @@ export const userSlice = createSlice({
       state.currentUser.name = action.payload.name;
       state.currentUser.email = action.payload.email;
       state.currentUser.userType = action.payload.userType;
+      state.currentUser.id = action.payload._id;
     },
     setEditedWorkoutName(state, action) {
       state.currentUser.editedWorkout.name = action.payload;
