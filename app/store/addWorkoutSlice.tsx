@@ -3,6 +3,7 @@ import { IOneExerciseTypes, exerciseTypes } from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { userActions, userSlice } from "./userSlice";
 
 export const addWorkout = createAsyncThunk(
   "addWorkoutState/addWorkout",
@@ -57,6 +58,49 @@ export const setCountAllExercisesByType = createAsyncThunk(
   }
 );
 
+export const changeCompleteExerciseStatus = createAsyncThunk(
+  "addWorkoutState/changeCompleteExerciseStatus",
+  async function (
+    data: {
+      exerciseId: string;
+      workoutId: string;
+      isCompleted: boolean;
+      // setState: any;
+    },
+    { rejectWithValue, dispatch }
+  ) {
+    try {
+      // await data.setState();
+      const reqCompleteStatus = await fetch(
+        `/api/workout/changeCompleteExercise/${data.workoutId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({ exerciseId: data.exerciseId, isCompleted: data.isCompleted }),
+        }
+      );
+      const updatedWorkout = await reqCompleteStatus.json();
+      if (!reqCompleteStatus.ok) {
+        dispatch(addWorkoutActions.setChangeCompleteExerciseErrorMessage(updatedWorkout.message));
+        throw new Error("Ошибка сервера");
+      }
+      // dispatch(userActions.setChangedExerciseWorkoutId(data.workoutId));
+      dispatch(
+        userActions.changeExerciseStatus({
+          workoutId: data.workoutId,
+          exerciseId: data.exerciseId,
+          isComplete: data.isCompleted,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
 export enum addWorkoutFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -70,6 +114,7 @@ export interface IAddedExercises {
   name: string;
   sets: number;
   reps: number;
+  isCompleted?: boolean;
 }
 
 export interface IAddedUser {
@@ -90,6 +135,8 @@ export interface IAddWorkoutSlice {
     };
     fetchAddWorkoutStatus: addWorkoutFetchStatus;
     fetchExercisesNumberCount: addWorkoutFetchStatus;
+    changeCompleteExerciseStatus: addWorkoutFetchStatus;
+    changeCompleteExerciseErrorMessage: string;
 
     currentExerciseMuscleGroup: {
       en: string;
@@ -119,6 +166,8 @@ interface IAddWorkoutState {
   };
   fetchAddWorkoutStatus: addWorkoutFetchStatus;
   fetchExercisesNumberCount: addWorkoutFetchStatus;
+  changeCompleteExerciseStatus: addWorkoutFetchStatus;
+  changeCompleteExerciseErrorMessage: string;
 
   currentExerciseMuscleGroup: {
     en: string;
@@ -147,6 +196,8 @@ export const initAddExerciseState: IAddWorkoutState = {
   },
   fetchAddWorkoutStatus: addWorkoutFetchStatus.Ready,
   fetchExercisesNumberCount: addWorkoutFetchStatus.Ready,
+  changeCompleteExerciseStatus: addWorkoutFetchStatus.Ready,
+  changeCompleteExerciseErrorMessage: "",
 
   currentExerciseMuscleGroup: {
     en: "all",
@@ -181,6 +232,7 @@ export const addWorkoutSlice = createSlice({
         sets: 0,
         reps: 0,
         name: action.payload.name,
+        isCompleted: action.payload.isCompleted,
       });
     },
     deleteExerciseFromWorkout(state, action) {
@@ -266,6 +318,12 @@ export const addWorkoutSlice = createSlice({
     showHideAddStudentsToWorkoutModal(state, action) {
       state.showAddStudentsToWorkoutModal = action.payload;
     },
+    setChangeCompleteExerciseStatusToReady(state) {
+      state.changeCompleteExerciseStatus = addWorkoutFetchStatus.Loading;
+    },
+    setChangeCompleteExerciseErrorMessage(state, action) {
+      state.changeCompleteExerciseErrorMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(addWorkout.pending, (state, action) => {
@@ -274,17 +332,26 @@ export const addWorkoutSlice = createSlice({
     builder.addCase(setCountAllExercisesByType.pending, (state, action) => {
       state.fetchExercisesNumberCount = addWorkoutFetchStatus.Loading;
     });
+    builder.addCase(changeCompleteExerciseStatus.pending, (state, action) => {
+      state.changeCompleteExerciseStatus = addWorkoutFetchStatus.Loading;
+    });
     builder.addCase(addWorkout.fulfilled, (state, action) => {
       state.fetchAddWorkoutStatus = addWorkoutFetchStatus.Resolve;
     });
     builder.addCase(setCountAllExercisesByType.fulfilled, (state, action) => {
       state.fetchExercisesNumberCount = addWorkoutFetchStatus.Resolve;
     });
+    builder.addCase(changeCompleteExerciseStatus.fulfilled, (state, action) => {
+      state.changeCompleteExerciseStatus = addWorkoutFetchStatus.Resolve;
+    });
     builder.addCase(addWorkout.rejected, (state, action) => {
       state.fetchAddWorkoutStatus = addWorkoutFetchStatus.Error;
     });
     builder.addCase(setCountAllExercisesByType.rejected, (state, action) => {
       state.fetchExercisesNumberCount = addWorkoutFetchStatus.Error;
+    });
+    builder.addCase(changeCompleteExerciseStatus.rejected, (state, action) => {
+      state.changeCompleteExerciseStatus = addWorkoutFetchStatus.Error;
     });
   },
 });

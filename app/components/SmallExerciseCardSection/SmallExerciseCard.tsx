@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IUserSlice, userActions } from "@/app/store/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Exercise from "../TrainSection/Exercise";
+import Exercise from "../TrainSection/WorkoutExercise";
 import { IAppSlice, appStateActions } from "@/app/store/appStateSlice";
 import { useRouter } from "next/navigation";
 import { addWorkoutActions } from "@/app/store/addWorkoutSlice";

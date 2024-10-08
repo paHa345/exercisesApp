@@ -28,6 +28,7 @@ import { faTrash, faPencil, faXmark } from "@fortawesome/free-solid-svg-icons";
 import EditWorkoutModal from "../EditWorkoutSection/EditWorkoutModal";
 import EditedWorkout from "../EditWorkoutSection/EditedWorkout";
 import DeleteWorkoutModal from "../DeleteWorkoutSection/DeleteWorkoutModal";
+import MyPageNotification from "./MyPageNotification";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -57,12 +58,6 @@ const MyPage = () => {
     dispatch(setCurrentUserWorkouts());
     dispatch(setCurrentUserInState());
   }, []);
-
-  // const getWorkoutsHandler = async () => {
-  //   await dispatch(setCurrentUserWorkouts());
-  //   console.log("first");
-  //   console.log(workouts);
-  // };
 
   const startEditWorkoutsHandler = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -153,8 +148,19 @@ const MyPage = () => {
   //   );
   // });
 
+  const greeting =
+    session?.user.userType === "coach" ? (
+      <h1 className=" text-right text-4xl font-bold py-10">
+        {" "}
+        {`Привет, тренер ${session?.user?.name}`}{" "}
+      </h1>
+    ) : (
+      <h1 className=" text-right text-4xl font-bold py-10"> {`Привет, ${session?.user?.name}`} </h1>
+    );
+
   return (
     <>
+      <MyPageNotification></MyPageNotification>
       {deleteWorkoutStatus && (
         <DeleteWorkoutModal deletedWorkoutId={deletedWorkoutId}></DeleteWorkoutModal>
       )}
@@ -162,17 +168,14 @@ const MyPage = () => {
       <section className=" container mx-auto">
         <div>
           {session?.user?.name ? (
-            <h1 className=" text-right text-4xl font-bold py-10">
-              {" "}
-              {`Привет, ${session?.user?.name}`}{" "}
-            </h1>
+            greeting
           ) : (
             <h1 className=" animate-pulse h-20 bg-slate-200 rounded mt-4 text-center text-2xl font-bold pb-6"></h1>
           )}
         </div>
         <div>
           {" "}
-          <button className=" my-5" onClick={() => signOut()}>
+          <button className=" my-5" onClick={() => signOut({ callbackUrl: "/login" })}>
             Выйти
           </button>
         </div>

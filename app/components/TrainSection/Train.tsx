@@ -1,9 +1,20 @@
 import { IExercise, IWorkout } from "@/app/types";
 import Link from "next/link";
 import React from "react";
-import Exercise from "./Exercise";
-import { useSelector } from "react-redux";
+import Exercise from "./WorkoutExercise";
+import { useDispatch, useSelector } from "react-redux";
 import { IUserSlice } from "@/app/store/userSlice";
+import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AppDispatch } from "@/app/store";
+import {
+  addWorkoutActions,
+  addWorkoutFetchStatus,
+  changeCompleteExerciseStatus,
+  IAddWorkoutSlice,
+} from "@/app/store/addWorkoutSlice";
+import WorkoutExercise from "./WorkoutExercise";
 
 interface TrainPropsInterface {
   workout: IWorkout;
@@ -18,10 +29,10 @@ const Train = ({ workout }: TrainPropsInterface) => {
 
   const currentUserType = useSelector((state: IUserSlice) => state.userState.currentUser.userType);
 
-  const studentsEl = workout.studentsIdArr.map((student) => {
+  const studentsEl = workout.studentsIdArr.map((student, index) => {
     return (
       <div key={student._id}>
-        <Link href={`/`}>{student.name}</Link>
+        <Link href={`/`}>{student.email}</Link>
       </div>
     );
   });
@@ -31,26 +42,11 @@ const Train = ({ workout }: TrainPropsInterface) => {
   const exercisesEl = workout.exercisesArr.map((exercise, index: number) => {
     return (
       <div key={`${exercise.exerciseId}_${index}`}>
-        {exercise.exercise ? (
-          <div className=" flex flex-row gap-3" data-exerciseid={exercise.exercise?._id}>
-            <p>{index + 1}</p>
-            <Link className=" hover:underline" href={`./catalog/${exercise.exercise?._id}`}>
-              <p>{exercise.exercise?.name}</p>
-            </Link>
-            <p>
-              {exercise.sets} X {exercise.reps}
-            </p>
-          </div>
-        ) : (
-          <div className=" flex flex-row gap-3" data-exerciseid={exercise.exerciseId}>
-            <p>{index + 1}</p>
-            <p>{`${exercise.name} (архивное)`}</p>
-
-            <p>
-              {exercise.sets} X {exercise.reps}
-            </p>
-          </div>
-        )}
+        <WorkoutExercise
+          exercise={exercise}
+          index={index}
+          workoutId={workout._id}
+        ></WorkoutExercise>
       </div>
     );
   });

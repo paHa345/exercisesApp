@@ -22,12 +22,19 @@ const AddExerciseToEditedWorkout = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все" }));
+    dispatch(setCurrentMuscleGroupAndSet({ en: "all", ru: "Все", filterQuery: "" }));
   }, []);
 
   const addExerciseHandler = function (this: IExercise) {
     console.log(this);
-    dispatch(userActions.addExerciseToEditedWorkout({ id: this.id, name: this.name, _id: this._id}));
+    dispatch(
+      userActions.addExerciseToEditedWorkout({
+        id: this.id,
+        name: this.name,
+        _id: this._id,
+        isCompleted: false,
+      })
+    );
   };
 
   const exercises = currentExercises?.map((exercise: IExercise, index) => {

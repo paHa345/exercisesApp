@@ -14,7 +14,9 @@ const AllCurrentUserExercises = () => {
   );
 
   const addExerciseHandler = function (this: IExercise) {
-    dispatch(addWorkoutActions.addExerciseToWorkout({ id: this._id, name: this.name }));
+    dispatch(
+      addWorkoutActions.addExerciseToWorkout({ id: this._id, name: this.name, isCompleted: false })
+    );
   };
 
   const exercises = currentExercises?.map((exercise: IExercise, index) => {

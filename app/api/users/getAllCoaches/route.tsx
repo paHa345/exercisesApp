@@ -1,6 +1,7 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import User from "@/app/models/UserModel";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
   try {
@@ -108,6 +109,15 @@ export async function GET(req: NextRequest) {
     //   { $skip: skip },
     //   { $limit: limit },
     // ]);
+
+    const currentCookie = cookies().get("next-auth.session-token");
+    console.log(currentCookie);
+
+    cookies().set("jwt", "some-token", {
+      maxAge: 60 * 60 * 24, // one day in seconds
+      httpOnly: true, // prevent client-side access
+      sameSite: "strict", // prevent cross-site requests
+    });
 
     return NextResponse.json({
       message: "Success",

@@ -170,6 +170,7 @@ export interface IUserSlice {
       reviewsArr?: String[];
       coachesArr?: ICoachObject[];
       addToStudentsRequests?: IAddToStudentsRequestObject[];
+      changedExerciseWorkoutId: string;
     };
     deletingByUserRequest: IReqToCoach | null;
     rejectingOrDeletingByCoachRequest: IReqToCoach | null;
@@ -197,6 +198,7 @@ interface userState {
     reviewsArr?: String[];
     coachesArr?: ICoachObject[];
     addToStudentsRequests?: IAddToStudentsRequestObject[];
+    changedExerciseWorkoutId: string;
   };
   deletingByUserRequest: IReqToCoach | null;
   rejectingOrDeletingByCoachRequest: IReqToCoach | null;
@@ -245,6 +247,7 @@ export const initUserState: userState = {
       ],
     },
     editedExercise: null,
+    changedExerciseWorkoutId: "",
   },
   deletingByUserRequest: null,
   rejectingOrDeletingByCoachRequest: null,
@@ -309,6 +312,7 @@ export const userSlice = createSlice({
           sets: 0,
           reps: 0,
           name: action.payload.name,
+          isCompleted: false,
         });
       } else {
         state.currentUser.editedWorkout.exercisesArr = [
@@ -318,6 +322,7 @@ export const userSlice = createSlice({
             sets: 0,
             reps: 0,
             name: action.payload.name,
+            isCompleted: false,
           },
         ];
       }
@@ -408,7 +413,14 @@ export const userSlice = createSlice({
     deleteUserFromUpdatedWorkout(state, action) {
       const updatedWorkoutUsers = state.currentUser.editedWorkout.studentsIdArr.filter(
         (student) => student._id !== String(action.payload)
-      );
+      ) as [
+        {
+          _id: string;
+          email: string;
+          name: string;
+        },
+      ];
+
       state.currentUser.editedWorkout.studentsIdArr = updatedWorkoutUsers;
     },
     addUserToUpdetedWorkout(
@@ -429,6 +441,30 @@ export const userSlice = createSlice({
       if (!isInArr) {
         state.currentUser.editedWorkout.studentsIdArr.push(currentUser);
       }
+    },
+    setChangedExerciseWorkoutId(state, action) {
+      state.currentUser.changedExerciseWorkoutId = action.payload;
+    },
+    changeExerciseStatus(
+      state,
+      action: {
+        payload: {
+          exerciseId: string;
+          workoutId: string;
+          isComplete: boolean;
+        };
+        type: string;
+      }
+    ) {
+      const workoutIndex = state.currentUser.workoutsArr.findIndex(
+        (workout) => workout._id === action.payload.workoutId
+      );
+      const currentEditedExercisesIndex = state.currentUser.workoutsArr[
+        workoutIndex
+      ].exercisesArr.findIndex((exercise) => exercise.exercise._id === action.payload.exerciseId);
+      state.currentUser.workoutsArr[workoutIndex].exercisesArr[
+        currentEditedExercisesIndex
+      ].isCompleted = !action.payload.isComplete;
     },
   },
   extraReducers(builder) {
