@@ -30,7 +30,6 @@ export const editExerciseAndUpdate = createAsyncThunk(
       }
 
       const UpdateExerciseReq = await fetch("/api/exercises/editExercise", {
-        next: { revalidate: 1 },
         method: "PUT",
         headers: {
           "Content-Type": "application/json;charset=utf-8",
