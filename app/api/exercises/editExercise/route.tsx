@@ -1,3 +1,4 @@
+import { editExerciseRevalidateServerAction } from "@/actions/editExercise";
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import Exercise from "@/app/models/ExerciseModel";
 import User from "@/app/models/UserModel";
@@ -27,6 +28,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const editedExercise = await Exercise.findOneAndReplace({ _id: body._id }, body);
+    editExerciseRevalidateServerAction(body._id);
 
     return NextResponse.json({ message: "sucess", result: editedExercise });
   } catch (error: any) {

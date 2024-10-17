@@ -118,7 +118,7 @@ const EditExerciseCard = () => {
       })
     );
 
-    editExerciseRevalidateServerAction(editedExercise?._id);
+    // editExerciseRevalidateServerAction(editedExercise?._id);
   };
 
   const mainMuscleGroupElement = mainMuscleGrourArr.map((mainMuscleGroup) => {
