@@ -35,6 +35,7 @@ export async function PUT(req: NextRequest) {
     // console.log(`${path}/catalog/${String(body._id)}`);
     // editExerciseRevalidateServerAction(String(body._id));
     // revalidatePath(`${path}/catalog/${String(body._id)}`);
+    revalidatePath(`https://exercises-app-one.vercel.app/catalog/66582fb1b825f8f115bc936e`);
 
     return NextResponse.json({ message: "sucess", result: editedExercise });
   } catch (error: any) {

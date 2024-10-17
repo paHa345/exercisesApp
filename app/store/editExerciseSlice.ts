@@ -3,6 +3,7 @@ import { IExercise } from "../types";
 import { PutBlobResult } from "@vercel/blob";
 import { appStateActions } from "./appStateSlice";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidate } from "../articles/page";
 
 export const editExerciseAndUpdate = createAsyncThunk(
   "editExerciseState/editExerciseAndUpdate",
@@ -29,6 +30,7 @@ export const editExerciseAndUpdate = createAsyncThunk(
       }
 
       const UpdateExerciseReq = await fetch("/api/exercises/editExercise", {
+        next: { revalidate: 1 },
         method: "PUT",
         headers: {
           "Content-Type": "application/json;charset=utf-8",
