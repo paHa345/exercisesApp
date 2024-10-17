@@ -6,6 +6,7 @@ import Workout from "@/app/models/WorkoutModel";
 import { authOptions } from "@/app/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -28,7 +29,9 @@ export async function PUT(req: NextRequest) {
     }
 
     const editedExercise = await Exercise.findOneAndReplace({ _id: body._id }, body);
-    editExerciseRevalidateServerAction(body._id);
+    // console.log(String(body._id));
+    // editExerciseRevalidateServerAction(String(body._id));
+    revalidatePath(`/catalog/${String(body._id)}`);
 
     return NextResponse.json({ message: "sucess", result: editedExercise });
   } catch (error: any) {
