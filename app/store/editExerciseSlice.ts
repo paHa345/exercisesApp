@@ -39,6 +39,9 @@ export const editExerciseAndUpdate = createAsyncThunk(
       if (!UpdateExerciseReq.ok) {
         throw new Error("Ошибка сервера");
       }
+
+      const revalidate = await fetch("./../api/revalidate");
+      console.log(revalidate);
       // console.log("first")
       const editedExerciseRes = await UpdateExerciseReq.json();
       //   dispatch(userActions.updateWorkoutToEdited(editedWorkout));

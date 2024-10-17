@@ -32,9 +32,9 @@ export async function PUT(req: NextRequest) {
     console.log(String(body._id));
     const path = req.nextUrl.origin;
 
-    console.log(`${path}/catalog/${String(body._id)}`);
+    // console.log(`${path}/catalog/${String(body._id)}`);
     // editExerciseRevalidateServerAction(String(body._id));
-    revalidatePath(`${path}/catalog/${String(body._id)}`);
+    // revalidatePath(`${path}/catalog/${String(body._id)}`);
 
     return NextResponse.json({ message: "sucess", result: editedExercise });
   } catch (error: any) {
