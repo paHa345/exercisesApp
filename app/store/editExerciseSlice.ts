@@ -41,8 +41,8 @@ export const editExerciseAndUpdate = createAsyncThunk(
       }
 
       const revalidate = await fetch("./../api/revalidate");
-      console.log(revalidate);
-      // console.log("first")
+      const revRes = await revalidate.json();
+      console.log(revRes);
       const editedExerciseRes = await UpdateExerciseReq.json();
       //   dispatch(userActions.updateWorkoutToEdited(editedWorkout));
       dispatch(appStateActions.updateExerciseToEdited(editedExerciseRes.result));

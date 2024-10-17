@@ -110,13 +110,14 @@ const EditExerciseCard = () => {
       })
     : [];
 
-  const updateExerciseHandler = () => {
+  const updateExerciseHandler = async () => {
     dispatch(
       editExerciseAndUpdate({
         imageFile: inputFileRef.current?.files,
         editedExercise: editedExercise,
       })
     );
+    const revalidate = await fetch("./../api/revalidate");
 
     // editExerciseRevalidateServerAction(editedExercise?._id);
   };
