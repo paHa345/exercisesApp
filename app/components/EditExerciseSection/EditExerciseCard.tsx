@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Router from "next/router";
 import { revalidatePath } from "next/cache";
 import { editExerciseRevalidateServerAction } from "@/actions/editExercise";
+import next from "next";
 
 const EditExerciseCard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -117,7 +118,7 @@ const EditExerciseCard = () => {
         editedExercise: editedExercise,
       })
     );
-    const revalidate = await fetch("./../api/revalidate");
+    const revalidate = await fetch("./../api/revalidate", { next: { revalidate: 1 } });
 
     // editExerciseRevalidateServerAction(editedExercise?._id);
   };
