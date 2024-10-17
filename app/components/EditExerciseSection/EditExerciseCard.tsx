@@ -119,7 +119,7 @@ const EditExerciseCard = () => {
     );
     const revalidate = await fetch("./../api/revalidate");
 
-    // editExerciseRevalidateServerAction(editedExercise?._id);
+    editExerciseRevalidateServerAction(editedExercise?._id);
   };
 
   const mainMuscleGroupElement = mainMuscleGrourArr.map((mainMuscleGroup) => {
