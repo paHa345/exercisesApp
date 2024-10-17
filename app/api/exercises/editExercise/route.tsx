@@ -29,7 +29,10 @@ export async function PUT(req: NextRequest) {
     }
 
     const editedExercise = await Exercise.findOneAndReplace({ _id: body._id }, body);
-    // console.log(String(body._id));
+    console.log(String(body._id));
+    const path = req.nextUrl.origin;
+
+    console.log(`${path}/catalog/${String(body._id)}`);
     // editExerciseRevalidateServerAction(String(body._id));
     revalidatePath(`/catalog/${String(body._id)}`);
 
