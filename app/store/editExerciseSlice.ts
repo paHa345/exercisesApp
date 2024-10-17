@@ -40,9 +40,10 @@ export const editExerciseAndUpdate = createAsyncThunk(
         throw new Error("Ошибка сервера");
       }
 
-      const revalidate = await fetch("./../api/revalidate");
-      const revRes = await revalidate.json();
-      console.log(revRes);
+      // const revalidate = await fetch("./../api/revalidate");
+      // const revRes = await revalidate.json();
+      // console.log(revRes);
+
       const editedExerciseRes = await UpdateExerciseReq.json();
       //   dispatch(userActions.updateWorkoutToEdited(editedWorkout));
       dispatch(appStateActions.updateExerciseToEdited(editedExerciseRes.result));

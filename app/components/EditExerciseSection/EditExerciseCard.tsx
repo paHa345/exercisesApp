@@ -118,8 +118,8 @@ const EditExerciseCard = () => {
         editedExercise: editedExercise,
       })
     );
-    const revalidate = await fetch("./../api/revalidate", { next: { revalidate: 1 } });
-    revalidatePath(`https://exercises-app-one.vercel.app/catalog/66582fb1b825f8f115bc936e`);
+    // const revalidate = await fetch("./../api/revalidate", { next: { revalidate: 1 } });
+    // revalidatePath(`https://exercises-app-one.vercel.app/catalog/66582fb1b825f8f115bc936e`);
 
     editExerciseRevalidateServerAction(editedExercise?._id);
   };
