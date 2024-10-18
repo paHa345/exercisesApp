@@ -1,3 +1,4 @@
+"use client";
 import EditExerciseMain from "@/app/components/EditExerciseSection/EditExerciseMain";
 import { IAppSlice } from "@/app/store/appStateSlice";
 import React, { useEffect } from "react";
@@ -12,7 +13,7 @@ const editExercise = () => {
 
   useEffect(() => {
     testFunc();
-  }, []);
+  });
 
   return <EditExerciseMain></EditExerciseMain>;
 };
