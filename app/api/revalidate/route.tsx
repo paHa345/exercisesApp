@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const path = request.nextUrl.origin;
   console.log(path);
   if (path) {
-    revalidatePath(`https://exercises-app-one.vercel.app/catalog/66582fb1b825f8f115bc936e`);
+    revalidatePath(`/catalog/66582fb1b825f8f115bc936e`);
     return Response.json({ revalidated: true, now: Date.now() });
   }
 
