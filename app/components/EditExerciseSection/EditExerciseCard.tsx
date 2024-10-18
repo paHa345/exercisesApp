@@ -123,7 +123,7 @@ const EditExerciseCard = () => {
     // ("use server");
     // revalidatePath(`/catalog/${editedExercise?._id}`);
 
-    editExerciseRevalidateServerAction(editedExercise?._id);
+    // editExerciseRevalidateServerAction(editedExercise?._id);
   };
 
   const mainMuscleGroupElement = mainMuscleGrourArr.map((mainMuscleGroup) => {
