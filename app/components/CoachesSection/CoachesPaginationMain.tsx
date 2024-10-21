@@ -17,9 +17,9 @@ const CoachesPaginationMain = () => {
     const numberPageButton = Number(e.currentTarget.dataset.gotopage);
     console.log(numberPageButton);
     if (numberPageButton !== currentPage) {
-      const filterEn = searchParams.get("filter");
-      const increment = searchParams.get("increment");
-      const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
+      const filterEn = searchParams?.get("filter");
+      const increment = searchParams?.get("increment");
+      const query = searchParams?.get("query") !== null ? searchParams?.get("query") : "";
 
       const paramsString = `?filter=${filterEn}&increment=${increment}&page=${numberPageButton}&query=${query}`;
       router.push(`./coaches/${paramsString}`);

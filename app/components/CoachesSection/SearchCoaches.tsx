@@ -38,10 +38,10 @@ const SearchCoaches = () => {
     if (searchQuery?.trim().length < 3) {
       return;
     }
-    const filterEn = searchParams.get("filter") !== null ? searchParams.get("filter") : "popular";
+    const filterEn = searchParams?.get("filter") !== null ? searchParams?.get("filter") : "popular";
     const increment =
-      searchParams.get("increment") !== null ? searchParams.get("increment") : "increment";
-    const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
+      searchParams?.get("increment") !== null ? searchParams?.get("increment") : "increment";
+    const page = searchParams?.get("page") !== null ? searchParams?.get("page") : "1";
     //добавить query
     const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}&query=${searchQuery?.trim()}`;
 

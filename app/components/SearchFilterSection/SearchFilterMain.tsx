@@ -17,7 +17,7 @@ const SearchFilterMain = () => {
     dispatch(appStateActions.setCurrentExercisesPage(1));
     const filter = e.currentTarget.value;
     const increment = dataType;
-    const searchQuery = searchParams.get("query");
+    const searchQuery = searchParams?.get("query");
 
     const paramsString = `?${searchQuery !== null ? `query=${searchQuery}` : ""}${filter !== null ? `&filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${1}`;
 
@@ -36,7 +36,7 @@ const SearchFilterMain = () => {
   return (
     <div className=" flex justify-center py-5">
       <select
-        defaultValue={String(searchParams.get("filter"))}
+        defaultValue={String(searchParams?.get("filter"))}
         onChange={changeCatalogFilterHandler}
         name="catalogSelect"
         id="catalogSelect"

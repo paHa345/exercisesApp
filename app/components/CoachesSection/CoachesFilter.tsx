@@ -28,7 +28,7 @@ const CoachesFilter = () => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const dataIncrement = selectedOption.getAttribute("data-increment");
     const filterEn = selectedOption.getAttribute("data-nameen");
-    const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
+    const query = searchParams?.get("query") !== null ? searchParams?.get("query") : "";
 
     dispatch(addWorkoutActions.setCurrentPageNumber(1));
 

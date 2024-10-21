@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       { status: 401 }
     );
   }
-  const searchQuery = req.nextUrl.searchParams.get("query");
+  const searchQuery = req.nextUrl.searchParams?.get("query");
   if (searchQuery!.length < 3) {
     return NextResponse.json(
       { message: "Слишком короткий поисковый запрос. Запрос должен быть более 2 символов" },
@@ -26,12 +26,12 @@ export async function GET(req: NextRequest) {
   try {
     await connectMongoDB();
 
-    const sortParameter = req.nextUrl.searchParams.get("filter");
-    const sortOrder = req.nextUrl.searchParams.get("increment") === "true" ? 1 : (-1 as 1 | -1);
+    const sortParameter = req.nextUrl.searchParams?.get("filter");
+    const sortOrder = req.nextUrl.searchParams?.get("increment") === "true" ? 1 : (-1 as 1 | -1);
     const sortQuery = { [sortParameter as string]: sortOrder };
 
-    const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
-    const limit = parseInt(req.nextUrl.searchParams.get("limit") || "3", 10);
+    const page = parseInt(req.nextUrl.searchParams?.get("page") || "1", 10);
+    const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "3", 10);
     const skip = (page - 1) * limit;
 
     const currentUser = await User.findOne({ email: session?.user?.email });

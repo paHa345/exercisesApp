@@ -30,28 +30,28 @@ const CoachesSectionMain = () => {
   // }, []);
 
   useEffect(() => {
-    const filterEn = searchParams.get("filter") !== null ? searchParams.get("filter") : "popular";
+    const filterEn = searchParams?.get("filter") !== null ? searchParams?.get("filter") : "popular";
     const increment =
-      searchParams.get("increment") !== null ? searchParams.get("increment") : "true";
-    const page = searchParams.get("page") !== null ? searchParams.get("page") : "1";
-    const query = searchParams.get("query") !== null ? searchParams.get("query") : "";
+      searchParams?.get("increment") !== null ? searchParams?.get("increment") : "true";
+    const page = searchParams?.get("page") !== null ? searchParams?.get("page") : "1";
+    const query = searchParams?.get("query") !== null ? searchParams?.get("query") : "";
     dispatch(coachActions.setSearchCoachesQuery(query));
 
     const paramsString = `?filter=${filterEn}&increment=${increment}&page=${page}&query=${query}`;
     if (
-      searchParams.get("filter") === null ||
-      searchParams.get("increment") === null ||
-      searchParams.get("page") === null
+      searchParams?.get("filter") === null ||
+      searchParams?.get("increment") === null ||
+      searchParams?.get("page") === null
     ) {
       router.push(`./coaches${paramsString}`);
     }
     dispatch(coachActions.setCurrentCoachesPage(Number(page)));
     dispatch(fetchAllCoachesAndAddToState(paramsString));
   }, [
-    searchParams.get("filter"),
-    searchParams.get("increment"),
-    searchParams.get("page"),
-    searchParams.get("query"),
+    searchParams?.get("filter"),
+    searchParams?.get("increment"),
+    searchParams?.get("page"),
+    searchParams?.get("query"),
   ]);
 
   return (

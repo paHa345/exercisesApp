@@ -60,16 +60,16 @@ const SearchMainComponent = () => {
   }, []);
 
   useEffect(() => {
-    if (searchParams.get("query") !== null) {
+    if (searchParams?.get("query") !== null) {
       dispatch(
-        searchExerciseActions.setSearchExercisesCurrentPage(Number(searchParams.get("page")))
+        searchExerciseActions.setSearchExercisesCurrentPage(Number(searchParams?.get("page")))
       );
       dispatch(
         findExerciseAndSetInState({
-          query: searchParams.get("query"),
-          page: searchParams.get("page"),
-          filter: searchParams.get("filter"),
-          increment: searchParams.get("increment"),
+          query: searchParams?.get("query"),
+          page: searchParams?.get("page"),
+          filter: searchParams?.get("filter"),
+          increment: searchParams?.get("increment"),
         })
       );
     }
@@ -112,11 +112,12 @@ const SearchMainComponent = () => {
       ) : (
         <div>
           {" "}
-          {searchParams.get("query") ? (
+          {searchParams?.get("query") ? (
             <div className="py-5 flex justify-center">
               <h1 className=" mx-auto">
                 {" "}
-                По запросу <span className=" text-2xl font-bold">{searchParams.get("query")} </span>
+                По запросу{" "}
+                <span className=" text-2xl font-bold">{searchParams?.get("query")} </span>
                 {findedExercises?.length
                   ? `найдено упражнений: ${searchExercisesQuantity} `
                   : `упражнений не найдено`}

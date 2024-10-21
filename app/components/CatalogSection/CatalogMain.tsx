@@ -41,7 +41,7 @@ const CatalogMain = () => {
 
   const searchParams = useSearchParams();
   const selectMuscleGroupHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const filterQueryString = `${searchParams.get("filter") !== null ? `?filter=${searchParams.get("filter")}` : ``}${searchParams.get("increment") !== null ? `&increment=${searchParams.get("increment")}` : ``} `;
+    const filterQueryString = `${searchParams?.get("filter") !== null ? `?filter=${searchParams?.get("filter")}` : ``}${searchParams?.get("increment") !== null ? `&increment=${searchParams?.get("increment")}` : ``} `;
 
     dispatch(setCurrentUserExercisesByTypeCount(e.currentTarget.dataset.nameen as string));
 

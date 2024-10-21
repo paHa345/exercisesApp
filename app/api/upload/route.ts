@@ -6,7 +6,7 @@ import { put } from "@vercel/blob";
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const file = request.body || "";
-  const filename = searchParams.get("filename") || "654654";
+  const filename = searchParams?.get("filename") || "654654";
 
   const blob = await put(filename, file, {
     access: "public",
