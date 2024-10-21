@@ -30,8 +30,8 @@ const PaginationMain = () => {
       // изменить currentExercisesPage
       dispatch(appStateActions.setCurrentExercisesPage(numberPageButton));
 
-      const filter = searchParams.get("filter");
-      const increment = searchParams.get("increment");
+      const filter = searchParams?.get("filter");
+      const increment = searchParams?.get("increment");
 
       const paramsString = `?${filter !== null ? `filter=${filter}` : ""}${increment !== null ? `&increment=${increment}` : ``}&page=${numberPageButton}`;
 
