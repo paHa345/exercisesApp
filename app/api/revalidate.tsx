@@ -8,7 +8,7 @@ export default async function GET(req: NextRequest, res: NextResponse) {
   // }
 
   try {
-    revalidatePath("/catalog/test");
+    revalidatePath("/", "layout");
     return Response.json({ revalidated: true, now: Date.now() });
   } catch (error: any) {
     // If there was an error, Next.js will continue
