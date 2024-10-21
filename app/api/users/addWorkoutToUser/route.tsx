@@ -35,7 +35,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
 
   //   try {
   //     await connectMongoDB();
-  //     const user = await User.findById(params.userId).populate({
+  //     const user = await User.findById(params?.userId).populate({
   //       path: "workoutsArr",
   //       populate: {
   //         path: "exercisesArr",

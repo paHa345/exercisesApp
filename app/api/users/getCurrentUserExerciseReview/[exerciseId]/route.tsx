@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { exerciseId: 
     await connectMongoDB();
     const currentUser = await User.findOne({ email: session?.user?.email }, "name").populate({
       path: "reviewsArr",
-      match: { exerciseId: { $eq: params.exerciseId } },
+      match: { exerciseId: { $eq: params?.exerciseId } },
     });
 
     return NextResponse.json({ message: "Success", result: currentUser });

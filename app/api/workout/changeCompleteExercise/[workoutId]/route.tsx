@@ -52,7 +52,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { workoutId:
 
     const currentIsCompletedStatus = body.isCompleted;
 
-    const workout: IReqWorkout | null = await Workout.findById(params.workoutId);
+    const workout: IReqWorkout | null = await Workout.findById(params?.workoutId);
     if (!workout) {
       throw new Error("Не найдено тренировки");
     }

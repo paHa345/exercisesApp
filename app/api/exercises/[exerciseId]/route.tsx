@@ -10,7 +10,7 @@ import Workout from "@/app/models/WorkoutModel";
 export async function GET(req: NextRequest, { params }: { params: { exerciseId: string } }) {
   try {
     await connectMongoDB();
-    const exercise = await Exercise.findById(params.exerciseId).populate({
+    const exercise = await Exercise.findById(params?.exerciseId).populate({
       path: "commentsArr",
       populate: {
         path: "userId",
@@ -36,9 +36,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { exerciseI
 
   try {
     await connectMongoDB();
-    console.log(params.exerciseId);
+    console.log(params?.exerciseId);
     const currentUser: IUser | null = await User.findOne({ email: session.user?.email });
-    const currentExercise: IExercise | null = await Exercise.findById(params.exerciseId);
+    const currentExercise: IExercise | null = await Exercise.findById(params?.exerciseId);
 
     if (!currentExercise) {
       return NextResponse.json({ message: "Упражнение не найдено" }, { status: 404 });
@@ -47,7 +47,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { exerciseI
     if (String(currentExercise?.createdUserId) !== String(currentUser?._id)) {
       throw new Error("У вас нет прав для удаления этой трнировки");
     }
-    const exercise: any = await Exercise.findByIdAndDelete(params.exerciseId);
+    const exercise: any = await Exercise.findByIdAndDelete(params?.exerciseId);
     // if (!exercise) {
     //   return NextResponse.json({ message: "Упражнение не найдено" }, { status: 404 });
     // }

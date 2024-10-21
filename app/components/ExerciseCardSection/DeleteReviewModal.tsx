@@ -26,11 +26,11 @@ const DeleteReviewModal = () => {
 
     dispatch(
       deleteReview({
-        exerciseId: params.exerciseId,
+        exerciseId: params?.exerciseId,
         reviewId: reviewId,
       })
     );
-    // editExerciseRevalidateServerAction(params.exerciseId);
+    // editExerciseRevalidateServerAction(params?.exerciseId);
   };
 
   const stopDeleteReview = async (e: MouseEvent<HTMLButtonElement>) => {

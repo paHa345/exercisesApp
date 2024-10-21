@@ -15,10 +15,10 @@ const ConfirmEmailMain = () => {
 
   const params: any = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const token: any = decode(params.confirmToken);
+  const token: any = decode(params?.confirmToken);
   console.log(token.password);
   useEffect(() => {
-    dispatch(registerNewUser(params.confirmToken));
+    dispatch(registerNewUser(params?.confirmToken));
   }, []);
 
   useEffect(() => {

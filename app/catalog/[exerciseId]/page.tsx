@@ -140,7 +140,7 @@ export default async function Page({ params: { exerciseId } }: { params: { exerc
 // }
 
 // export async function getStaticProps({ params }: any) {
-//   const req = await fetch(`${process.env.HOST}api/exercises/${params.exerciseId}`);
+//   const req = await fetch(`${process.env.HOST}api/exercises/${params?.exerciseId}`);
 //   if (!req.ok) {
 //     return {
 //       props: { status: "error" },

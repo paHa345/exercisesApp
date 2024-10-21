@@ -21,13 +21,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { exerciseId
 
   try {
     await connectMongoDB();
-    // const review = await Comment.find({ exerciseId: params.exerciseId }).populate({
+    // const review = await Comment.find({ exerciseId: params?.exerciseId }).populate({
     //   path: "userId",
     //   model: "User",
     //   select: "email name",
     // });
 
-    const exercise = await Exercise.findOneAndUpdate({ _id: params.exerciseId }, { raiting: 2 });
+    const exercise = await Exercise.findOneAndUpdate({ _id: params?.exerciseId }, { raiting: 2 });
     return NextResponse.json({ message: "Success", result: exercise });
   } catch (error) {
     return NextResponse.json({ message: "Error" }, { status: 400 });

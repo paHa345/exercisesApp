@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, { params }: { params: { userEmail: s
   //   const currentId = new ObjectId(String(req.query.exerciseId));
   try {
     await connectMongoDB();
-    const user = await User.findOne({ email: params.userEmail }, { userType: 1 });
+    const user = await User.findOne({ email: params?.userEmail }, { userType: 1 });
 
     return NextResponse.json({ message: "Success", result: user });
   } catch (error: any) {

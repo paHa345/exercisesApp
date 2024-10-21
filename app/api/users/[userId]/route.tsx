@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, { params }: { params: { userId: stri
   //   const currentId = new ObjectId(String(req.query.exerciseId));
   try {
     await connectMongoDB();
-    const user = await User.findById(params.userId).populate({
+    const user = await User.findById(params?.userId).populate({
       path: "workoutsArr",
       populate: {
         path: "exercisesArr",

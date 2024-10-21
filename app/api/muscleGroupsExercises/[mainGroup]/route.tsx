@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: { mainGroup: s
     // const exercises = await Exercise.find({
     //   $and: [
     //     { $or: [{ createdUserId: { $eq: currentUser._id } }, { isBest: true }] },
-    //     { mainGroup: { $eq: params.mainGroup } },
+    //     { mainGroup: { $eq: params?.mainGroup } },
     //   ],
     // }).populate("commentsArr");
 
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params }: { params: { mainGroup: s
         $match: {
           $and: [
             { $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }] },
-            { mainGroup: { $eq: params.mainGroup } },
+            { mainGroup: { $eq: params?.mainGroup } },
           ],
         },
       },

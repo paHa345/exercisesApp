@@ -53,15 +53,15 @@ const ReviewForm = () => {
 
   const addReviewHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ text: reviewValue, score: reviewScore, exerciseId: params.exerciseId });
+    console.log({ text: reviewValue, score: reviewScore, exerciseId: params?.exerciseId });
     await dispatch(
       addReviewAndUploadToDatabase({
         text: reviewValue,
         score: reviewScore,
-        exerciseId: params.exerciseId,
+        exerciseId: params?.exerciseId,
       })
     );
-    editExerciseRevalidateServerAction(params.exerciseId);
+    editExerciseRevalidateServerAction(params?.exerciseId);
   };
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const ReviewForm = () => {
 
   const getReview = async () => {
     const getCurrentUserexerciseReviewReq = await fetch(
-      `/api/users/getCurrentUserExerciseReview/${params.exerciseId}`
+      `/api/users/getCurrentUserExerciseReview/${params?.exerciseId}`
     );
     const getCurrentUserexerciseReview = await getCurrentUserexerciseReviewReq.json();
     dispatch(

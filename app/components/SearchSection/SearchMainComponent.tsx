@@ -56,7 +56,7 @@ const SearchMainComponent = () => {
     setCurrentUserId();
     dispatch(searchExerciseActions.setSerchQuery(searchQuery));
 
-    // dispatch(findExerciseAndSetInState(searchParams.get("query")));
+    // dispatch(findExerciseAndSetInState(searchParams?.get("query")));
   }, []);
 
   useEffect(() => {
@@ -74,10 +74,10 @@ const SearchMainComponent = () => {
       );
     }
   }, [
-    searchParams.get("query"),
-    searchParams.get("page"),
-    searchParams.get("filter"),
-    searchParams.get("increment"),
+    searchParams?.get("query"),
+    searchParams?.get("page"),
+    searchParams?.get("filter"),
+    searchParams?.get("increment"),
     searchQuery,
   ]);
 

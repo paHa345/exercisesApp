@@ -19,17 +19,17 @@ export async function GET(req: NextRequest, { params }: { params: { muscleGroup:
   try {
     await connectMongoDB();
     const currentUser: any = await User.findOne({ email: session?.user?.email });
-    console.log(params.muscleGroup);
+    console.log(params?.muscleGroup);
 
     const count =
-      params.muscleGroup === "all"
+      params?.muscleGroup === "all"
         ? await Exercise.countDocuments({
             $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }],
           })
         : await Exercise.countDocuments({
             $and: [
               { $or: [{ createdUserId: String(currentUser._id) }, { isBest: true }] },
-              { mainGroup: { $eq: params.muscleGroup } },
+              { mainGroup: { $eq: params?.muscleGroup } },
             ],
           });
 

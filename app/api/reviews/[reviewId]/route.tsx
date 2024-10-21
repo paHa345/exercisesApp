@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { reviewId: st
 
   try {
     await connectMongoDB();
-    const review = await Comment.findById(params.reviewId).populate({
+    const review = await Comment.findById(params?.reviewId).populate({
       path: "userId",
       model: "User",
       select: "email name",
@@ -43,14 +43,14 @@ export async function DELETE(req: NextRequest, { params }: { params: { reviewId:
   try {
     await connectMongoDB();
     const currentUser: IUser | null = await User.findOne({ email: session.user?.email });
-    const currentReview: IComment | null = await Comment.findById(params.reviewId);
+    const currentReview: IComment | null = await Comment.findById(params?.reviewId);
 
     console.log("Current review", currentReview?.userId);
 
     if (String(currentReview?.userId) !== String(currentUser?._id)) {
       throw new Error("У вас нет прав для удаления этого комментария");
     }
-    const review: any = await Comment.findByIdAndDelete(params.reviewId);
+    const review: any = await Comment.findByIdAndDelete(params?.reviewId);
     if (!review) {
       return NextResponse.json({ message: "Комментарий не найден" }, { status: 404 });
     }
