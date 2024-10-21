@@ -1,3 +1,4 @@
+import RefreshButton from "@/app/components/TestRefreshData/RefreshButton";
 import React from "react";
 
 async function getData() {
@@ -13,13 +14,9 @@ async function getData() {
 const testRevalidate = async ({ timestamp }: any) => {
   // const [result, setResult] = useState("");
 
-  const revalidate = async () => {
-    await fetch("/api/revalidate?secret=supersecret");
-    // setResult("Done. Try to refresh the page");
-  };
   const timeData = await getData();
-  const timeDataEl = timeData.map((el) => {
-    return <div key={el}>{el}</div>;
+  const timeDataEl = timeData.map((el, index) => {
+    return <div key={`${el}+${index}`}>{el}</div>;
   });
 
   return (
@@ -28,6 +25,7 @@ const testRevalidate = async ({ timestamp }: any) => {
 
       {/* <div>{result}</div> */}
       <div className="actions">
+        <RefreshButton></RefreshButton>
         {/* <button
           onClick={() => {
             revalidate();
@@ -35,7 +33,7 @@ const testRevalidate = async ({ timestamp }: any) => {
         >
           Revalidate
         </button> */}
-        <a href="">Refresh</a>
+        {/* <a href="">Refresh</a> */}
       </div>
     </div>
   );
