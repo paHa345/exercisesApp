@@ -1,5 +1,15 @@
 import React from "react";
 
+async function getData() {
+  const timeArr = [];
+  const data = new Date().toISOString();
+  timeArr.push(data);
+  const data2 = new Date().toISOString();
+  timeArr.push(data2);
+
+  return timeArr;
+}
+
 const testRevalidate = async ({ timestamp }: any) => {
   // const [result, setResult] = useState("");
 
@@ -30,16 +40,6 @@ const testRevalidate = async ({ timestamp }: any) => {
     </div>
   );
 };
-
-export async function getData() {
-  const timeArr = [];
-  const data = new Date().toISOString();
-  timeArr.push(data);
-  const data2 = new Date().toISOString();
-  timeArr.push(data2);
-
-  return timeArr;
-}
 
 // export async function getStaticProps() {
 //   return {
