@@ -5,7 +5,7 @@ const RefreshButton = () => {
   const revalidateHandler = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     // await fetch("/api/revalidate?secret=supersecret");
-    await fetch("./../../../pages/api/revalidate.tsx");
+    await fetch("./../../../pages/api/revalidatePages.tsx");
     console.log("Revalidate");
     // setResult("Done. Try to refresh the page");
   };
