@@ -4,6 +4,7 @@ import { PutBlobResult } from "@vercel/blob";
 import { appStateActions } from "./appStateSlice";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { revalidate } from "../articles/page";
+import { editExerciseRevalidateServerAction } from "@/actions/editExercise";
 
 export const editExerciseAndUpdate = createAsyncThunk(
   "editExerciseState/editExerciseAndUpdate",
@@ -45,6 +46,7 @@ export const editExerciseAndUpdate = createAsyncThunk(
       //   dispatch(userActions.updateWorkoutToEdited(editedWorkout));
       dispatch(appStateActions.updateExerciseToEdited(editedExerciseRes.result));
       // revalidateTag("collection");
+      editExerciseRevalidateServerAction(editExerciseData._id);
 
       // console.log("first 22")
 

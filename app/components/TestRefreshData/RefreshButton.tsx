@@ -6,7 +6,9 @@ const RefreshButton = () => {
     e.preventDefault();
     // await fetch("/api/revalidate?secret=supersecret");
     // await fetch("./../../../pages/api/revalidatePages.tsx");
-    console.log("Revalidate");
+    const dataReq = await fetch("../../../pages/api/test.tsx");
+    const data = await dataReq.json();
+    console.log(data);
     // setResult("Done. Try to refresh the page");
   };
   return (
