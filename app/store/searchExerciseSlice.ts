@@ -3,10 +3,10 @@ import { IExercise } from "../types";
 import { appStateActions } from "./appStateSlice";
 
 interface ISearchQuery {
-  query: string | null;
-  page: string | null;
-  filter?: string | null;
-  increment?: string | null;
+  query: string | null | undefined;
+  page: string | null | undefined;
+  filter?: string | null | undefined;
+  increment?: string | null | undefined;
 }
 
 export const findExerciseAndSetInState = createAsyncThunk(
