@@ -20,6 +20,7 @@ const config: Config = {
       },
       gridTemplateColumns: {
         mainGrid: "2fr 10fr",
+        studentList: "repeat(auto-fill,minmax(250px,1fr))",
       },
 
       backgroundImage: {

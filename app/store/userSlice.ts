@@ -312,7 +312,7 @@ export const userSlice = createSlice({
           sets: 0,
           reps: 0,
           name: action.payload.name,
-          isCompleted: false,
+          isCompletedArr: [],
         });
       } else {
         state.currentUser.editedWorkout.exercisesArr = [
@@ -322,7 +322,7 @@ export const userSlice = createSlice({
             sets: 0,
             reps: 0,
             name: action.payload.name,
-            isCompleted: false,
+            isCompletedArr: [],
           },
         ];
       }
@@ -452,19 +452,71 @@ export const userSlice = createSlice({
           exerciseId: string;
           workoutId: string;
           isComplete: boolean;
+          currentUserId: string;
         };
         type: string;
       }
     ) {
+      console.log("process");
       const workoutIndex = state.currentUser.workoutsArr.findIndex(
         (workout) => workout._id === action.payload.workoutId
       );
       const currentEditedExercisesIndex = state.currentUser.workoutsArr[
         workoutIndex
       ].exercisesArr.findIndex((exercise) => exercise.exercise._id === action.payload.exerciseId);
-      state.currentUser.workoutsArr[workoutIndex].exercisesArr[
-        currentEditedExercisesIndex
-      ].isCompleted = !action.payload.isComplete;
+
+      const currentExerciseIsCompleteArr =
+        state.currentUser.workoutsArr[workoutIndex].exercisesArr[currentEditedExercisesIndex]
+          .isCompletedArr;
+
+      if (currentExerciseIsCompleteArr === undefined) {
+        state.currentUser.workoutsArr[workoutIndex].exercisesArr[
+          currentEditedExercisesIndex
+        ].isCompletedArr = [
+          { studentId: action.payload.currentUserId, isCompleted: !action.payload.isComplete },
+        ];
+      }
+      if (currentExerciseIsCompleteArr !== undefined) {
+        console.log("Not undefined");
+        const index = currentExerciseIsCompleteArr?.findIndex(
+          (el) => el.studentId === action.payload.currentUserId
+        );
+        console.log(currentExerciseIsCompleteArr.length);
+        if (index >= 0) {
+          currentExerciseIsCompleteArr[index] = {
+            studentId: action.payload.currentUserId,
+            isCompleted: !action.payload.isComplete,
+          };
+        }
+        if (index === -1) {
+          state.currentUser.workoutsArr[workoutIndex].exercisesArr[
+            currentEditedExercisesIndex
+          ].isCompletedArr = [
+            { studentId: action.payload.currentUserId, isCompleted: !action.payload.isComplete },
+          ];
+        }
+      }
+      // else {
+      //   const index = currentExerciseIsCompleteArr?.findIndex(
+      //     (el) => el.studentId === action.payload.currentUserId
+      //   );
+
+      //   if (index >= 0 && currentExerciseIsCompleteArr !== undefined) {
+      //     currentExerciseIsCompleteArr[index] = {
+      //       studentId: action.payload.currentUserId,
+      //       isCompleted: !action.payload.isComplete,
+      //     };
+      //   } else {
+      //     currentExerciseIsCompleteArr.push({
+      //       studentId: action.payload.currentUserId,
+      //       isCompleted: !action.payload.isComplete,
+      //     });
+      //   }
+      // }
+      // console.log(currentExerciseIsCompleteArr[0].studentId);
+      // state.currentUser.workoutsArr[workoutIndex].exercisesArr[
+      //   currentEditedExercisesIndex
+      // ].isCompletedArr = !action.payload.isComplete;
     },
   },
   extraReducers(builder) {

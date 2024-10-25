@@ -30,7 +30,7 @@ export interface IReqWorkout {
           exerciseId: string;
           reps: number;
           sets: number;
-          isCompleted?: boolean;
+          isCompletedArr?: [{ studentId?: string; isCompleted?: boolean }] | [];
         },
       ]
     | [];
@@ -69,15 +69,77 @@ export async function PATCH(req: NextRequest, { params }: { params: { workoutId:
       throw new Error("Вы не являетесь участником этой тренировки");
     }
 
-    const updatedWorkout = await Workout.findOneAndUpdate(
-      { _id: params?.workoutId },
-      {
-        $set: { "exercisesArr.$[elem].isCompleted": !currentIsCompletedStatus },
-      },
-      {
-        arrayFilters: [{ "elem.exerciseId": body.exerciseId }],
-      }
-    );
+    const isCompletedArr = await Workout.findOne({ _id: params?.workoutId });
+
+    const updatedWorkout = !isCompletedArr.exercisesArr.filter((exercise: any) => {
+      return String(exercise.exerciseId) === String(body.exerciseId);
+    }).isCompletedArr
+      ? await Workout.findOneAndUpdate(
+          { _id: params?.workoutId },
+          {
+            $set: {
+              "exercisesArr.$[elem].isCompletedArr": [
+                {
+                  studentId: String(currentUser._id),
+                  isCompleted: !currentIsCompletedStatus,
+                },
+              ],
+            },
+          },
+          {
+            arrayFilters: [{ "elem.exerciseId": body.exerciseId }],
+          }
+        )
+      : await Workout.findOneAndUpdate(
+          { _id: params?.workoutId },
+          {
+            $set: {
+              "exercisesArr.$[elem].isCompletedArr.$[completed]": {
+                studentId: String(currentUser._id),
+                isCompleted: !currentIsCompletedStatus,
+              },
+            },
+          },
+          {
+            arrayFilters: [
+              { "elem.exerciseId": body.exerciseId },
+              { "completed.studentId": String(currentUser._id) },
+            ],
+          }
+        );
+
+    // if (
+    //   !isCompletedArr.exercisesArr.filter((exercise: any) => {
+    //     return String(exercise.exerciseId) === String(body.exerciseId);
+    //   }).isCompletedArr
+    // ) {
+    //   const updatedWorkout = await Workout.findOneAndUpdate(
+    //     { _id: params?.workoutId },
+    //     {
+    //       $set: {
+    //         "exercisesArr.$[elem].isCompletedArr": [
+    //           {
+    //             studentId: String(currentUser._id),
+    //             isCompleted: !currentIsCompletedStatus,
+    //           },
+    //         ],
+    //       },
+    //     },
+    //     {
+    //       arrayFilters: [{ "elem.exerciseId": body.exerciseId }],
+    //     }
+    //   );
+    // }
+
+    // const updatedWorkout = await Workout.findOneAndUpdate(
+    //   { _id: params?.workoutId },
+    //   {
+    //     $set: { "exercisesArr.$[elem].isCompleted": !currentIsCompletedStatus },
+    //   },
+    //   {
+    //     arrayFilters: [{ "elem.exerciseId": body.exerciseId }],
+    //   }
+    // );
 
     return NextResponse.json({ message: "Success", result: updatedWorkout });
   } catch (error: any) {

@@ -71,6 +71,14 @@ textarea {
   @apply text-buttonColor font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-buttonColor hover:bg-buttonHoverColor hover:text-buttonHoverColor;
 }
 
+.buttonStudent {
+  @apply text-slate-50 font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-zinc-500 hover:bg-zinc-600;
+}
+
+.buttonStudentCurrent {
+  @apply text-slate-50 font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-zinc-600;
+}
+
 .delete-buttonStandart {
   @apply text-slate-50 font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-red-600 hover:bg-red-500;
 }

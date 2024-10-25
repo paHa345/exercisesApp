@@ -65,12 +65,12 @@ export const changeCompleteExerciseStatus = createAsyncThunk(
       exerciseId: string;
       workoutId: string;
       isCompleted: boolean;
+      currentUserId: string;
       // setState: any;
     },
     { rejectWithValue, dispatch }
   ) {
     try {
-      // await data.setState();
       const reqCompleteStatus = await fetch(
         `/api/workout/changeCompleteExercise/${data.workoutId}`,
         {
@@ -86,12 +86,14 @@ export const changeCompleteExerciseStatus = createAsyncThunk(
         dispatch(addWorkoutActions.setChangeCompleteExerciseErrorMessage(updatedWorkout.message));
         throw new Error("Ошибка сервера");
       }
+
       // dispatch(userActions.setChangedExerciseWorkoutId(data.workoutId));
       dispatch(
         userActions.changeExerciseStatus({
           workoutId: data.workoutId,
           exerciseId: data.exerciseId,
           isComplete: data.isCompleted,
+          currentUserId: data.currentUserId,
         })
       );
     } catch (error) {

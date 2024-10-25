@@ -8,13 +8,23 @@ import { IUserSlice, userActions } from "@/app/store/userSlice";
 import { AppDispatch } from "@/app/store";
 
 interface ICompleteExercoseButtonProps {
-  isCompleted: boolean | undefined;
+  isCompletedArr?:
+    | [
+        {
+          studentId?: string;
+          isCompleted?: boolean;
+        },
+      ]
+    | undefined
+    | [];
   workoutId: string;
   exerciseId: string;
+  currentStudentId: string;
 }
 
-const CompleteExerciseButton = ({
-  isCompleted,
+const CompleteExerciseButtonStudent = ({
+  isCompletedArr,
+  currentStudentId,
   workoutId,
   exerciseId,
 }: ICompleteExercoseButtonProps) => {
@@ -26,12 +36,20 @@ const CompleteExerciseButton = ({
     (state: IUserSlice) => state.userState.currentUser.changedExerciseWorkoutId
   );
 
+  const userId = useSelector((state: IUserSlice) => state.userState.currentUser.id);
+
   const [fetchDataStatus, setFetchDataStatus] = useState("Pending");
+
+  const currentStudentCompleteObj = isCompletedArr?.find((el) => {
+    return el.studentId === userId;
+  });
+
+  const currentUserId = useSelector((state: IUserSlice) => state.userState.currentUser.id);
 
   const dispatch = useDispatch<AppDispatch>();
 
   const changeCompleteExerciseHandler = async function (
-    this: { isCompleted: boolean; exerciseId: string },
+    this: { isCompleted: boolean | undefined; exerciseId: string },
     e: React.MouseEvent<HTMLAnchorElement>
   ) {
     e.preventDefault();
@@ -43,22 +61,32 @@ const CompleteExerciseButton = ({
     setFetchDataStatus(() => {
       return "loading";
     });
+    //если этот массив пустой, то значит что
+    // ученики не добавили отметки об выполнении
 
-    await dispatch(
-      changeCompleteExerciseStatus({
-        workoutId: workoutId,
-        exerciseId: exerciseId,
-        isCompleted: isCompleted,
-        // setState: setHandler,
-      })
-    );
+    if (currentStudentCompleteObj?.isCompleted !== undefined || isCompletedArr) {
+      const isCompleted =
+        currentStudentCompleteObj?.isCompleted === undefined
+          ? false
+          : currentStudentCompleteObj?.isCompleted;
+      await dispatch(
+        changeCompleteExerciseStatus({
+          workoutId: workoutId,
+          exerciseId: exerciseId,
+          isCompleted: isCompleted,
+          currentUserId: currentUserId,
+          // setState: setHandler,
+        })
+      );
+    }
+
     setFetchDataStatus(() => {
       return "pending";
     });
   };
 
   const checkedEl =
-    isCompleted && isCompleted !== undefined ? (
+    currentStudentCompleteObj?.isCompleted && isCompletedArr !== undefined ? (
       <div>
         <FontAwesomeIcon className="fa-2x " icon={faCircleCheck} />
       </div>
@@ -75,13 +103,13 @@ const CompleteExerciseButton = ({
       </div>
     ) : (
       <div>
-        {isCompleted !== undefined && (
+        {isCompletedArr !== undefined && (
           <div>
             {" "}
             <a
               href=""
               onClick={changeCompleteExerciseHandler.bind({
-                isCompleted: isCompleted,
+                isCompleted: currentStudentCompleteObj?.isCompleted,
                 exerciseId: exerciseId,
               })}
             >
@@ -94,4 +122,4 @@ const CompleteExerciseButton = ({
   return <div>{buttonEl}</div>;
 };
 
-export default CompleteExerciseButton;
+export default CompleteExerciseButtonStudent;

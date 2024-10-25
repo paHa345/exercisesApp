@@ -1,6 +1,6 @@
 import { IExercise, IWorkout } from "@/app/types";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Exercise from "./WorkoutExercise";
 import { useDispatch, useSelector } from "react-redux";
 import { IUserSlice } from "@/app/store/userSlice";
@@ -15,6 +15,7 @@ import {
   IAddWorkoutSlice,
 } from "@/app/store/addWorkoutSlice";
 import WorkoutExercise from "./WorkoutExercise";
+import StudentsList from "./StudentsList";
 
 interface TrainPropsInterface {
   workout: IWorkout;
@@ -27,15 +28,16 @@ const Train = ({ workout }: TrainPropsInterface) => {
     day: "numeric",
   });
 
-  const currentUserType = useSelector((state: IUserSlice) => state.userState.currentUser.userType);
+  const [currentStudent, setCurrentStudent] = useState(workout.studentsIdArr[0]?._id);
 
-  const studentsEl = workout.studentsIdArr.map((student, index) => {
-    return (
-      <div key={student._id}>
-        <Link href={`/`}>{student.email}</Link>
-      </div>
-    );
-  });
+  const changeCurrentStudentHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (e.currentTarget.dataset.studentid) {
+      setCurrentStudent(e.currentTarget.dataset.studentid);
+    }
+  };
+
+  const currentUserType = useSelector((state: IUserSlice) => state.userState.currentUser.userType);
 
   const coachEmail = typeof workout.userId === "object" ? workout.userId.email : "";
 
@@ -43,6 +45,7 @@ const Train = ({ workout }: TrainPropsInterface) => {
     return (
       <div key={`${exercise.exerciseId}_${index}`}>
         <WorkoutExercise
+          currentStudentId={currentStudent}
           exercise={exercise}
           index={index}
           workoutId={workout._id}
@@ -56,7 +59,13 @@ const Train = ({ workout }: TrainPropsInterface) => {
       {currentUserType === "coach" ? (
         <div>
           <h1>Подопечные:</h1>
-          <div className=" flex gap-2 my-2">{studentsEl}</div>
+          <div>
+            <StudentsList
+              changeCurrentStudentHandler={changeCurrentStudentHandler}
+              studentsArr={workout.studentsIdArr}
+              currentStudent={currentStudent}
+            ></StudentsList>
+          </div>
         </div>
       ) : (
         <div>

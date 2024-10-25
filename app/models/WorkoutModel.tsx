@@ -15,7 +15,12 @@ const workoutSchema = new mongoose.Schema<IWorkoutSchema>({
       exerciseId: { type: String, required: true },
       sets: { type: Number, required: true },
       reps: { type: Number, required: true },
-      isCompleted: { type: Boolean, required: false },
+      isCompletedArr: [
+        {
+          studentId: { type: String, required: false },
+          isCompleted: { type: Boolean, required: false },
+        },
+      ],
     },
   ],
 });

@@ -88,7 +88,7 @@ export interface IWorkout {
           exerciseId: string;
           reps: number;
           sets: number;
-          isCompleted?: boolean;
+          isCompletedArr?: [{ studentId?: string; isCompleted?: boolean }] | [];
         },
       ]
     | [];

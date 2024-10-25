@@ -7,7 +7,8 @@ import { changeCompleteExerciseStatus, IAddWorkoutSlice } from "@/app/store/addW
 import { AppDispatch } from "@/app/store";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { IUserSlice } from "@/app/store/userSlice";
-import CompleteExerciseButton from "./CompleteExerciseButton";
+import CompleteExerciseButtonStudent from "./CompleteExerciseButtonStudent";
+import CompleteExerciseButtonCoach from "./CompleteexerciseButtonCoach";
 
 interface IWorkoutExerciseProps {
   exercise: {
@@ -20,13 +21,19 @@ interface IWorkoutExerciseProps {
     exerciseId: string;
     reps: number;
     sets: number;
-    isCompleted?: boolean;
+    isCompletedArr?: [{ studentId?: string; isCompleted?: boolean }] | [];
   };
   index: number;
   workoutId: string;
+  currentStudentId: string;
 }
 
-const WorkoutExercise = ({ exercise, index, workoutId }: IWorkoutExerciseProps) => {
+const WorkoutExercise = ({
+  exercise,
+  index,
+  workoutId,
+  currentStudentId,
+}: IWorkoutExerciseProps) => {
   const fetchChangeCompleteExerciseStatus = useSelector(
     (state: IAddWorkoutSlice) => state.addWorkoutState.changeCompleteExerciseStatus
   );
@@ -34,6 +41,8 @@ const WorkoutExercise = ({ exercise, index, workoutId }: IWorkoutExerciseProps) 
   const changedWorkoutId = useSelector(
     (state: IUserSlice) => state.userState.currentUser.changedExerciseWorkoutId
   );
+
+  const userType = useSelector((state: IUserSlice) => state.userState.currentUser.userType);
 
   const [fetchDataStatus, setFetchDataStatus] = useState("Pending");
 
@@ -57,11 +66,22 @@ const WorkoutExercise = ({ exercise, index, workoutId }: IWorkoutExerciseProps) 
             {exercise.sets} X {exercise.reps}
           </p>
 
-          <CompleteExerciseButton
-            isCompleted={exercise.isCompleted}
-            workoutId={workoutId}
-            exerciseId={exercise.exerciseId}
-          ></CompleteExerciseButton>
+          {userType === "user" && (
+            <CompleteExerciseButtonStudent
+              isCompletedArr={exercise.isCompletedArr}
+              workoutId={workoutId}
+              exerciseId={exercise.exerciseId}
+              currentStudentId={currentStudentId}
+            ></CompleteExerciseButtonStudent>
+          )}
+          {userType === "coach" && (
+            <CompleteExerciseButtonCoach
+              isCompletedArr={exercise.isCompletedArr}
+              workoutId={workoutId}
+              exerciseId={exercise.exerciseId}
+              currentStudentId={currentStudentId}
+            ></CompleteExerciseButtonCoach>
+          )}
         </div>
       ) : (
         <div className=" flex flex-row gap-3" data-exerciseid={exercise.exerciseId}>
