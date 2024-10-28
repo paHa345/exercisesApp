@@ -8,6 +8,7 @@ import { editExerciseSlice } from "./editExerciseSlice";
 import { currentExerciseSlice } from "./currentExerciseSlice";
 import { searchExerciseSlice } from "./searchExerciseSlice";
 import { coachSlice } from "./coachSlice";
+import { crosswordSlice } from "./crosswordSlice";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     currentExerciseState: currentExerciseSlice.reducer,
     searchExerciseState: searchExerciseSlice.reducer,
     coachState: coachSlice.reducer,
+    crosswordState: crosswordSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
