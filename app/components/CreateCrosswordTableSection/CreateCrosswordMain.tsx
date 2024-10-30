@@ -38,7 +38,7 @@ const CreateCrosswordMain = () => {
 
   const callContextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(e.currentTarget.dataset.fieldid);
+
     dispatch(crosswordActions.setHighlightedField(e.currentTarget.dataset.fieldid));
     dispatch(
       crosswordActions.setCreateContextMenuPosition({

@@ -91,16 +91,19 @@ export const crosswordSlice = createSlice({
     ) {
       const winWidth = action.payload.windowWidth;
       const winHeight = action.payload.windowHeight;
-
-      const currentWidth =
-        action.payload.windowWidth / 2 > action.payload.y
-          ? action.payload.y + 20
-          : action.payload.y - 200;
+      console.log(action.payload.x);
+      console.log(action.payload.windowWidth / 2);
 
       const currentHeight =
-        action.payload.windowHeight / 2 > action.payload.x
-          ? action.payload.x + 20
-          : action.payload.x - 200;
+        action.payload.x > action.payload.windowWidth / 2
+          ? action.payload.x - 200
+          : action.payload.x + 20;
+
+      console.log(currentHeight);
+      const currentWidth =
+        action.payload.y > action.payload.windowHeight / 2
+          ? action.payload.y - 200
+          : action.payload.y + 20;
 
       state.createContextMenuXPosition = currentHeight;
       state.createContextMenuYPosition = currentWidth;
