@@ -6,13 +6,36 @@ import { useDispatch, useSelector } from "react-redux";
 const CreateCrosswordContextMenu = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const createContextMenuConstant = ["Добавить номер", "По горизонтали", "По вертикали"];
+  const createContextMenuConstant = [
+    { name: "Добавить номер", handler: "addNumberHandler" },
+    { name: "По горизонтали", handler: "addHorizontHandler" },
+    { name: "По вертикали", handler: "addVerticalHandler" },
+  ];
   const positionX = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.createContextMenuXPosition
   );
   const positionY = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.createContextMenuYPosition
   );
+
+  const createdCrossword = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.createdCrossword
+  );
+
+  const contextMenuActionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    const actionName = e.currentTarget.dataset.actionhandler;
+    if (actionName === "addNumberHandler") {
+      //   console.log(createdCrossword);
+      //   dispatch(
+      //     crosswordActions.addNumberAndText({
+      //       row: e.currentTarget.dataset.row,
+      //       number: e.currentTarget.dataset.number,
+      //     })
+      //   );
+      dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+      dispatch(crosswordActions.showSetNumberModal());
+    }
+  };
 
   const hideMenuHandler = () => {
     dispatch(crosswordActions.setHighlightedField(""));
@@ -25,7 +48,7 @@ const CreateCrosswordContextMenu = () => {
       style={{ position: "absolute", left: `${positionX}px`, top: `${positionY}px` }}
     >
       <div onClick={hideMenuHandler} className=" mt-2 mr-2 flex justify-end">
-        <div className=" flex justify-center items-center w-8 h-8 rounded-full p-2 border-2 pb-2 hover:bg-slate-500">
+        <div className=" cursor-pointer  flex justify-center items-center w-8 h-8 rounded-full p-2 border-2 pb-2 hover:bg-slate-500">
           <p>x</p>
         </div>
       </div>
@@ -34,10 +57,12 @@ const CreateCrosswordContextMenu = () => {
         {createContextMenuConstant.map((el, index) => {
           return (
             <div
-              key={el}
-              className=" flex justify-center items-center rounded-sm p-2 border-b-2 pb-2 hover:bg-slate-500"
+              onClick={contextMenuActionHandler}
+              data-actionhandler={el.handler}
+              key={el.name}
+              className=" cursor-pointer flex justify-center items-center rounded-sm p-2 border-b-2 pb-2 hover:bg-slate-500"
             >
-              {el}
+              {el.name}
             </div>
           );
         })}

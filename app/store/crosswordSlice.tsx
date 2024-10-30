@@ -10,7 +10,7 @@ export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
         for (let i = 0; i < crosswordValue; i++) {
           const arr = [];
           for (let j = 0; j < crosswordValue; j++) {
-            arr.push({ key: `${i}:${j}`, value: `${i}:${j}` });
+            arr.push({ key: `${i}:${j}`, value: `${i}:${j}`, row: i, number: j, paragraph: false });
           }
           createdCrossword.push(arr);
         }
@@ -34,11 +34,24 @@ export interface ICrosswordSlice {
     createdCrossword: {
       key: string;
       value: string;
+      number: number;
+      row: number;
+      paragraph: boolean;
+      paragraphNum?: number;
     }[][];
     createContextMenuStatus: boolean;
     createContextMenuXPosition: number;
     createContextMenuYPosition: number;
-    highlightedField: string;
+    highlightedField: {
+      id: string;
+      row: number;
+      number: number;
+      cellCoordinates: {
+        x: number;
+        y: number;
+      };
+    };
+    setNumberModalStatus: boolean;
   };
 }
 
@@ -47,11 +60,22 @@ interface ICrosswordState {
   createdCrossword: {
     key: string;
     value: string;
+    number: number;
+    row: number;
+    paragraph: boolean;
+    paragraphNum?: number;
   }[][];
   createContextMenuStatus: boolean;
   createContextMenuXPosition: number;
   createContextMenuYPosition: number;
-  highlightedField: string;
+  highlightedField: {
+    id: string;
+    row: number;
+    number: number;
+    x: number;
+    y: number;
+  };
+  setNumberModalStatus: boolean;
 }
 
 export const initCrosswordState: ICrosswordState = {
@@ -60,7 +84,8 @@ export const initCrosswordState: ICrosswordState = {
   createContextMenuStatus: false,
   createContextMenuXPosition: 0,
   createContextMenuYPosition: 0,
-  highlightedField: "",
+  highlightedField: { id: "id", row: 0, number: 0, x: 0, y: 0 },
+  setNumberModalStatus: false,
 };
 
 export const crosswordSlice = createSlice({
@@ -107,6 +132,20 @@ export const crosswordSlice = createSlice({
 
       state.createContextMenuXPosition = currentHeight;
       state.createContextMenuYPosition = currentWidth;
+    },
+    addNumberAndText(state, action) {
+      state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
+        true;
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].paragraphNum = action.payload;
+      //   console.log(state.createdCrossword[0].value);
+    },
+    hideSetNumberModal(state) {
+      state.setNumberModalStatus = false;
+    },
+    showSetNumberModal(state) {
+      state.setNumberModalStatus = true;
     },
   },
   //   extraReducers: (builder) => {},

@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CreateCrosswordContextMenu from "./CreateCrosswordContextMenu";
+import CreateCrosswordModal from "../CreateCrosswordModalSection/CreateCrosswordModal";
 
 const CreateCrosswordMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +26,10 @@ const CreateCrosswordMain = () => {
     (state: ICrosswordSlice) => state.crosswordState.highlightedField
   );
 
+  const setNumberModalStatus = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.setNumberModalStatus
+  );
+
   const [crosswordValue, setCrosswordValue] = useState(10);
   //   const [cretedCrosswordValue, setCretedCrosswordValue] = useState(10);
   const changeCrosswordValueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +44,17 @@ const CreateCrosswordMain = () => {
   const callContextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    dispatch(crosswordActions.setHighlightedField(e.currentTarget.dataset.fieldid));
+    dispatch(
+      crosswordActions.setHighlightedField({
+        id: e.currentTarget.dataset.fieldid,
+        row: e.currentTarget.dataset.row,
+        number: e.currentTarget.dataset.number,
+        cellCoordinates: {
+          x: e.currentTarget.getBoundingClientRect().x,
+          y: e.currentTarget.getBoundingClientRect().y,
+        },
+      })
+    );
     dispatch(
       crosswordActions.setCreateContextMenuPosition({
         x: e.pageX,
@@ -51,18 +66,20 @@ const CreateCrosswordMain = () => {
     dispatch(crosswordActions.setCreateContextMenuStatusTrue());
   };
 
-  const cretedCrosswordTableEl = createdCrosswordTable.map((row: any, i: number) => {
+  const cretedCrosswordTableEl = createdCrosswordTable.map((el, i: number) => {
     return (
       <div className=" flex gap-1 mb-1" key={i}>
-        {row.map((cell: any, j: number) => {
+        {el.map((cell, j: number) => {
           return (
             <div
               onClick={callContextMenuHandler}
               data-fieldid={`${i}:${j}`}
+              data-row={cell.row}
+              data-number={cell.number}
               key={`${i}:${j}`}
-              className={` ${highlightedElId === `${i}:${j}` ? " bg-lime-600" : ""}  flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+              className={` ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""}  flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
             >
-              <p></p>
+              {cell.paragraph && <p>{cell?.paragraphNum}</p>}
             </div>
           );
         })}
@@ -87,6 +104,8 @@ const CreateCrosswordMain = () => {
           Размерность кроссвордв <span>{cretedCrosswordValue}</span>
         </p>
       </div>
+
+      {setNumberModalStatus && <CreateCrosswordModal></CreateCrosswordModal>}
 
       {showContextMenu && <CreateCrosswordContextMenu></CreateCrosswordContextMenu>}
 
