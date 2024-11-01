@@ -3,14 +3,23 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
   "authState/loginUser",
   async function (crosswordValue: number, { rejectWithValue, dispatch }) {
-    console.log(crosswordValue);
     try {
       const createdCrossword: any = [];
       const createEl = async function () {
         for (let i = 0; i < crosswordValue; i++) {
           const arr = [];
           for (let j = 0; j < crosswordValue; j++) {
-            arr.push({ key: `${i}:${j}`, value: `${i}:${j}`, row: i, number: j, paragraph: false });
+            arr.push({
+              key: `${i}:${j}`,
+              value: `${i}:${j}`,
+              row: i,
+              number: j,
+              paragraph: 0,
+              inputStatus: 0,
+              inputValue: 0,
+              textQuestionStatus: 0,
+              textQuestionValue: "",
+            });
           }
           createdCrossword.push(arr);
         }
@@ -28,6 +37,12 @@ export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
   }
 );
 
+export enum ModalType {
+  "Number",
+  "Horizontal",
+  "Vertical",
+}
+
 export interface ICrosswordSlice {
   crosswordState: {
     crosswordValue: number;
@@ -36,8 +51,12 @@ export interface ICrosswordSlice {
       value: string;
       number: number;
       row: number;
-      paragraph: boolean;
+      paragraph: number;
       paragraphNum?: number;
+      inputStatus: number;
+      inputValue: number;
+      textQuestionStatus: number;
+      textQuestionValue: string;
     }[][];
     createContextMenuStatus: boolean;
     createContextMenuXPosition: number;
@@ -46,12 +65,19 @@ export interface ICrosswordSlice {
       id: string;
       row: number;
       number: number;
+      paragraphNum: number;
+      setParagraph: number;
       cellCoordinates: {
         x: number;
         y: number;
       };
+      textQuestionStatus: number;
+      textQuestionValue: string;
     };
+    modalType: ModalType;
     setNumberModalStatus: boolean;
+    setTextModalStatus: boolean;
+    questionValue: string;
   };
 }
 
@@ -62,8 +88,12 @@ interface ICrosswordState {
     value: string;
     number: number;
     row: number;
-    paragraph: boolean;
+    paragraph: number;
     paragraphNum?: number;
+    inputStatus: number;
+    inputValue: number;
+    textQuestionStatus: number;
+    textQuestionValue: string;
   }[][];
   createContextMenuStatus: boolean;
   createContextMenuXPosition: number;
@@ -72,10 +102,21 @@ interface ICrosswordState {
     id: string;
     row: number;
     number: number;
-    x: number;
-    y: number;
+    paragraphNum: number;
+    setParagraph: number;
+
+    cellCoordinates: {
+      x: number;
+      y: number;
+    };
+    textQuestionStatus: number;
+    textQuestionValue: string;
   };
   setNumberModalStatus: boolean;
+  setTextModalStatus: boolean;
+  questionValue: string;
+
+  modalType: ModalType;
 }
 
 export const initCrosswordState: ICrosswordState = {
@@ -84,8 +125,21 @@ export const initCrosswordState: ICrosswordState = {
   createContextMenuStatus: false,
   createContextMenuXPosition: 0,
   createContextMenuYPosition: 0,
-  highlightedField: { id: "id", row: 0, number: 0, x: 0, y: 0 },
+  highlightedField: {
+    id: "id",
+    row: 0,
+    number: 0,
+    paragraphNum: -1,
+    setParagraph: 0,
+    cellCoordinates: { x: 0, y: 0 },
+    textQuestionStatus: 0,
+    textQuestionValue: "",
+  },
   setNumberModalStatus: false,
+  setTextModalStatus: false,
+  questionValue: "",
+
+  modalType: ModalType.Number,
 };
 
 export const crosswordSlice = createSlice({
@@ -114,17 +168,11 @@ export const crosswordSlice = createSlice({
         type: string;
       }
     ) {
-      const winWidth = action.payload.windowWidth;
-      const winHeight = action.payload.windowHeight;
-      console.log(action.payload.x);
-      console.log(action.payload.windowWidth / 2);
-
       const currentHeight =
         action.payload.x > action.payload.windowWidth / 2
           ? action.payload.x - 200
           : action.payload.x + 20;
 
-      console.log(currentHeight);
       const currentWidth =
         action.payload.y > action.payload.windowHeight / 2
           ? action.payload.y - 200
@@ -135,7 +183,7 @@ export const crosswordSlice = createSlice({
     },
     addNumberAndText(state, action) {
       state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
-        true;
+        1;
       state.createdCrossword[state.highlightedField.row][
         state.highlightedField.number
       ].paragraphNum = action.payload;
@@ -146,6 +194,77 @@ export const crosswordSlice = createSlice({
     },
     showSetNumberModal(state) {
       state.setNumberModalStatus = true;
+    },
+    hideSetTextModal(state) {
+      state.setTextModalStatus = false;
+    },
+    showSetTextModal(state) {
+      state.setTextModalStatus = true;
+    },
+    setHighlitedParagraphStatusTrue(state) {
+      state.highlightedField.setParagraph = 1;
+    },
+    setHighlitedParagraphStatusFalse(state) {
+      state.highlightedField.setParagraph = 0;
+    },
+    clearParagraphField(state) {
+      state.highlightedField.setParagraph = 0;
+      state.highlightedField.paragraphNum = 0;
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].paragraphNum = 0;
+      state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
+        0;
+      state.createdCrossword[state.highlightedField.row][state.highlightedField.number].inputValue =
+        0;
+    },
+    setModalType(state, action) {
+      state.modalType = action.payload;
+    },
+    setInputToCell(state, action) {
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].inputStatus = action.payload;
+    },
+    hideParagraph(state) {
+      state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
+        0;
+    },
+    changeCellInputValue(
+      state,
+      action: {
+        payload: {
+          value: string;
+          fieldPosition: {
+            row: string;
+            col: string;
+          };
+        };
+        type: string;
+      }
+    ) {
+      state.createdCrossword[Number(action.payload.fieldPosition.row)][
+        Number(action.payload.fieldPosition.col)
+      ].inputValue = Number(action.payload.value);
+    },
+    setCellInputToParagraph(state, action) {
+      state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
+        1;
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].paragraphNum =
+        state.createdCrossword[state.highlightedField.row][
+          state.highlightedField.number
+        ].inputValue;
+    },
+    setQuestionValue(state, action) {
+      state.questionValue = action.payload;
+    },
+    setCellTextQuestionValue(state, action) {
+      console.log("set");
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].textQuestionValue = action.payload;
     },
   },
   //   extraReducers: (builder) => {},

@@ -1,16 +1,11 @@
 import { AppDispatch } from "@/app/store";
-import { crosswordActions, ICrosswordSlice } from "@/app/store/crosswordSlice";
+import { crosswordActions, ICrosswordSlice, ModalType } from "@/app/store/crosswordSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const CreateCrosswordContextMenu = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const createContextMenuConstant = [
-    { name: "Добавить номер", handler: "addNumberHandler" },
-    { name: "По горизонтали", handler: "addHorizontHandler" },
-    { name: "По вертикали", handler: "addVerticalHandler" },
-  ];
   const positionX = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.createContextMenuXPosition
   );
@@ -22,16 +17,33 @@ const CreateCrosswordContextMenu = () => {
     (state: ICrosswordSlice) => state.crosswordState.createdCrossword
   );
 
+  const highlightedEl = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.highlightedField
+  );
+
+  console.log(highlightedEl);
+
+  const createContextMenuConstant = [
+    {
+      name: ` ${highlightedEl.setParagraph !== 0 ? "Обновить" : "Добавить"}  номер`,
+      handler: "addNumberHandler",
+    },
+    // { name: "Добавить текст", handler: "addText" },
+    { name: "По горизонтали", handler: "addHorizontHandler" },
+    { name: "По вертикали", handler: "addVerticalHandler" },
+  ];
+
   const contextMenuActionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     const actionName = e.currentTarget.dataset.actionhandler;
     if (actionName === "addNumberHandler") {
-      //   console.log(createdCrossword);
-      //   dispatch(
-      //     crosswordActions.addNumberAndText({
-      //       row: e.currentTarget.dataset.row,
-      //       number: e.currentTarget.dataset.number,
-      //     })
-      //   );
+      dispatch(crosswordActions.setInputToCell(1));
+      dispatch(crosswordActions.hideParagraph());
+      dispatch(crosswordActions.setModalType(ModalType.Number));
+      dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+      dispatch(crosswordActions.showSetNumberModal());
+    }
+    if (actionName === "addVerticalHandler") {
+      dispatch(crosswordActions.setModalType(ModalType.Vertical));
       dispatch(crosswordActions.setCreateContextMenuStatusFalse());
       dispatch(crosswordActions.showSetNumberModal());
     }
@@ -40,6 +52,16 @@ const CreateCrosswordContextMenu = () => {
   const hideMenuHandler = () => {
     dispatch(crosswordActions.setHighlightedField(""));
     dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+  };
+
+  const clearParagraphFieldHandler = () => {
+    dispatch(crosswordActions.clearParagraphField());
+    dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+  };
+
+  const addTextHandler = () => {
+    dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+    dispatch(crosswordActions.showSetTextModal());
   };
 
   return (
@@ -54,6 +76,25 @@ const CreateCrosswordContextMenu = () => {
       </div>
 
       <div className=" rounded-lg p-4 flex flex-col w-fit ">
+        {highlightedEl.setParagraph !== 0 && (
+          <div
+            onClick={clearParagraphFieldHandler}
+            //   data-actionhandler={el.handler}
+            //   key={el.name}
+            className=" cursor-pointer flex justify-center items-center rounded-sm p-2 border-b-2 pb-2 hover:bg-slate-500"
+          >
+            Очистить поле
+          </div>
+        )}
+        {highlightedEl.setParagraph === 1 && (
+          <div
+            onClick={addTextHandler}
+            data-actionhandler={"addtext"}
+            className=" cursor-pointer flex justify-center items-center rounded-sm p-2 border-b-2 pb-2 hover:bg-slate-500"
+          >
+            {"Добавить текст"}
+          </div>
+        )}
         {createContextMenuConstant.map((el, index) => {
           return (
             <div
