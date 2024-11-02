@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const CreateCrosswordButtonsMenuMain = () => {
+const AddNumberMain = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const highlitedCoordinates = useSelector(
@@ -24,17 +24,20 @@ const CreateCrosswordButtonsMenuMain = () => {
 
   const hideSetNumberModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    dispatch(crosswordActions.hideSetNumberModal());
+    // dispatch(crosswordActions.setCellInputToParagraph(""));
+    dispatch(crosswordActions.showParagraph());
     dispatch(crosswordActions.setInputToCell(0));
+    dispatch(crosswordActions.setHighlitedParagraphStatusTrue());
+    dispatch(crosswordActions.hideSetElementsMenu());
   };
 
   const addNumberTextAndHideModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    console.log("hide");
     // dispatch(crosswordActions.addNumberAndText(currentNumber));
     dispatch(crosswordActions.setCellInputToParagraph(""));
-
     dispatch(crosswordActions.setHighlitedParagraphStatusTrue());
-    dispatch(crosswordActions.hideSetNumberModal());
+    dispatch(crosswordActions.hideSetElementsMenu());
     dispatch(crosswordActions.setInputToCell(0));
   };
 
@@ -69,4 +72,4 @@ const CreateCrosswordButtonsMenuMain = () => {
   );
 };
 
-export default CreateCrosswordButtonsMenuMain;
+export default AddNumberMain;

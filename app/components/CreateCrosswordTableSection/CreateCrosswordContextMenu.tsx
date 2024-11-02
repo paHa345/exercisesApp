@@ -29,8 +29,8 @@ const CreateCrosswordContextMenu = () => {
       handler: "addNumberHandler",
     },
     // { name: "Добавить текст", handler: "addText" },
-    { name: "По горизонтали", handler: "addHorizontHandler" },
-    { name: "По вертикали", handler: "addVerticalHandler" },
+    // { name: "По горизонтали", handler: "addHorizontHandler" },
+    { name: "Добавить слово", handler: "addWordHandler" },
   ];
 
   const contextMenuActionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -40,12 +40,12 @@ const CreateCrosswordContextMenu = () => {
       dispatch(crosswordActions.hideParagraph());
       dispatch(crosswordActions.setModalType(ModalType.Number));
       dispatch(crosswordActions.setCreateContextMenuStatusFalse());
-      dispatch(crosswordActions.showSetNumberModal());
+      dispatch(crosswordActions.showSetElementsMenu());
     }
-    if (actionName === "addVerticalHandler") {
-      dispatch(crosswordActions.setModalType(ModalType.Vertical));
+    if (actionName === "addWordHandler") {
+      dispatch(crosswordActions.setModalType(ModalType.Word));
       dispatch(crosswordActions.setCreateContextMenuStatusFalse());
-      dispatch(crosswordActions.showSetNumberModal());
+      dispatch(crosswordActions.showSetElementsMenu());
     }
   };
 
@@ -56,12 +56,15 @@ const CreateCrosswordContextMenu = () => {
 
   const clearParagraphFieldHandler = () => {
     dispatch(crosswordActions.clearParagraphField());
-    dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+    // dispatch(crosswordActions.setCreateContextMenuStatusFalse());
+    dispatch(crosswordActions.setCellTextQuestionValue(""));
+    dispatch(crosswordActions.setQuestionValue(""));
   };
 
   const addTextHandler = () => {
+    dispatch(crosswordActions.setModalType(ModalType.Question));
     dispatch(crosswordActions.setCreateContextMenuStatusFalse());
-    dispatch(crosswordActions.showSetTextModal());
+    dispatch(crosswordActions.showSetElementsMenu());
   };
 
   return (

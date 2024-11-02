@@ -28,7 +28,7 @@ const CreateCrosswordModal = () => {
 
   const hideSetNumberModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    dispatch(crosswordActions.hideSetNumberModal());
+    dispatch(crosswordActions.hideSetElementsMenu());
   };
 
   const addNumberTextAndHideModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -36,7 +36,7 @@ const CreateCrosswordModal = () => {
     // dispatch(crosswordActions.addNumberAndText(currentNumber));
     dispatch(crosswordActions.setCellInputToParagraph(""));
     dispatch(crosswordActions.setHighlitedParagraphStatusTrue());
-    dispatch(crosswordActions.hideSetNumberModal());
+    dispatch(crosswordActions.hideSetElementsMenu());
   };
   return (
     <div className=" relative modal-overlay">
@@ -71,7 +71,7 @@ const CreateCrosswordModal = () => {
           </div>
         </div>
       )}
-      {modalType === ModalType.Vertical && (
+      {modalType === ModalType.Question && (
         <div
           style={{
             top: `${highlitedCoordinates.y + 40}px`,

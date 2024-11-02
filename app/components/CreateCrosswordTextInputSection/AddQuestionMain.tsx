@@ -1,26 +1,16 @@
 import { AppDispatch } from "@/app/store";
-import { appStateActions } from "@/app/store/appStateSlice";
-import {
-  crosswordActions,
-  crosswordSlice,
-  ICrosswordSlice,
-  ModalType,
-} from "@/app/store/crosswordSlice";
+import { crosswordActions, ICrosswordSlice } from "@/app/store/crosswordSlice";
 import { faXmark, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const CreateCrosswordTextInputMain = () => {
+const AddQuestionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const highlitedCoordinates = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.highlightedField.cellCoordinates
   );
-
-  const modalType = useSelector((state: ICrosswordSlice) => state.crosswordState.modalType);
-
-  const [currentNumber, setCurrentNumber] = useState(0);
 
   const textQuestionValue = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.questionValue
@@ -32,22 +22,16 @@ const CreateCrosswordTextInputMain = () => {
 
   const hideSetNumberModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    dispatch(crosswordActions.hideSetTextModal());
+    dispatch(crosswordActions.hideSetElementsMenu());
     dispatch(crosswordActions.setQuestionValue(""));
-
-    // dispatch(crosswordActions.setInputToCell(0));
   };
 
   const addNumberTextAndHideModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    // dispatch(crosswordActions.setCellInputToParagraph(""));
-    // dispatch(crosswordActions.setHighlitedParagraphStatusTrue());
-    // dispatch(crosswordActions.hideSetNumberModal());
-    // dispatch(crosswordActions.setInputToCell(0));
 
     dispatch(crosswordActions.setCellTextQuestionValue(textQuestionValue));
     dispatch(crosswordActions.setQuestionValue(""));
-    dispatch(crosswordActions.hideSetTextModal());
+    dispatch(crosswordActions.hideSetElementsMenu());
   };
 
   return (
@@ -86,4 +70,4 @@ const CreateCrosswordTextInputMain = () => {
   );
 };
 
-export default CreateCrosswordTextInputMain;
+export default AddQuestionMain;

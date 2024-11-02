@@ -8,10 +8,7 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CreateCrosswordContextMenu from "./CreateCrosswordContextMenu";
-import CreateCrosswordModal from "../CreateCrosswordModalSection/CreateCrosswordModal";
-import { Sevillana } from "next/font/google";
-import CreateCrosswordButtonsMenuMain from "../CreateCrosswordButtonsMenuSection/CreateCrosswordButtonsMenuMain";
-import CreateCrosswordTextInputMain from "../CreateCrosswordTextInputSection/CreateCrosswordTextInputMain";
+import AddElementsMenuMain from "../CreateCrosswordTextInputSection/AddElementsMenuMain";
 
 const CreateCrosswordMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,8 +26,8 @@ const CreateCrosswordMain = () => {
     (state: ICrosswordSlice) => state.crosswordState.highlightedField
   );
 
-  const setNumberModalStatus = useSelector(
-    (state: ICrosswordSlice) => state.crosswordState.setNumberModalStatus
+  const showAddElementMenu = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.setElementsModalStatus
   );
 
   const setTextModalStatus = useSelector(
@@ -52,7 +49,7 @@ const CreateCrosswordMain = () => {
     e.preventDefault();
     const target: any = e.target;
     console.log(target.nodeName);
-    if (setNumberModalStatus || setTextModalStatus) {
+    if (showAddElementMenu || setTextModalStatus) {
       return;
     }
 
@@ -71,7 +68,7 @@ const CreateCrosswordMain = () => {
           x: e.currentTarget.getBoundingClientRect().x,
           y: e.currentTarget.getBoundingClientRect().y,
         },
-        paragraphNum: -1,
+        paragraphNum: Number(e.currentTarget.dataset.paragraphnum),
         setParagraph: Number(e.currentTarget.dataset.paragraph),
         textQuestionStatus: Number(e.currentTarget.dataset.textquestionstatus),
         textQuestionValue: e.currentTarget.dataset.textquestionvalue,
@@ -122,10 +119,11 @@ const CreateCrosswordMain = () => {
               data-row={cell.row}
               data-number={cell.number}
               data-paragraph={cell.paragraph}
+              data-paragraphnum={cell.paragraphNum}
               data-textquestionstatus={cell.textQuestionStatus}
               data-textquestionvalue={cell.textQuestionValue}
               key={`${i}:${j}`}
-              className={` ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""}  flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+              className={` ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
             >
               {cell.paragraph !== 0 && <p>{cell?.paragraphNum}</p>}
               {cell.inputStatus !== 0 && (
@@ -160,9 +158,9 @@ const CreateCrosswordMain = () => {
           Размерность кроссвордв <span>{cretedCrosswordValue}</span>
         </p>
       </div>
-      {setNumberModalStatus && <CreateCrosswordButtonsMenuMain></CreateCrosswordButtonsMenuMain>}
+      {/* {setNumberModalStatus && <CreateCrosswordButtonsMenuMain></CreateCrosswordButtonsMenuMain>} */}
 
-      {setTextModalStatus && <CreateCrosswordTextInputMain></CreateCrosswordTextInputMain>}
+      {showAddElementMenu && <AddElementsMenuMain></AddElementsMenuMain>}
 
       {showContextMenu && <CreateCrosswordContextMenu></CreateCrosswordContextMenu>}
 

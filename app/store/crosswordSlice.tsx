@@ -38,7 +38,12 @@ export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
 );
 
 export enum ModalType {
+  "Question",
   "Number",
+  "Word",
+}
+
+export enum AddedWordDirection {
   "Horizontal",
   "Vertical",
 }
@@ -75,9 +80,14 @@ export interface ICrosswordSlice {
       textQuestionValue: string;
     };
     modalType: ModalType;
+    setElementsModalStatus: boolean;
     setNumberModalStatus: boolean;
     setTextModalStatus: boolean;
     questionValue: string;
+    addedWord: {
+      direction: AddedWordDirection;
+      value: string;
+    };
   };
 }
 
@@ -114,9 +124,13 @@ interface ICrosswordState {
   };
   setNumberModalStatus: boolean;
   setTextModalStatus: boolean;
+  setElementsModalStatus: boolean;
   questionValue: string;
-
   modalType: ModalType;
+  addedWord: {
+    direction: AddedWordDirection;
+    value: string;
+  };
 }
 
 export const initCrosswordState: ICrosswordState = {
@@ -137,9 +151,13 @@ export const initCrosswordState: ICrosswordState = {
   },
   setNumberModalStatus: false,
   setTextModalStatus: false,
+  setElementsModalStatus: false,
   questionValue: "",
-
   modalType: ModalType.Number,
+  addedWord: {
+    direction: AddedWordDirection.Horizontal,
+    value: "",
+  },
 };
 
 export const crosswordSlice = createSlice({
@@ -201,6 +219,13 @@ export const crosswordSlice = createSlice({
     showSetTextModal(state) {
       state.setTextModalStatus = true;
     },
+    showSetElementsMenu(state) {
+      state.setElementsModalStatus = true;
+    },
+    hideSetElementsMenu(state) {
+      state.setElementsModalStatus = false;
+    },
+
     setHighlitedParagraphStatusTrue(state) {
       state.highlightedField.setParagraph = 1;
     },
@@ -247,6 +272,10 @@ export const crosswordSlice = createSlice({
         Number(action.payload.fieldPosition.col)
       ].inputValue = Number(action.payload.value);
     },
+    showParagraph(state) {
+      state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
+        1;
+    },
     setCellInputToParagraph(state, action) {
       state.createdCrossword[state.highlightedField.row][state.highlightedField.number].paragraph =
         1;
@@ -261,10 +290,23 @@ export const crosswordSlice = createSlice({
       state.questionValue = action.payload;
     },
     setCellTextQuestionValue(state, action) {
-      console.log("set");
       state.createdCrossword[state.highlightedField.row][
         state.highlightedField.number
       ].textQuestionValue = action.payload;
+    },
+    setAddedWordValue(state, action) {
+      state.addedWord.value = action.payload;
+      const lengthAddedWord = state.addedWord.value.split("").length;
+      console.log(lengthAddedWord);
+      console.log("first");
+    },
+    setAddedWordDirection(state, action) {
+      if (action.payload === AddedWordDirection.Horizontal) {
+        state.addedWord.direction = AddedWordDirection.Horizontal;
+      }
+      if (action.payload === AddedWordDirection.Vertical) {
+        state.addedWord.direction = AddedWordDirection.Vertical;
+      }
     },
   },
   //   extraReducers: (builder) => {},
