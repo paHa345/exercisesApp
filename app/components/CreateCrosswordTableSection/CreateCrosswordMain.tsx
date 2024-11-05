@@ -57,9 +57,8 @@ const CreateCrosswordMain = () => {
       return;
     }
 
-    console.log(e.currentTarget.dataset.textquestionvalue);
-
-    dispatch(
+    console.log(e.currentTarget.dataset.paragraphnum);
+    const paragraphNum = dispatch(
       crosswordActions.setHighlightedField({
         id: e.currentTarget.dataset.fieldid,
         row: e.currentTarget.dataset.row,
@@ -68,7 +67,10 @@ const CreateCrosswordMain = () => {
           x: e.currentTarget.getBoundingClientRect().x,
           y: e.currentTarget.getBoundingClientRect().y,
         },
-        paragraphNum: Number(e.currentTarget.dataset.paragraphnum),
+        paragraphNum:
+          e.currentTarget.dataset.paragraphnum === undefined
+            ? 0
+            : Number(e.currentTarget.dataset.paragraphnum),
         setParagraph: Number(e.currentTarget.dataset.paragraph),
         textQuestionStatus: Number(e.currentTarget.dataset.textquestionstatus),
         textQuestionValue: e.currentTarget.dataset.textquestionvalue,
@@ -122,9 +124,11 @@ const CreateCrosswordMain = () => {
               data-paragraphnum={cell.paragraphNum}
               data-textquestionstatus={cell.textQuestionStatus}
               data-textquestionvalue={cell.textQuestionValue}
+              data-addedwordcell={cell.addedWordCell}
               key={`${i}:${j}`}
-              className={` ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+              className={` ${cell.addedWordCell === Number(0) ? "" : "bg-lime-800"} ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
             >
+              {cell.addedWordLetter && <p>{cell.addedWordLetter}</p>}
               {cell.paragraph !== 0 && <p>{cell?.paragraphNum}</p>}
               {cell.inputStatus !== 0 && (
                 <input

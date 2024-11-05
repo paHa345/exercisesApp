@@ -40,12 +40,15 @@ const AddWordMain = () => {
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     dispatch(crosswordActions.setAddedWordDirection(this));
+    dispatch(crosswordActions.changeDirectionAndClearValue());
+    dispatch(crosswordActions.setAddedWordValue(""));
+
     // dispatch(crosswordActions.setAddedWordDirection(e.target.dataset.direction as AddedWordDirection));
   };
 
   const addNumberTextAndHideModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    dispatch(crosswordActions.setAddedWordValue(""));
+    // dispatch(crosswordActions.setAddedWordValue(""));
 
     // dispatch(crosswordActions.setCellTextQuestionValue(textQuestionValue));
     dispatch(crosswordActions.hideSetElementsMenu());
