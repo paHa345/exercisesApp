@@ -52,6 +52,7 @@ const AddWordMain = () => {
 
     // dispatch(crosswordActions.setCellTextQuestionValue(textQuestionValue));
     dispatch(crosswordActions.hideSetElementsMenu());
+    dispatch(crosswordActions.clearAddedWord());
   };
 
   return (

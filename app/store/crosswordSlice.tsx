@@ -382,6 +382,13 @@ export const crosswordSlice = createSlice({
         state.addedWord.direction = AddedWordDirection.Vertical;
       }
     },
+    clearAddedWord(state) {
+      state.addedWord = {
+        direction: AddedWordDirection.Horizontal,
+        value: "",
+        addedWordArr: [],
+      };
+    },
     clearInputValueAndParagraphStatus(state) {
       state.createdCrossword[state.highlightedField.row][state.highlightedField.number].inputValue =
         0;
