@@ -27,7 +27,6 @@ export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
       };
       await createEl();
 
-      console.log(createdCrossword);
       //   dispatch(crosswordActions.setCrosswordValue(createdCrossword));
       dispatch(crosswordActions.setCreatedCrossword(createdCrossword));
 
