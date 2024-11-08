@@ -361,17 +361,7 @@ export const crosswordSlice = createSlice({
       //тут очищаем клетки и state.addedWord.addedWordArr
       //   перед каждой перерисовкой
       for (let i = 0; i < state.addedWord.addedWordArr.length; i++) {
-        // console.log(
-        //   state.createdCrossword[state.addedWord.addedWordArr[i].row][
-        //     state.addedWord.addedWordArr[i].col
-        //   ].addedWordDirectionJbj?.horizontal
-        // );
-        // console.log(
-        //   state.createdCrossword[state.addedWord.addedWordArr[i].row][
-        //     state.addedWord.addedWordArr[i].col
-        //   ].addedWordDirectionJbj?.vertical
-        // );
-
+        console.log("clear");
         if (
           !state.createdCrossword[state.addedWord.addedWordArr[i].row][
             state.addedWord.addedWordArr[i].col
@@ -380,6 +370,15 @@ export const crosswordSlice = createSlice({
             state.addedWord.addedWordArr[i].col
           ].addedWordDirectionJbj?.vertical
         ) {
+          // console.log(state.addedWord.direction)
+          state.addedWord.direction === AddedWordDirection.Horizontal
+            ? (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                state.addedWord.addedWordArr[i].col
+              ].addedWordDirectionJbj.horizontal = false)
+            : (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                state.addedWord.addedWordArr[i].col
+              ].addedWordDirectionJbj.vertical = false);
+
           state.createdCrossword[state.addedWord.addedWordArr[i].row][
             state.addedWord.addedWordArr[i].col
           ].addedWordCell = 0;

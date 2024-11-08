@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import { crosswordActions, ICrosswordSlice } from "@/app/store/crosswordSlice";
+import { AddedWordDirection, crosswordActions, ICrosswordSlice } from "@/app/store/crosswordSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -17,6 +17,19 @@ interface ICellProps {
     textQuestionValue: string;
     addedWordCell: number;
     addedWordLetter: string | null;
+    addedWordDirectionJbj: {
+      horizontal: Boolean;
+      vertical: Boolean;
+    };
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value: string;
+      addedWordArr: {
+        row: number;
+        col: number;
+        addedLetter: string;
+      }[];
+    }[];
   };
   i: number;
   j: number;
@@ -39,6 +52,7 @@ const CreateCrosswordCellMain = ({ cell, i, j }: ICellProps) => {
 
   const callContextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+    console.log(cell);
     const target: any = e.target;
     console.log(target.nodeName);
     if (showAddElementMenu || setTextModalStatus) {
