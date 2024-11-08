@@ -111,8 +111,12 @@ const CreateCrosswordCellMain = ({ cell, i, j }: ICellProps) => {
       key={`${i}:${j}`}
       className={` ${cell.addedWordCell === Number(0) ? "" : "bg-lime-800"} ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
-      {cell.addedWordLetter && <p>{cell.addedWordLetter}</p>}
-      {cell.paragraph !== 0 && <p>{cell?.paragraphNum}</p>}
+      <div className=" relative z-10">
+        {cell.paragraph !== 0 && (
+          <p className=" text-slate-100 absolute -top-5 -left-1">{cell?.paragraphNum}</p>
+        )}
+      </div>
+      {cell.addedWordLetter && <p className=" text-slate-200">{cell.addedWordLetter}</p>}
       {cell.inputStatus !== 0 && (
         <input
           onChange={changeCellInputHandler}

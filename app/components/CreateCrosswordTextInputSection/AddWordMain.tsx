@@ -9,7 +9,7 @@ import {
   faRulerVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const AddWordMain = () => {
@@ -27,6 +27,14 @@ const AddWordMain = () => {
     (state: ICrosswordSlice) => state.crosswordState.addedWord.value
   );
 
+  useEffect(() => {
+    dispatch(crosswordActions.setWordObjFronCellToState(addedWordDirection));
+
+    // return () => {
+    //   second
+    // }
+  }, []);
+
   const changeAddedWordValueHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(crosswordActions.setAddedWordValue(e.currentTarget.value));
   };
@@ -40,8 +48,10 @@ const AddWordMain = () => {
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     dispatch(crosswordActions.setAddedWordDirection(this));
-    dispatch(crosswordActions.changeDirectionAndClearValue());
-    dispatch(crosswordActions.setAddedWordValue(""));
+    // dispatch(crosswordActions.changeDirectionAndClearValue());
+    dispatch(crosswordActions.setWordObjFronCellToState(addedWordDirection));
+
+    // dispatch(crosswordActions.setAddedWordValue(""));
 
     // dispatch(crosswordActions.setAddedWordDirection(e.target.dataset.direction as AddedWordDirection));
   };
@@ -52,6 +62,7 @@ const AddWordMain = () => {
 
     // dispatch(crosswordActions.setCellTextQuestionValue(textQuestionValue));
     dispatch(crosswordActions.hideSetElementsMenu());
+    dispatch(crosswordActions.addWordObjToCell(""));
     dispatch(crosswordActions.clearAddedWord());
   };
 
