@@ -61,7 +61,25 @@ export interface ICrosswordSlice {
       inputStatus: number;
       inputValue: number;
       textQuestionStatus: number;
-      textQuestionValue: string;
+      //   textQuestionValue: string;
+      //   questionsArr: {
+      //     direction: AddedWordDirection;
+      //     value: string;
+      //     questionNumber: number;
+      //     cell: { row: number; col: number };
+      //   }[];
+      questionObj: {
+        horizontal: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+        vertical: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+      };
       addedWordCell: number;
       addedWordLetter: string | null;
       addedWordDirectionJbj: {
@@ -77,6 +95,12 @@ export interface ICrosswordSlice {
     createContextMenuStatus: boolean;
     createContextMenuXPosition: number;
     createContextMenuYPosition: number;
+    questionsArr: {
+      direction: AddedWordDirection;
+      value: string;
+      questionNumber: number;
+      cell: { row: number; col: number };
+    }[];
     highlightedField: {
       id: string;
       row: number;
@@ -115,7 +139,25 @@ interface ICrosswordState {
     inputStatus: number;
     inputValue: number;
     textQuestionStatus: number;
-    textQuestionValue: string;
+    // textQuestionValue: string;
+    // questionsArr: {
+    //   direction: AddedWordDirection;
+    //   value: string;
+    //   questionNumber: number;
+    //   cell: { row: number; col: number };
+    // }[];
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+    };
     addedWordCell: number;
     addedWordLetter: string | null;
     addedWordDirectionJbj: {
@@ -131,6 +173,12 @@ interface ICrosswordState {
   createContextMenuStatus: boolean;
   createContextMenuXPosition: number;
   createContextMenuYPosition: number;
+  questionsArr: {
+    direction: AddedWordDirection;
+    value: string;
+    questionNumber: number;
+    cell: { row: number; col: number };
+  }[];
   highlightedField: {
     id: string;
     row: number;
@@ -163,6 +211,7 @@ export const initCrosswordState: ICrosswordState = {
   createContextMenuStatus: false,
   createContextMenuXPosition: 0,
   createContextMenuYPosition: 0,
+  questionsArr: [],
   highlightedField: {
     id: "id",
     row: 0,
@@ -316,10 +365,96 @@ export const crosswordSlice = createSlice({
       state.questionValue = action.payload;
     },
     setCellTextQuestionValue(state, action) {
-      state.createdCrossword[state.highlightedField.row][
-        state.highlightedField.number
-      ].textQuestionValue = action.payload;
+      const currentQuestionObj =
+        state.addedWord.direction === AddedWordDirection.Horizontal
+          ? {
+              horizontal: {
+                value: state.questionValue,
+                questionNumber: state.highlightedField.paragraphNum,
+                cell: { row: state.highlightedField.row, col: state.highlightedField.number },
+              },
+              vertical: null,
+            }
+          : {
+              horizontal: null,
+              vertical: {
+                value: state.questionValue,
+                questionNumber: state.highlightedField.paragraphNum,
+                cell: { row: state.highlightedField.row, col: state.highlightedField.number },
+              },
+            };
+      if (
+        !state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
+          .questionObj
+      ) {
+        state.createdCrossword[state.highlightedField.row][
+          state.highlightedField.number
+        ].questionObj = currentQuestionObj;
+      } else {
+        const direction =
+          state.addedWord.direction === AddedWordDirection.Horizontal ? "horizontal" : "vertical";
+
+        state.createdCrossword[state.highlightedField.row][
+          state.highlightedField.number
+        ].questionObj[direction] = {
+          value: state.questionValue,
+          questionNumber: state.highlightedField.paragraphNum,
+          cell: { row: state.highlightedField.row, col: state.highlightedField.number },
+        };
+      }
     },
+    addQuestionToState(state) {
+      const currentElIndex = state.questionsArr.findIndex(
+        (el) =>
+          el.cell.col === state.highlightedField.number &&
+          el.cell.row === state.highlightedField.row &&
+          el.direction === state.addedWord.direction
+      );
+
+      if (currentElIndex === -1) {
+        state.questionsArr.push({
+          direction: state.addedWord.direction,
+          value: state.questionValue,
+          questionNumber: state.highlightedField.paragraphNum,
+          cell: { row: state.highlightedField.row, col: state.highlightedField.number },
+        });
+      } else {
+        state.questionsArr[currentElIndex] = {
+          direction: state.addedWord.direction,
+          value: state.questionValue,
+          questionNumber: state.highlightedField.paragraphNum,
+          cell: { row: state.highlightedField.row, col: state.highlightedField.number },
+        };
+      }
+    },
+
+    daleteQuestionTextFromState(state) {
+      console.log("Delete");
+      state.questionsArr = state.questionsArr.filter(
+        (el) =>
+          el.cell.col !== state.highlightedField.number &&
+          el.cell.row !== state.highlightedField.row
+      );
+    },
+    deleteQuestionTextFromCurrentCell(state) {
+      if (
+        state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
+          .questionObj
+      ) {
+        state.createdCrossword[state.highlightedField.row][
+          state.highlightedField.number
+        ].questionObj.horizontal = null;
+
+        state.createdCrossword[state.highlightedField.row][
+          state.highlightedField.number
+        ].questionObj.vertical = null;
+      }
+    },
+
+    resetCrosswordQuestionArr(state) {
+      state.questionsArr = [];
+    },
+
     setAddedWordValue(state, action) {
       let lengthAddedWord = action.payload.split("").length;
       const count =
@@ -345,8 +480,6 @@ export const crosswordSlice = createSlice({
               state.highlightedField.number + lengthAddedWord - 1
             ]?.addedWordLetter;
 
-      console.log(currentAddWordCellLetter);
-
       if (
         currentAddWordCellLetter !== undefined &&
         currentAddWordCellLetter !== null &&
@@ -356,12 +489,10 @@ export const crosswordSlice = createSlice({
         return;
       }
 
-      console.log("set");
-
       //тут очищаем клетки и state.addedWord.addedWordArr
       //   перед каждой перерисовкой
+      console.log(state.addedWord.addedWordArr.length);
       for (let i = 0; i < state.addedWord.addedWordArr.length; i++) {
-        console.log("clear");
         if (
           !state.createdCrossword[state.addedWord.addedWordArr[i].row][
             state.addedWord.addedWordArr[i].col
@@ -370,7 +501,6 @@ export const crosswordSlice = createSlice({
             state.addedWord.addedWordArr[i].col
           ].addedWordDirectionJbj?.vertical
         ) {
-          // console.log(state.addedWord.direction)
           state.addedWord.direction === AddedWordDirection.Horizontal
             ? (state.createdCrossword[state.addedWord.addedWordArr[i].row][
                 state.addedWord.addedWordArr[i].col
@@ -386,6 +516,31 @@ export const crosswordSlice = createSlice({
             state.addedWord.addedWordArr[i].col
           ].addedWordLetter = null;
         }
+
+        //проверяем ячейку, есть ли в ней и горизонтальное и вертикальное направление
+        // (то есть является ли она пересечением двух  линий)
+        // и очищаем направление ( горизонтальное или вертикальное)
+        // но не удаляем саму букву, ведь она использкется в другом направленииы
+        //
+
+        if (
+          state.createdCrossword[state.addedWord.addedWordArr[i].row][
+            state.addedWord.addedWordArr[i].col
+          ].addedWordDirectionJbj?.horizontal &&
+          state.createdCrossword[state.addedWord.addedWordArr[i].row][
+            state.addedWord.addedWordArr[i].col
+          ].addedWordDirectionJbj?.vertical
+        ) {
+          state.addedWord.direction === AddedWordDirection.Horizontal
+            ? (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                state.addedWord.addedWordArr[i].col
+              ].addedWordDirectionJbj.horizontal = false)
+            : (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                state.addedWord.addedWordArr[i].col
+              ].addedWordDirectionJbj.vertical = false);
+        }
+
+        //
       }
       state.addedWord.addedWordArr = [];
 
@@ -458,6 +613,77 @@ export const crosswordSlice = createSlice({
         }
       }
     },
+
+    clearCurrentCellAddedWord(state) {
+      if (
+        !state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
+          .addedWordArr
+      ) {
+        return;
+      }
+
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].addedWordArr.forEach((el) => {
+        console.log(el.direction);
+        state.addedWord = el;
+        for (let i = 0; i < state.addedWord.addedWordArr.length; i++) {
+          if (
+            !state.createdCrossword[state.addedWord.addedWordArr[i].row][
+              state.addedWord.addedWordArr[i].col
+            ].addedWordDirectionJbj?.horizontal ||
+            !state.createdCrossword[state.addedWord.addedWordArr[i].row][
+              state.addedWord.addedWordArr[i].col
+            ].addedWordDirectionJbj?.vertical
+          ) {
+            state.addedWord.direction === AddedWordDirection.Horizontal
+              ? (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                  state.addedWord.addedWordArr[i].col
+                ].addedWordDirectionJbj.horizontal = false)
+              : (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                  state.addedWord.addedWordArr[i].col
+                ].addedWordDirectionJbj.vertical = false);
+
+            state.createdCrossword[state.addedWord.addedWordArr[i].row][
+              state.addedWord.addedWordArr[i].col
+            ].addedWordCell = 0;
+            state.createdCrossword[state.addedWord.addedWordArr[i].row][
+              state.addedWord.addedWordArr[i].col
+            ].addedWordLetter = null;
+          }
+
+          //проверяем ячейку, есть ли в ней и горизонтальное и вертикальное направление
+          // (то есть является ли она пересечением двух  линий)
+          // и очищаем направление ( горизонтальное или вертикальное)
+          // но не удаляем саму букву, ведь она использкется в другом направленииы
+          //
+
+          if (
+            state.createdCrossword[state.addedWord.addedWordArr[i].row][
+              state.addedWord.addedWordArr[i].col
+            ].addedWordDirectionJbj?.horizontal &&
+            state.createdCrossword[state.addedWord.addedWordArr[i].row][
+              state.addedWord.addedWordArr[i].col
+            ].addedWordDirectionJbj?.vertical
+          ) {
+            state.addedWord.direction === AddedWordDirection.Horizontal
+              ? (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                  state.addedWord.addedWordArr[i].col
+                ].addedWordDirectionJbj.horizontal = false)
+              : (state.createdCrossword[state.addedWord.addedWordArr[i].row][
+                  state.addedWord.addedWordArr[i].col
+                ].addedWordDirectionJbj.vertical = false);
+          }
+
+          //
+        }
+        state.addedWord.addedWordArr = [];
+      });
+      state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number
+      ].addedWordArr = [];
+      state.addedWord.value = "";
+    },
     changeDirectionAndClearValue(state) {
       for (let i = 0; i < state.addedWord.addedWordArr.length; i++) {
         state.createdCrossword[state.addedWord.addedWordArr[i].row][
@@ -518,11 +744,6 @@ export const crosswordSlice = createSlice({
       }
     },
     setWordObjFronCellToState(state, action) {
-      //   console.log(state.addedWord.direction);
-      //   console.log(
-      //     state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
-      //       .addedWordArr
-      //   );
       if (
         state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
           .addedWordArr

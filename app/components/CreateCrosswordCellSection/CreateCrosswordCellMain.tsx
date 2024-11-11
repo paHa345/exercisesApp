@@ -14,7 +14,25 @@ interface ICellProps {
     inputStatus: number;
     inputValue: number;
     textQuestionStatus: number;
-    textQuestionValue: string;
+    // textQuestionValue: string;
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: {
+          row: number;
+          col: number;
+        };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: {
+          row: number;
+          col: number;
+        };
+      } | null;
+    };
     addedWordCell: number;
     addedWordLetter: string | null;
     addedWordDirectionJbj: {
@@ -76,10 +94,10 @@ const CreateCrosswordCellMain = ({ cell, i, j }: ICellProps) => {
         paragraphNum: cell.paragraphNum === undefined ? 0 : Number(cell.paragraphNum),
         setParagraph: Number(cell.paragraph),
         textQuestionStatus: Number(cell.textQuestionStatus),
-        textQuestionValue: cell.textQuestionValue,
+        // textQuestionValue: cell.textQuestionValue,
       })
     );
-    dispatch(crosswordActions.setQuestionValue(cell.textQuestionValue));
+    // dispatch(crosswordActions.setQuestionValue(cell.textQuestionValue));
 
     dispatch(
       crosswordActions.setCreateContextMenuPosition({
@@ -120,7 +138,7 @@ const CreateCrosswordCellMain = ({ cell, i, j }: ICellProps) => {
       data-paragraph={cell.paragraph}
       data-paragraphnum={cell.paragraphNum}
       data-textquestionstatus={cell.textQuestionStatus}
-      data-textquestionvalue={cell.textQuestionValue}
+      //   data-textquestionvalue={cell.textQuestionValue}
       data-addedwordcell={cell.addedWordCell}
       key={`${i}:${j}`}
       className={` ${cell.addedWordCell === Number(0) ? "" : "bg-lime-800"} ${highlightedElId.id === `${i}:${j}` ? " bg-lime-600" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}

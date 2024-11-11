@@ -48,7 +48,6 @@ const AddWordMain = () => {
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     dispatch(crosswordActions.setAddedWordDirection(this));
-    // dispatch(crosswordActions.changeDirectionAndClearValue());
     dispatch(crosswordActions.setWordObjFronCellToState(addedWordDirection));
 
     // dispatch(crosswordActions.setAddedWordValue(""));
@@ -91,20 +90,12 @@ const AddWordMain = () => {
           </div>
         </div>
         <div className=" flex flex-col gap-1 justify-center items-center ml-2 border-slate-600 border-solid border-2">
-          {/* <div className=" flex flex-col justify-center items-center w-full">
-            {" "}
-            <p>Ведите число букв</p>
-            <input className=" w-1/2" type="number" placeholder="0" />
-          </div> */}
           <div className=" py-2 flex gap-6 flex-row justify-center items-center">
             <div
               onClick={setAddedWordDirection.bind(AddedWordDirection.Horizontal)}
               className={`h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Horizontal ? "bg-slate-400" : ""} hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
             >
-              <a
-                // className="bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
-                href=""
-              >
+              <a href="">
                 <FontAwesomeIcon icon={faRulerHorizontal} />
               </a>
             </div>

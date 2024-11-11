@@ -57,8 +57,11 @@ const CreateCrosswordContextMenu = () => {
   const clearParagraphFieldHandler = () => {
     dispatch(crosswordActions.clearParagraphField());
     // dispatch(crosswordActions.setCreateContextMenuStatusFalse());
-    dispatch(crosswordActions.setCellTextQuestionValue(""));
+    dispatch(crosswordActions.daleteQuestionTextFromState());
+    dispatch(crosswordActions.deleteQuestionTextFromCurrentCell());
+    // dispatch(crosswordActions.setCellTextQuestionValue(""));
     dispatch(crosswordActions.setQuestionValue(""));
+    dispatch(crosswordActions.clearCurrentCellAddedWord());
   };
 
   const addTextHandler = () => {

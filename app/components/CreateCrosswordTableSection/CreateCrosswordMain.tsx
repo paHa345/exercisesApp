@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CreateCrosswordContextMenu from "./CreateCrosswordContextMenu";
 import AddElementsMenuMain from "../CreateCrosswordTextInputSection/AddElementsMenuMain";
 import CreateCrosswordCellMain from "../CreateCrosswordCellSection/CreateCrosswordCellMain";
+import CreateCrosswordQuestionsSectionMain from "../CreateCrosswordQuestionsSection/CreateCrosswordQuestionsSectionMain";
 
 const CreateCrosswordMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -150,6 +151,7 @@ const CreateCrosswordMain = () => {
   });
   const createCrosswordTableHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    dispatch(crosswordActions.resetCrosswordQuestionArr());
     dispatch(crosswordActions.setCrosswordValue(crosswordValue));
     dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
   };
@@ -163,9 +165,10 @@ const CreateCrosswordMain = () => {
       </div>
       <div>
         <p>
-          Размерность кроссвордв <span>{cretedCrosswordValue}</span>
+          Размерность кроссворда <span>{cretedCrosswordValue}</span>
         </p>
       </div>
+
       {/* {setNumberModalStatus && <CreateCrosswordButtonsMenuMain></CreateCrosswordButtonsMenuMain>} */}
 
       {showAddElementMenu && <AddElementsMenuMain></AddElementsMenuMain>}
@@ -176,6 +179,7 @@ const CreateCrosswordMain = () => {
         <div className={`grid ${`grid-cols-${cretedCrosswordValue}`} gap-1`}> */}
       <div className={` min-w-max pt-5 pb-5 flex-col gap-1`}>{cretedCrosswordTableEl}</div>
 
+      <CreateCrosswordQuestionsSectionMain></CreateCrosswordQuestionsSectionMain>
       {/* </div>
       </div> */}
     </div>
