@@ -11,6 +11,9 @@ import CreateCrosswordContextMenu from "./CreateCrosswordContextMenu";
 import AddElementsMenuMain from "../CreateCrosswordTextInputSection/AddElementsMenuMain";
 import CreateCrosswordCellMain from "../CreateCrosswordCellSection/CreateCrosswordCellMain";
 import CreateCrosswordQuestionsSectionMain from "../CreateCrosswordQuestionsSection/CreateCrosswordQuestionsSectionMain";
+import SaveCurrentCrosswordButton from "./SaveCurrentCrosswordButton";
+import LoadCrosswordButton from "./LoadCrosswordButton";
+import LoadCrosswordModalMain from "../CreateCrosswordLoadModalSection/LoadCrosswordModalMain";
 
 const CreateCrosswordMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +26,16 @@ const CreateCrosswordMain = () => {
   const showContextMenu = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.createContextMenuStatus
   );
+
+  const crosswordIsCreated = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.crosswordIsCreate
+  );
+
+  const crosswordIsLoading = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.crosswordIsLoading
+  );
+
+  const crosswordName = useSelector((state: ICrosswordSlice) => state.crosswordState.crosswordName);
 
   const highlightedElId = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.highlightedField
@@ -45,6 +58,14 @@ const CreateCrosswordMain = () => {
 
   const createdCrosswordTable = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.createdCrossword
+  );
+
+  const changeCrosswordName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(crosswordActions.setCrosswordName(e.currentTarget.value));
+  };
+
+  const showLoadCrosswordModal = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.showLoadCrosswordModal
   );
 
   const callContextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -151,6 +172,11 @@ const CreateCrosswordMain = () => {
   });
   const createCrosswordTableHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (crosswordIsCreated || crosswordIsLoading) {
+      alert("Кроссворд уже создан или загружен");
+      return;
+    }
+    dispatch(crosswordActions.crosswordIsCreated(true));
     dispatch(crosswordActions.resetCrosswordQuestionArr());
     dispatch(crosswordActions.setCrosswordValue(crosswordValue));
     dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
@@ -168,6 +194,26 @@ const CreateCrosswordMain = () => {
           Размерность кроссворда <span>{cretedCrosswordValue}</span>
         </p>
       </div>
+      {crosswordIsCreated || crosswordIsLoading ? (
+        <div>
+          <p>Название кроссворда</p>
+
+          <input
+            className=" border-solid border-2 border-indigo-600"
+            type="text"
+            value={crosswordName}
+            onChange={changeCrosswordName}
+          />
+        </div>
+      ) : (
+        <div></div>
+      )}
+
+      {crosswordIsCreated && <SaveCurrentCrosswordButton></SaveCurrentCrosswordButton>}
+
+      <LoadCrosswordButton></LoadCrosswordButton>
+
+      {showLoadCrosswordModal && <LoadCrosswordModalMain></LoadCrosswordModalMain>}
 
       {/* {setNumberModalStatus && <CreateCrosswordButtonsMenuMain></CreateCrosswordButtonsMenuMain>} */}
 

@@ -1,3 +1,5 @@
+import { AddedWordDirection } from "./store/crosswordSlice";
+
 export const mainMuscleGrourArr = [
   { nameRu: "Бицепс", nameEn: "biceps" },
   { nameRu: "Трицепс", nameEn: "triceps" },
@@ -229,6 +231,47 @@ export interface IAddToCoachRequstSchema {
   coachId: String;
   active: Boolean;
   rejectedByCoach?: Boolean;
+}
+
+export interface ICrosswordSchema {
+  name: string;
+  userId: String;
+  isCompleted: boolean;
+  changeDate: Date;
+  crosswordObj: {
+    key: string;
+    value: string;
+    number: number;
+    row: number;
+    paragraph: number;
+    paragraphNum?: number;
+    inputStatus: number;
+    inputValue: number;
+    textQuestionStatus: number;
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+    };
+    addedWordCell: number;
+    addedWordLetter: string | null;
+    addedWordDirectionJbj: {
+      horizontal: Boolean;
+      vertical: Boolean;
+    };
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value: string;
+      addedWordArr: { row: number; col: number; addedLetter: string }[];
+    }[];
+  }[][];
 }
 
 export interface IOneExerciseTypes {

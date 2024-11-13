@@ -37,10 +37,8 @@ const AddQuestionMain = () => {
 
   const addNumberTextAndHideModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-
     dispatch(crosswordActions.setCellTextQuestionValue(textQuestionValue));
     dispatch(crosswordActions.addQuestionToState());
-
     dispatch(crosswordActions.setQuestionValue(""));
     dispatch(crosswordActions.hideSetElementsMenu());
   };
@@ -48,10 +46,9 @@ const AddQuestionMain = () => {
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     dispatch(crosswordActions.setAddedWordDirection(this));
+    dispatch(crosswordActions.setQuestionTextFromCellToState());
     // dispatch(crosswordActions.setWordObjFronCellToState(addedWordDirection));
-
     // dispatch(crosswordActions.setAddedWordValue(""));
-
     // dispatch(crosswordActions.setAddedWordDirection(e.target.dataset.direction as AddedWordDirection));
   };
 

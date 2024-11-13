@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
-  "authState/loginUser",
+  "crosswordState/createCrosswordTableArrAndUpdateState",
   async function (crosswordValue: number, { rejectWithValue, dispatch }) {
     try {
       const createdCrossword: any = [];
@@ -37,6 +37,86 @@ export const createCrosswordTableArrAndUpdateState = createAsyncThunk(
   }
 );
 
+export interface ICurrentCrossword {
+  crosswordObj: {
+    key: string;
+    value: string;
+    number: number;
+    row: number;
+    paragraph: number;
+    paragraphNum?: number;
+    inputStatus: number;
+    inputValue: number;
+    textQuestionStatus: number;
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+    };
+    addedWordCell: number;
+    addedWordLetter: string | null;
+    addedWordDirectionJbj: {
+      horizontal: Boolean;
+      vertical: Boolean;
+    };
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value: string;
+      addedWordArr: { row: number; col: number; addedLetter: string }[];
+    }[];
+  }[][];
+  name: string;
+  isCompleted: boolean;
+}
+
+export const saveCurrentCrosswordInDB = createAsyncThunk(
+  "crosswordState/saveCurrentCrosswordInDB",
+  async function (crosswordObj: ICurrentCrossword, { rejectWithValue, dispatch }) {
+    try {
+      const saveCurrentCrosswordReq = await fetch(`/api/crossword/addCrossword`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(crosswordObj),
+      });
+
+      const data = await saveCurrentCrosswordReq.json();
+
+      console.log(data);
+
+      if (!saveCurrentCrosswordReq.ok) {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getCurrentUserCrosswordAndSetInState = createAsyncThunk(
+  "crosswordState/saveCurrentCrosswordInDB",
+  async function (_, { rejectWithValue, dispatch }) {
+    try {
+      const getCurrentUserCrosswordsReq = await fetch("/api/crossword/getAllCurrentUserCrosswords");
+      const crosswords = await getCurrentUserCrosswordsReq.json();
+      console.log(crosswords);
+      if (!getCurrentUserCrosswordsReq.ok) {
+        throw new Error(crosswords.message);
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum ModalType {
   "Question",
   "Number",
@@ -50,7 +130,12 @@ export enum AddedWordDirection {
 
 export interface ICrosswordSlice {
   crosswordState: {
+    crosswordName: string;
     crosswordValue: number;
+    isCompleted: boolean;
+    crosswordIsCreate: boolean;
+    crosswordIsLoading: boolean;
+    showLoadCrosswordModal: boolean;
     createdCrossword: {
       key: string;
       value: string;
@@ -128,7 +213,13 @@ export interface ICrosswordSlice {
 }
 
 interface ICrosswordState {
+  crosswordName: string;
   crosswordValue: number;
+  isCompleted: boolean;
+  crosswordIsCreate: boolean;
+  crosswordIsLoading: boolean;
+  showLoadCrosswordModal: boolean;
+
   createdCrossword: {
     key: string;
     value: string;
@@ -206,7 +297,13 @@ interface ICrosswordState {
 }
 
 export const initCrosswordState: ICrosswordState = {
+  crosswordName: "",
   crosswordValue: 10,
+  crosswordIsCreate: false,
+  isCompleted: false,
+  crosswordIsLoading: false,
+  showLoadCrosswordModal: false,
+
   createdCrossword: [],
   createContextMenuStatus: false,
   createContextMenuXPosition: 0,
@@ -240,6 +337,9 @@ export const crosswordSlice = createSlice({
   reducers: {
     setCrosswordValue(state, action) {
       state.crosswordValue = action.payload;
+    },
+    setCrosswordName(state, action) {
+      state.crosswordName = action.payload;
     },
     setCreatedCrossword(state, action) {
       state.createdCrossword = action.payload;
@@ -280,6 +380,12 @@ export const crosswordSlice = createSlice({
         state.highlightedField.number
       ].paragraphNum = action.payload;
       //   console.log(state.createdCrossword[0].value);
+    },
+    crosswordIsCreated(state, action) {
+      state.crosswordIsCreate = action.payload;
+    },
+    crosswordIsLoading(state, action) {
+      state.crosswordIsLoading = action.payload;
     },
     hideSetNumberModal(state) {
       state.setNumberModalStatus = false;
@@ -429,12 +535,12 @@ export const crosswordSlice = createSlice({
     },
 
     daleteQuestionTextFromState(state) {
-      console.log("Delete");
-      state.questionsArr = state.questionsArr.filter(
-        (el) =>
-          el.cell.col !== state.highlightedField.number &&
+      state.questionsArr = state.questionsArr.filter((el) => {
+        return (
+          el.cell.col !== state.highlightedField.number ||
           el.cell.row !== state.highlightedField.row
-      );
+        );
+      });
     },
     deleteQuestionTextFromCurrentCell(state) {
       if (
@@ -453,6 +559,26 @@ export const crosswordSlice = createSlice({
 
     resetCrosswordQuestionArr(state) {
       state.questionsArr = [];
+    },
+    setQuestionTextFromCellToState(state) {
+      if (
+        state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
+          .questionObj
+      ) {
+        const direction =
+          state.addedWord.direction === AddedWordDirection.Horizontal ? "horizontal" : "vertical";
+
+        if (
+          state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
+            .questionObj[direction] === null
+        ) {
+          state.questionValue = "";
+        } else {
+          state.questionValue =
+            state.createdCrossword[state.highlightedField.row][state.highlightedField.number]
+              .questionObj[direction]?.value || "";
+        }
+      }
     },
 
     setAddedWordValue(state, action) {
@@ -765,6 +891,12 @@ export const crosswordSlice = createSlice({
                 addedWordArr: [],
               };
       }
+    },
+    showLoadCrosswordModal(state) {
+      state.showLoadCrosswordModal = true;
+    },
+    hideLoadCrosswordModal(state) {
+      state.showLoadCrosswordModal = false;
     },
   },
   //   extraReducers: (builder) => {},

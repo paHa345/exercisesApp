@@ -65,6 +65,7 @@ const CreateCrosswordContextMenu = () => {
   };
 
   const addTextHandler = () => {
+    dispatch(crosswordActions.setQuestionTextFromCellToState());
     dispatch(crosswordActions.setModalType(ModalType.Question));
     dispatch(crosswordActions.setCreateContextMenuStatusFalse());
     dispatch(crosswordActions.showSetElementsMenu());

@@ -24,7 +24,7 @@ import {
 import LoadingCards from "../LoadingCardSection/LoadingCards";
 import WorkoutLoadingCards from "../LoadingCardSection/WorkoutLoadingCards";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPencil, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPencil, faXmark, faChessBoard } from "@fortawesome/free-solid-svg-icons";
 import EditWorkoutModal from "../EditWorkoutSection/EditWorkoutModal";
 import EditedWorkout from "../EditWorkoutSection/EditedWorkout";
 import DeleteWorkoutModal from "../DeleteWorkoutSection/DeleteWorkoutModal";
@@ -179,6 +179,14 @@ const MyPage = () => {
             Выйти
           </button>
         </div>
+
+        <div className=" py-5">
+          <Link className=" buttonStandart" rel="stylesheet" href="/testCatalog/createCrossword">
+            <FontAwesomeIcon className=" pr-2" icon={faChessBoard} />
+            Создание кроссворда
+          </Link>
+        </div>
+
         <div className=" py-5">
           <Link className=" buttonStandart" rel="stylesheet" href="/my/addNewWorkout">
             Добавить тренировку
