@@ -111,6 +111,7 @@ export const getCurrentUserCrosswordAndSetInState = createAsyncThunk(
       if (!getCurrentUserCrosswordsReq.ok) {
         throw new Error(crosswords.message);
       }
+      dispatch(crosswordActions.setCurrentUserCrosswordsArr(crosswords.result));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -121,6 +122,13 @@ export enum ModalType {
   "Question",
   "Number",
   "Word",
+}
+
+export enum crosswordFetchStatus {
+  Ready = "ready",
+  Loading = "loading",
+  Resolve = "resolve",
+  Error = "error",
 }
 
 export enum AddedWordDirection {
@@ -136,6 +144,13 @@ export interface ICrosswordSlice {
     crosswordIsCreate: boolean;
     crosswordIsLoading: boolean;
     showLoadCrosswordModal: boolean;
+    setCurrentUserCrosswordsStatus: crosswordFetchStatus;
+    currentUserCrosswordsArr: {
+      _id: String;
+      name: string;
+      isCompleted: boolean;
+      changeDate: Date;
+    }[];
     createdCrossword: {
       key: string;
       value: string;
@@ -219,6 +234,14 @@ interface ICrosswordState {
   crosswordIsCreate: boolean;
   crosswordIsLoading: boolean;
   showLoadCrosswordModal: boolean;
+  setCurrentUserCrosswordsStatus: crosswordFetchStatus;
+
+  currentUserCrosswordsArr: {
+    _id: String;
+    name: string;
+    isCompleted: boolean;
+    changeDate: Date;
+  }[];
 
   createdCrossword: {
     key: string;
@@ -303,7 +326,9 @@ export const initCrosswordState: ICrosswordState = {
   isCompleted: false,
   crosswordIsLoading: false,
   showLoadCrosswordModal: false,
+  setCurrentUserCrosswordsStatus: crosswordFetchStatus.Ready,
 
+  currentUserCrosswordsArr: [],
   createdCrossword: [],
   createContextMenuStatus: false,
   createContextMenuXPosition: 0,
@@ -898,8 +923,24 @@ export const crosswordSlice = createSlice({
     hideLoadCrosswordModal(state) {
       state.showLoadCrosswordModal = false;
     },
+    setCurrentUserCrosswordsArr(state, action) {
+      state.currentUserCrosswordsArr = action.payload;
+    },
+    resetCurrentUserCrosswordsArr(state) {
+      state.currentUserCrosswordsArr = [];
+    },
   },
-  //   extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder.addCase(getCurrentUserCrosswordAndSetInState.pending, (state) => {
+      state.setCurrentUserCrosswordsStatus = crosswordFetchStatus.Loading;
+    });
+    builder.addCase(getCurrentUserCrosswordAndSetInState.fulfilled, (state) => {
+      state.setCurrentUserCrosswordsStatus = crosswordFetchStatus.Resolve;
+    });
+    builder.addCase(getCurrentUserCrosswordAndSetInState.rejected, (state, action) => {
+      state.setCurrentUserCrosswordsStatus = crosswordFetchStatus.Error;
+    });
+  },
 });
 
 export const crosswordActions = crosswordSlice.actions;

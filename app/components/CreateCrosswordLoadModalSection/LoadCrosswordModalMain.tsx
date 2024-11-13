@@ -1,9 +1,16 @@
 import { AppDispatch } from "@/app/store";
-import { crosswordActions, getCurrentUserCrosswordAndSetInState } from "@/app/store/crosswordSlice";
+import {
+  crosswordActions,
+  crosswordFetchStatus,
+  getCurrentUserCrosswordAndSetInState,
+  ICrosswordSlice,
+} from "@/app/store/crosswordSlice";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import CurrentUserCrosswordCard from "./CurrentUserCrosswordCard";
+import LoadingCrosswordsCard from "./LoadindCrosswordsCard";
 
 const LoadCrosswordModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,8 +20,27 @@ const LoadCrosswordModalMain = () => {
     dispatch(crosswordActions.hideLoadCrosswordModal());
   };
 
+  const currentUserCrosswordsArr = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.currentUserCrosswordsArr
+  );
+
+  const fetchCrosswordsStatus = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.setCurrentUserCrosswordsStatus
+  );
+
+  const crosswordCardsEl = currentUserCrosswordsArr.map((el, index) => {
+    return (
+      <div key={`${el._id}`} className=" pb-3">
+        <CurrentUserCrosswordCard crosswordData={el}></CurrentUserCrosswordCard>
+      </div>
+    );
+  });
+
   useEffect(() => {
     dispatch(getCurrentUserCrosswordAndSetInState());
+    // return () => {
+    //   dispatch(crosswordActions.resetCurrentUserCrosswordsArr());
+    // };
   }, []);
 
   return (
@@ -30,7 +56,15 @@ const LoadCrosswordModalMain = () => {
               <FontAwesomeIcon icon={faXmark} />
             </a>
           </div>
-          {/* <div className=" overflow-auto h-2/6">{addedExercisesElement}</div> */}
+          {fetchCrosswordsStatus === crosswordFetchStatus.Resolve && (
+            <div className=" overflow-auto h-5/6">{crosswordCardsEl}</div>
+          )}
+          {fetchCrosswordsStatus === crosswordFetchStatus.Loading && (
+            <LoadingCrosswordsCard></LoadingCrosswordsCard>
+          )}
+          {fetchCrosswordsStatus === crosswordFetchStatus.Error && (
+            <p>Не удалось загрузить список. Повторите попытку позднее</p>
+          )}
 
           {/* <AddExercisesSection></AddExercisesSection> */}
           <div className="modal-body"></div>
