@@ -1,7 +1,7 @@
 // pages/api/contact.js
 import axios from "axios";
 
-export default async function handler(req: any, res: any) {
+export default async function POST(req: any, res: any) {
   if (req.method === "POST") {
     const { name, email, message } = req.body;
 
