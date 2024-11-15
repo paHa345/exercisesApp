@@ -1,50 +1,57 @@
-import RefreshButton from "@/app/components/TestRefreshData/RefreshButton";
-import React from "react";
+"use client";
+import { useState } from "react";
+import axios from "axios";
+// import { toast } from 'react-toastify'; // Optional for notifications
 
-async function getData() {
-  const timeArr = [];
-  const data = new Date().toISOString();
-  timeArr.push(data);
-  const data2 = new Date().toISOString();
-  timeArr.push(data2);
-
-  return timeArr;
-}
-
-const testRevalidate = async ({ timestamp }: any) => {
-  // const [result, setResult] = useState("");
-
-  const timeData = await getData();
-  const timeDataEl = timeData.map((el, index) => {
-    return <div key={`${el}+${index}`}>{el}</div>;
+function ContactForm() {
+  const [userInput, setUserInput] = useState({
+    name: "",
+    email: "",
+    message: "",
   });
 
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setUserInput({ ...userInput, [name]: value });
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("/api/contact", userInput);
+
+      if (response.status === 200) {
+        // toast.success('Message sent successfully!');
+        // setUserInput({ name: '', email: '', message: '' });
+        console.log("Success");
+      } else {
+        // toast.error('Failed to send message.');
+        console.log("Failed to send message.");
+      }
+    } catch (error) {
+      // toast.error('Error sending message.');
+      console.log("Failed to send message.");
+    }
+  };
+
   return (
-    <div className="root">
-      <div className="timestamp">{timeDataEl}</div>
-
-      {/* <div>{result}</div> */}
-      <div className="actions">
-        <RefreshButton></RefreshButton>
-        {/* <button
-          onClick={() => {
-            revalidate();
-          }}
-        >
-          Revalidate
-        </button> */}
-        {/* <a href="">Refresh</a> */}
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Your Name:</label>
+        <input type="text" name="name" value={userInput.name} onChange={handleChange} required />
       </div>
-    </div>
+      <div>
+        <label>Your Email:</label>
+        <input type="email" name="email" value={userInput.email} onChange={handleChange} required />
+      </div>
+      <div>
+        <label>Your Message:</label>
+        <textarea name="message" value={userInput.message} onChange={handleChange} required />
+      </div>
+      <button type="submit">Send Message</button>
+    </form>
   );
-};
+}
 
-// export async function getStaticProps() {
-//   return {
-//     props: {
-//       timestamp: new Date().toISOString(),
-//     },
-//   };
-// }
-
-export default testRevalidate;
+export default ContactForm;
