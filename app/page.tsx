@@ -24,8 +24,19 @@ export default function Home() {
     dispatch(fetchBestExercisesAndSet());
   }, []);
 
+  const sendBotHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("first");
+    const dataReq = await fetch(
+      "https://api.telegram.org/bot7577331969:AAGYO1E1Kz_hDPu8DPhXRMUv1Gx_HdTn7Iw/getMe"
+    );
+    const data = await dataReq.json();
+    console.log(data);
+  };
+
   return (
     <div className="mx-auto">
+      <button onClick={sendBotHandler}>Send</button>
       <div className=" grid  grid-cols-mainGrid gap-3">
         <div className="col-span-2  mx-auto py-10">
           <h1 className=" text-4xl font-bold">Лучшие упражнения</h1>
