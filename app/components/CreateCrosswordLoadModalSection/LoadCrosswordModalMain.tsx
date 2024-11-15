@@ -2,6 +2,7 @@ import { AppDispatch } from "@/app/store";
 import {
   crosswordActions,
   crosswordFetchStatus,
+  getCurrentUserAllCrosswords,
   getCurrentUserCrosswordAndSetInState,
   ICrosswordSlice,
 } from "@/app/store/crosswordSlice";
@@ -11,6 +12,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CurrentUserCrosswordCard from "./CurrentUserCrosswordCard";
 import LoadingCrosswordsCard from "./LoadindCrosswordsCard";
+import LoadCrosswordNotification from "./LoadCrosswordNotification";
 
 const LoadCrosswordModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,8 +38,10 @@ const LoadCrosswordModalMain = () => {
     );
   });
 
+  console.log(crosswordCardsEl.length);
+
   useEffect(() => {
-    dispatch(getCurrentUserCrosswordAndSetInState());
+    dispatch(getCurrentUserAllCrosswords());
     // return () => {
     //   dispatch(crosswordActions.resetCurrentUserCrosswordsArr());
     // };
@@ -48,6 +52,7 @@ const LoadCrosswordModalMain = () => {
       <div className=" modal-wrapper">
         <div className="modal">
           <div className="modal-header">
+            <LoadCrosswordNotification></LoadCrosswordNotification>
             <a
               className=" bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
               onClick={hideLoadCrosswordModalHandler}
@@ -56,6 +61,12 @@ const LoadCrosswordModalMain = () => {
               <FontAwesomeIcon icon={faXmark} />
             </a>
           </div>
+          {fetchCrosswordsStatus === crosswordFetchStatus.Resolve &&
+            crosswordCardsEl.length === 0 && (
+              <div className=" overflow-auto">
+                <h1 className=" text-center">Нет сохранённых кроссвордов</h1>
+              </div>
+            )}
           {fetchCrosswordsStatus === crosswordFetchStatus.Resolve && (
             <div className=" overflow-auto h-5/6">{crosswordCardsEl}</div>
           )}

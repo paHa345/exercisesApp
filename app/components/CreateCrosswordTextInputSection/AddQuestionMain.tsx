@@ -57,7 +57,7 @@ const AddQuestionMain = () => {
       style={{ top: `100px`, left: `200px` }}
       className=" absolute flex justify-center items-center  "
     >
-      <div className=" rounded-md bg-slate-200 p-2 absolute flex  border-slate-400 border-solid border-2 ">
+      <div className=" rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
         <a
           className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
           onClick={hideSetNumberModalHandler}

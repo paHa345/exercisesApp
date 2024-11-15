@@ -70,7 +70,7 @@ const AddWordMain = () => {
       style={{ top: `100px`, left: `200px` }}
       className=" absolute flex justify-center items-center  "
     >
-      <div className=" rounded-md bg-slate-200 p-2 absolute flex  border-slate-400 border-solid border-2 ">
+      <div className=" rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
         <div>
           <div className=" flex">
             <a

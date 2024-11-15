@@ -15,11 +15,15 @@ const SaveCurrentCrosswordButton = () => {
   const isCompleted = useSelector((state: ICrosswordSlice) => state.crosswordState.isCompleted);
 
   const name = useSelector((state: ICrosswordSlice) => state.crosswordState.crosswordName);
+  const questionsArr = useSelector((state: ICrosswordSlice) => state.crosswordState.questionsArr);
+
+  const crosswordId = useSelector((state: ICrosswordSlice) => state.crosswordState.crosswordId);
 
   const saveCrosswordHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    console.log("Save");
-    dispatch(saveCurrentCrosswordInDB({ crosswordObj, name, isCompleted }));
+    dispatch(
+      saveCurrentCrosswordInDB({ crosswordObj, name, isCompleted, questionsArr, crosswordId })
+    );
   };
 
   return (

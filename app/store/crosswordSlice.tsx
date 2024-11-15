@@ -74,26 +74,60 @@ export interface ICurrentCrossword {
   }[][];
   name: string;
   isCompleted: boolean;
+  questionsArr: {
+    direction: AddedWordDirection;
+    value: string;
+    questionNumber: number;
+    cell: { row: number; col: number };
+  }[];
+  crosswordId: string;
 }
 
 export const saveCurrentCrosswordInDB = createAsyncThunk(
   "crosswordState/saveCurrentCrosswordInDB",
   async function (crosswordObj: ICurrentCrossword, { rejectWithValue, dispatch }) {
     try {
-      const saveCurrentCrosswordReq = await fetch(`/api/crossword/addCrossword`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(crosswordObj),
-      });
+      if (crosswordObj.crosswordId.length > 0) {
+        const updateCurrentCrosswordReq = await fetch(
+          `/api/crossword/editCurrentCrossword/${crosswordObj.crosswordId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json;charset=utf-8",
+            },
+            body: JSON.stringify({
+              crosswordObj: crosswordObj.crosswordObj,
+              name: crosswordObj.name,
+              questionsArr: crosswordObj.questionsArr,
+              isCompleted: crosswordObj.isCompleted,
+            }),
+          }
+        );
+        const data = await updateCurrentCrosswordReq.json();
+        if (!updateCurrentCrosswordReq.ok) {
+          throw new Error(data.message);
+        }
+      } else {
+        const saveCurrentCrosswordReq = await fetch(`/api/crossword/addCrossword`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({
+            crosswordObj: crosswordObj.crosswordObj,
+            name: crosswordObj.name,
+            questionsArr: crosswordObj.questionsArr,
+            isCompleted: crosswordObj.isCompleted,
+          }),
+        });
 
-      const data = await saveCurrentCrosswordReq.json();
+        const data = await saveCurrentCrosswordReq.json();
 
-      console.log(data);
+        dispatch(crosswordActions.setCrosswordId(data.result._id));
 
-      if (!saveCurrentCrosswordReq.ok) {
-        throw new Error(data.message);
+        if (!saveCurrentCrosswordReq.ok) {
+          throw new Error(data.message);
+        }
       }
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -101,8 +135,8 @@ export const saveCurrentCrosswordInDB = createAsyncThunk(
   }
 );
 
-export const getCurrentUserCrosswordAndSetInState = createAsyncThunk(
-  "crosswordState/saveCurrentCrosswordInDB",
+export const getCurrentUserAllCrosswords = createAsyncThunk(
+  "crosswordState/getCurrentUserAllCrosswords",
   async function (_, { rejectWithValue, dispatch }) {
     try {
       const getCurrentUserCrosswordsReq = await fetch("/api/crossword/getAllCurrentUserCrosswords");
@@ -112,6 +146,24 @@ export const getCurrentUserCrosswordAndSetInState = createAsyncThunk(
         throw new Error(crosswords.message);
       }
       dispatch(crosswordActions.setCurrentUserCrosswordsArr(crosswords.result));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getCurrentUserCrosswordAndSetInState = createAsyncThunk(
+  "crosswordState/getCurrentUserCrosswordAndSetInState",
+  async function (crosswordId: String, { rejectWithValue, dispatch }) {
+    try {
+      const getCurrentUserCrosswordsReq = await fetch(`/api/crossword/${crosswordId}`);
+      const crosswords = await getCurrentUserCrosswordsReq.json();
+      console.log(crosswords);
+      if (!getCurrentUserCrosswordsReq.ok) {
+        throw new Error(crosswords.message);
+      }
+      dispatch(crosswordActions.setCurrentUserLoadedCrosswordsInState(crosswords.result));
+      dispatch(crosswordActions.hideLoadCrosswordModal());
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -140,11 +192,14 @@ export interface ICrosswordSlice {
   crosswordState: {
     crosswordName: string;
     crosswordValue: number;
+    crosswordId: string;
     isCompleted: boolean;
     crosswordIsCreate: boolean;
     crosswordIsLoading: boolean;
     showLoadCrosswordModal: boolean;
     setCurrentUserCrosswordsStatus: crosswordFetchStatus;
+    setCurrentUserCrosswordDataStatus: crosswordFetchStatus;
+    saveCurrentCrosswordInDBStatus: crosswordFetchStatus;
     currentUserCrosswordsArr: {
       _id: String;
       name: string;
@@ -161,13 +216,6 @@ export interface ICrosswordSlice {
       inputStatus: number;
       inputValue: number;
       textQuestionStatus: number;
-      //   textQuestionValue: string;
-      //   questionsArr: {
-      //     direction: AddedWordDirection;
-      //     value: string;
-      //     questionNumber: number;
-      //     cell: { row: number; col: number };
-      //   }[];
       questionObj: {
         horizontal: {
           value: string;
@@ -230,11 +278,15 @@ export interface ICrosswordSlice {
 interface ICrosswordState {
   crosswordName: string;
   crosswordValue: number;
+  crosswordId: string;
+
   isCompleted: boolean;
   crosswordIsCreate: boolean;
   crosswordIsLoading: boolean;
   showLoadCrosswordModal: boolean;
   setCurrentUserCrosswordsStatus: crosswordFetchStatus;
+  setCurrentUserCrosswordDataStatus: crosswordFetchStatus;
+  saveCurrentCrosswordInDBStatus: crosswordFetchStatus;
 
   currentUserCrosswordsArr: {
     _id: String;
@@ -253,13 +305,6 @@ interface ICrosswordState {
     inputStatus: number;
     inputValue: number;
     textQuestionStatus: number;
-    // textQuestionValue: string;
-    // questionsArr: {
-    //   direction: AddedWordDirection;
-    //   value: string;
-    //   questionNumber: number;
-    //   cell: { row: number; col: number };
-    // }[];
     questionObj: {
       horizontal: {
         value: string;
@@ -322,11 +367,14 @@ interface ICrosswordState {
 export const initCrosswordState: ICrosswordState = {
   crosswordName: "",
   crosswordValue: 10,
+  crosswordId: "",
   crosswordIsCreate: false,
   isCompleted: false,
   crosswordIsLoading: false,
   showLoadCrosswordModal: false,
   setCurrentUserCrosswordsStatus: crosswordFetchStatus.Ready,
+  setCurrentUserCrosswordDataStatus: crosswordFetchStatus.Ready,
+  saveCurrentCrosswordInDBStatus: crosswordFetchStatus.Ready,
 
   currentUserCrosswordsArr: [],
   createdCrossword: [],
@@ -923,22 +971,58 @@ export const crosswordSlice = createSlice({
     hideLoadCrosswordModal(state) {
       state.showLoadCrosswordModal = false;
     },
+    setCurrentUserLoadedCrosswordsInState(state, action) {
+      console.log(action.payload);
+      state.createdCrossword = action.payload.crosswordObj;
+      state.crosswordName = action.payload.name;
+      state.isCompleted = action.payload.isCompleted;
+      state.crosswordId = action.payload._id;
+      state.questionsArr = action.payload.questionsArr;
+      state.crosswordIsCreate = true;
+    },
+    setCrosswordId(state, action) {
+      state.crosswordId = action.payload;
+    },
     setCurrentUserCrosswordsArr(state, action) {
       state.currentUserCrosswordsArr = action.payload;
     },
     resetCurrentUserCrosswordsArr(state) {
       state.currentUserCrosswordsArr = [];
     },
+    setSaveCrosswordStatusToReady(state) {
+      state.saveCurrentCrosswordInDBStatus = crosswordFetchStatus.Ready;
+    },
+    setLoadCrosswordStatusToReady(state) {
+      state.setCurrentUserCrosswordDataStatus = crosswordFetchStatus.Ready;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getCurrentUserCrosswordAndSetInState.pending, (state) => {
+      state.setCurrentUserCrosswordDataStatus = crosswordFetchStatus.Loading;
+    });
+    builder.addCase(getCurrentUserAllCrosswords.pending, (state) => {
       state.setCurrentUserCrosswordsStatus = crosswordFetchStatus.Loading;
     });
+    builder.addCase(saveCurrentCrosswordInDB.pending, (state) => {
+      state.saveCurrentCrosswordInDBStatus = crosswordFetchStatus.Loading;
+    });
     builder.addCase(getCurrentUserCrosswordAndSetInState.fulfilled, (state) => {
+      state.setCurrentUserCrosswordDataStatus = crosswordFetchStatus.Resolve;
+    });
+    builder.addCase(getCurrentUserAllCrosswords.fulfilled, (state) => {
       state.setCurrentUserCrosswordsStatus = crosswordFetchStatus.Resolve;
     });
+    builder.addCase(saveCurrentCrosswordInDB.fulfilled, (state) => {
+      state.saveCurrentCrosswordInDBStatus = crosswordFetchStatus.Resolve;
+    });
     builder.addCase(getCurrentUserCrosswordAndSetInState.rejected, (state, action) => {
+      state.setCurrentUserCrosswordDataStatus = crosswordFetchStatus.Error;
+    });
+    builder.addCase(getCurrentUserAllCrosswords.rejected, (state, action) => {
       state.setCurrentUserCrosswordsStatus = crosswordFetchStatus.Error;
+    });
+    builder.addCase(saveCurrentCrosswordInDB.rejected, (state, action) => {
+      state.saveCurrentCrosswordInDBStatus = crosswordFetchStatus.Error;
     });
   },
 });

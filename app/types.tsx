@@ -272,6 +272,12 @@ export interface ICrosswordSchema {
       addedWordArr: { row: number; col: number; addedLetter: string }[];
     }[];
   }[][];
+  questionsArr: {
+    direction: AddedWordDirection;
+    value: string;
+    questionNumber: number;
+    cell: { row: number; col: number };
+  }[];
 }
 
 export interface IOneExerciseTypes {
