@@ -163,8 +163,20 @@ const CreateCrosswordMain = () => {
     dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
   };
 
+  const sendBotHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("first");
+    const dataReq = await fetch(
+      "https://api.telegram.org/bot7577331969:AAGYO1E1Kz_hDPu8DPhXRMUv1Gx_HdTn7Iw/getMe"
+    );
+    const data = await dataReq.json();
+    console.log(data);
+  };
+
   return (
     <div>
+      <button onClick={sendBotHandler}>Send To Bot</button>
+
       <div>
         <p>Укажите размер кроссворда</p>
         <input type="number" value={crosswordValue} onChange={changeCrosswordValueHandler} />
