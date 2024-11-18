@@ -7,7 +7,7 @@ export async function POST(req: any, res: NextResponse) {
   if (body.message.text === "/start") {
     const message = `Welcome to crossword Game ${req.message}`;
     const ret = await fetch(
-      `https://api.telegram.org/bot${tgbot}/sendMessage?chat_id=${body.mesage.from.id}&text=${message}&parse_mode=HTML`
+      `https://api.telegram.org/bot${tgbot}/sendMessage?chat_id=${body.mesage.chat.id}&text=${message}&parse_mode=HTML`
     );
   }
   return NextResponse.json({ message: "Success", result: "OK!" });
