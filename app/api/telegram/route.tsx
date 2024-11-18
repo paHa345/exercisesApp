@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: any, res: NextResponse) {
   const tgbot = process.env.NEXT_TELEGRAM_TOKEN;
-  console.log(await req.body.json());
+  const body = await req.json();
+  console.log(body);
   //   if (req.body.message === "/start") {
   const message = `Welcome to crossword Game ${req.body.message}`;
   const ret = await fetch(
